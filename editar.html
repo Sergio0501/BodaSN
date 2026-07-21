@@ -42,6 +42,11 @@
   .input-archivo { min-height: unset; padding: 0.3rem 0; border: none; font-size: 0.82rem; }
   .estado-subida { font-size: 0.78rem; color: var(--color-text-soft); }
   .vista-previa-foto { margin-top: 0.6rem; max-height: 140px; border-radius: 0.5rem; border: 1px solid var(--color-border); }
+  .btn-galeria { min-height: 44px; padding: 0 1rem; background: var(--color-primary); color: var(--color-surface); border: none; border-radius: 0.5rem; font-size: 0.82rem; cursor: pointer; }
+  .rejilla-galeria { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 0.7rem; margin-bottom: 1rem; }
+  .miniatura-galeria { border: 2px solid transparent; border-radius: 0.5rem; overflow: hidden; cursor: pointer; background: var(--color-background); aspect-ratio: 1; }
+  .miniatura-galeria img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .miniatura-galeria:hover { border-color: var(--color-secondary); }
   .fila-dos { display: grid; grid-template-columns: 1fr; gap: 1rem; }
   @media (min-width: 560px) { .fila-dos { grid-template-columns: 1fr 1fr; } }
   .campo-color { display: flex; align-items: center; gap: 0.8rem; }
@@ -135,12 +140,13 @@
 
     <div class="bloque">
       <h2>Fotos</h2>
-      <p style="font-size:0.85rem; color:var(--color-text-soft); margin-bottom:1rem;">Puedes pegar el enlace de una foto (si ya tienes una que funcione), o subirla directamente desde tu computador con el botón "Subir foto" — esta opción no depende de enlaces externos.</p>
+      <p style="font-size:0.85rem; color:var(--color-text-soft); margin-bottom:1rem;">Sube tus fotos a la carpeta <code>fotos</code> de tu repositorio en GitHub, luego dale clic a "Elegir de galería" para seleccionarlas sin escribir nada a mano. También puedes pegar un enlace o subir un archivo comprimido como respaldo.</p>
 
       <div class="campo">
         <label>Foto de portada</label>
-        <input type="url" id="fotoPortada" placeholder="https://...">
+        <input type="url" id="fotoPortada" placeholder="fotos/portada.jpg">
         <div class="fila-subida">
+          <button type="button" class="btn-galeria" data-campo="fotoPortada">Elegir de galería</button>
           <input type="file" id="archivoPortada" accept="image/*" class="input-archivo">
           <span class="estado-subida" id="estadoPortada"></span>
         </div>
@@ -149,8 +155,9 @@
 
       <div class="campo">
         <label>Foto de historia 1</label>
-        <input type="url" id="fotoHistoria1" placeholder="https://...">
+        <input type="url" id="fotoHistoria1" placeholder="fotos/historia1.jpg">
         <div class="fila-subida">
+          <button type="button" class="btn-galeria" data-campo="fotoHistoria1">Elegir de galería</button>
           <input type="file" id="archivoHistoria1" accept="image/*" class="input-archivo">
           <span class="estado-subida" id="estadoHistoria1"></span>
         </div>
@@ -159,13 +166,21 @@
 
       <div class="campo">
         <label>Foto de historia 2</label>
-        <input type="url" id="fotoHistoria2" placeholder="https://...">
+        <input type="url" id="fotoHistoria2" placeholder="fotos/historia2.jpg">
         <div class="fila-subida">
+          <button type="button" class="btn-galeria" data-campo="fotoHistoria2">Elegir de galería</button>
           <input type="file" id="archivoHistoria2" accept="image/*" class="input-archivo">
           <span class="estado-subida" id="estadoHistoria2"></span>
         </div>
         <img class="vista-previa-foto" id="previaHistoria2" hidden>
       </div>
+    </div>
+
+    <div class="bloque" id="panelGaleria" hidden>
+      <h2>Galería de fotos (carpeta "fotos" en GitHub)</h2>
+      <p style="font-size:0.82rem; color:var(--color-text-soft); margin-bottom:0.8rem;">Elegiendo una foto para: <b id="campoGaleriaActual"></b></p>
+      <div class="rejilla-galeria" id="rejillaGaleria"></div>
+      <button type="button" class="btn-secundario" id="btnCerrarGaleria">Cerrar galería</button>
     </div>
 
     <div class="bloque">
@@ -423,6 +438,61 @@
   configurarSubidaFoto("archivoPortada", "fotoPortada", "estadoPortada", "previaPortada");
   configurarSubidaFoto("archivoHistoria1", "fotoHistoria1", "estadoHistoria1", "previaHistoria1");
   configurarSubidaFoto("archivoHistoria2", "fotoHistoria2", "estadoHistoria2", "previaHistoria2");
+
+  /* ---------- Galería de fotos desde la carpeta "fotos" en GitHub ---------- */
+  const GITHUB_OWNER = "Sergio0501";
+  const GITHUB_REPO = "BodaSN";
+  const GITHUB_BRANCH = "main";
+  const CARPETA_FOTOS = "fotos";
+
+  const panelGaleria = document.getElementById("panelGaleria");
+  const rejillaGaleria = document.getElementById("rejillaGaleria");
+  const campoGaleriaActual = document.getElementById("campoGaleriaActual");
+  let campoDestinoGaleria = null;
+
+  async function abrirGaleria(idCampo) {
+    campoDestinoGaleria = idCampo;
+    campoGaleriaActual.textContent = document.querySelector('[data-campo="' + idCampo + '"]').closest(".campo").querySelector("label").textContent;
+    panelGaleria.hidden = false;
+    rejillaGaleria.innerHTML = "Cargando fotos...";
+    panelGaleria.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    try {
+      const url = "https://api.github.com/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + CARPETA_FOTOS + "?ref=" + GITHUB_BRANCH;
+      const respuesta = await fetch(url);
+      if (!respuesta.ok) throw new Error("No se pudo leer la carpeta");
+      const archivos = await respuesta.json();
+      const imagenes = archivos.filter(a => a.type === "file" && /\.(jpe?g|png|webp|gif)$/i.test(a.name));
+
+      if (imagenes.length === 0) {
+        rejillaGaleria.innerHTML = '<p style="font-size:0.85rem; color:var(--color-text-soft);">Aún no hay fotos en la carpeta "fotos" de tu repositorio, o el nombre del repositorio no coincide.</p>';
+        return;
+      }
+
+      rejillaGaleria.innerHTML = "";
+      imagenes.forEach(archivo => {
+        const div = document.createElement("div");
+        div.className = "miniatura-galeria";
+        div.innerHTML = '<img src="' + archivo.download_url + '" alt="' + archivo.name + '" loading="lazy">';
+        div.title = archivo.name;
+        div.addEventListener("click", () => {
+          const campoInput = document.getElementById(campoDestinoGaleria);
+          campoInput.value = CARPETA_FOTOS + "/" + archivo.name;
+          const idPrevia = "previa" + campoDestinoGaleria.replace("foto", "");
+          actualizarVistaPrevia(campoDestinoGaleria, idPrevia);
+          panelGaleria.hidden = true;
+        });
+        rejillaGaleria.appendChild(div);
+      });
+    } catch (error) {
+      rejillaGaleria.innerHTML = '<p style="font-size:0.85rem; color:var(--color-text-soft);">No se pudo cargar la galería. Revisa que el repositorio sea público y que la carpeta "fotos" exista.</p>';
+    }
+  }
+
+  document.querySelectorAll(".btn-galeria").forEach(boton => {
+    boton.addEventListener("click", () => abrirGaleria(boton.dataset.campo));
+  });
+  document.getElementById("btnCerrarGaleria").addEventListener("click", () => { panelGaleria.hidden = true; });
 
   function agregarFilaItinerario(datos) {
     const plantilla = document.getElementById("plantillaItinerario").content.cloneNode(true);
