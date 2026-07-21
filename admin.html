@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Boda Sergio &amp; Natalia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-primary: #405044; --color-secondary: #c5a66a; --color-background: #f7f2e9;
+    --color-surface: #fffdf8; --color-text: #292b28; --color-text-soft: #686b65;
+    --color-border: rgba(41,43,40,0.16);
+    --font-heading: "Cormorant Garamond", serif; --font-body: "Montserrat", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: var(--font-body); background: var(--color-background); color: var(--color-text); line-height: 1.5; }
+  h1, h2 { font-family: var(--font-heading); color: var(--color-primary); font-weight: 600; }
+  .contenedor { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+
+  #pantallaLogin { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+  .caja-login { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 1rem; padding: 2.5rem 2rem; max-width: 340px; width: 100%; text-align: center; box-shadow: 0 18px 50px rgba(31,33,30,0.1); }
+  .caja-login h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+  .caja-login input { width: 100%; min-height: 48px; padding: 0.7rem 1rem; border: 1px solid var(--color-border); border-radius: 0.6rem; font-family: var(--font-body); font-size: 1rem; margin-bottom: 1rem; }
+  .caja-login button, .btn { width: 100%; min-height: 48px; background: var(--color-primary); color: var(--color-surface); border: none; border-radius: 999px; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; }
+  .error-login { color: #8a3a2c; font-size: 0.85rem; min-height: 1.2rem; margin-top: -0.4rem; margin-bottom: 0.8rem; }
+
+  .encabezado { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
+  .encabezado a { color: var(--color-text-soft); font-size: 0.85rem; text-decoration: none; border-bottom: 1px solid var(--color-border); }
+
+  .resumen { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+  .tarjeta-resumen { flex: 1; min-width: 130px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 0.9rem; padding: 1.2rem; text-align: center; }
+  .tarjeta-resumen .numero { font-family: var(--font-heading); font-size: 2.2rem; color: var(--color-primary); display: block; }
+  .tarjeta-resumen .etiqueta { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-soft); }
+
+  .fila-familia { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 1rem; padding: 1.4rem; margin-bottom: 1rem; }
+  .fila-familia-cabecera { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .fila-familia h2 { font-size: 1.3rem; margin: 0; }
+  .estado { font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.3rem 0.7rem; border-radius: 999px; }
+  .estado.confirmado { background: rgba(64,80,68,0.12); color: var(--color-primary); }
+  .estado.pendiente { background: rgba(197,166,106,0.18); color: #8a6d1f; }
+  .lista-invitados-admin { list-style: none; padding: 0; margin: 0.9rem 0 0; font-size: 0.92rem; color: var(--color-text-soft); }
+  .lista-invitados-admin li { padding: 0.3rem 0; }
+  .lista-invitados-admin li.si::before { content: "✓ "; color: var(--color-primary); font-weight: 700; }
+  .lista-invitados-admin li.no::before { content: "· "; color: var(--color-text-soft); }
+
+  .acciones-familia { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1rem; }
+  .acciones-familia button, .acciones-familia a {
+    font-size: 0.76rem; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;
+    border: 1px solid var(--color-primary); color: var(--color-primary); background: none;
+    padding: 0.6rem 1rem; border-radius: 999px; cursor: pointer; min-height: 40px; display: inline-flex; align-items: center;
+  }
+  .acciones-familia a.whatsapp { border-color: #2e7d5b; color: #2e7d5b; }
+  .acciones-familia button.copiar { border-color: var(--color-secondary); color: #8a6d1f; }
+
+  .vacio { text-align: center; color: var(--color-text-soft); padding: 3rem 1rem; }
+  .aviso { font-size: 0.82rem; color: var(--color-text-soft); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 0.8rem; padding: 1rem 1.2rem; margin-top: 2rem; }
+</style>
+</head>
+<body>
+
+<div id="pantallaLogin">
+  <div class="caja-login">
+    <h1>Admin</h1>
+    <input type="password" id="campoPassword" placeholder="Contraseña" autocomplete="current-password">
+    <p class="error-login" id="errorLogin"></p>
+    <button id="btnEntrar">Entrar</button>
+  </div>
+</div>
+
+<div class="contenedor" id="panelAdmin" hidden>
+  <div class="encabezado">
+    <h1>Confirmaciones de la boda</h1>
+    <a href="editar.html">Ir a editar invitación →</a>
+  </div>
+
+  <div class="resumen">
+    <div class="tarjeta-resumen"><span class="numero" id="numFamilias">0</span><span class="etiqueta">Familias invitadas</span></div>
+    <div class="tarjeta-resumen"><span class="numero" id="numConfirmadas">0</span><span class="etiqueta">Han confirmado</span></div>
+    <div class="tarjeta-resumen"><span class="numero" id="numPersonasSi">0</span><span class="etiqueta">Personas asistiendo</span></div>
+  </div>
+
+  <div id="listaFamilias"></div>
+  <div class="vacio" id="mensajeVacio" hidden>Aún no hay familias registradas. Ve a "editar invitación" para agregarlas.</div>
+
+  <p class="aviso">Esta protección con contraseña es una barrera simple pensada para uso personal, no un sistema de seguridad de nivel empresarial. No compartas la contraseña ni el enlace de esta página.</p>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  const CLAVE_CONFIG = "invitacion:config";
+  const CLAVE_FAMILIAS = "invitacion:familias";
+  const CLAVE_PASSWORD = "invitacion:admin-password";
+  const PREFIJO_RSVP = "invitacion:rsvp:";
+  const PASSWORD_POR_DEFECTO = "boda2026"; // Cámbiala desde editar.html apenas entres.
+
+  const pantallaLogin = document.getElementById("pantallaLogin");
+  const panelAdmin = document.getElementById("panelAdmin");
+  const campoPassword = document.getElementById("campoPassword");
+  const btnEntrar = document.getElementById("btnEntrar");
+  const errorLogin = document.getElementById("errorLogin");
+
+  async function obtenerPasswordGuardada() {
+    try {
+      const resultado = await window.storage.get(CLAVE_PASSWORD, true);
+      if (resultado && resultado.value) return resultado.value;
+    } catch (error) { /* no se ha configurado una contraseña propia todavía */ }
+    return PASSWORD_POR_DEFECTO;
+  }
+
+  async function intentarEntrar() {
+    const passwordActual = await obtenerPasswordGuardada();
+    if (campoPassword.value === passwordActual) {
+      pantallaLogin.hidden = true;
+      panelAdmin.hidden = false;
+      cargarPanel();
+    } else {
+      errorLogin.textContent = "Contraseña incorrecta.";
+    }
+  }
+
+  btnEntrar.addEventListener("click", intentarEntrar);
+  campoPassword.addEventListener("keydown", (e) => { if (e.key === "Enter") intentarEntrar(); });
+
+  async function cargarJSON(clave, porDefecto) {
+    try {
+      const resultado = await window.storage.get(clave, true);
+      if (resultado && resultado.value) return JSON.parse(resultado.value);
+    } catch (error) { /* aún no existe */ }
+    return porDefecto;
+  }
+
+  function generarEnlaceWhatsApp(config, familia) {
+    const base = window.location.href.replace(/admin\.html.*$/, "Index.html");
+    const enlace = base + "?f=" + encodeURIComponent(familia.slug);
+    const mensaje = "¡Hola " + familia.nombre + "! Con mucha alegría queremos invitarlos a nuestra boda. "
+      + "Aquí está su invitación personalizada: " + enlace;
+    return "https://wa.me/?text=" + encodeURIComponent(mensaje);
+  }
+
+  async function cargarPanel() {
+    const config = await cargarJSON(CLAVE_CONFIG, { nombreNovio: "Sergio", nombreNovia: "Natalia" });
+    const familias = await cargarJSON(CLAVE_FAMILIAS, []);
+
+    const contenedor = document.getElementById("listaFamilias");
+    const mensajeVacio = document.getElementById("mensajeVacio");
+    contenedor.innerHTML = "";
+
+    if (familias.length === 0) {
+      mensajeVacio.hidden = false;
+      document.getElementById("numFamilias").textContent = "0";
+      document.getElementById("numConfirmadas").textContent = "0";
+      document.getElementById("numPersonasSi").textContent = "0";
+      return;
+    }
+
+    let confirmadas = 0;
+    let personasSi = 0;
+
+    for (const familia of familias) {
+      const datosRSVP = await cargarJSON(PREFIJO_RSVP + familia.slug, null);
+      const confirmo = !!datosRSVP;
+      if (confirmo) {
+        confirmadas++;
+        personasSi += (datosRSVP.invitadosConfirmados || []).length;
+      }
+
+      const fila = document.createElement("div");
+      fila.className = "fila-familia";
+
+      const listaHTML = familia.invitados.map(nombre => {
+        const asiste = confirmo && (datosRSVP.invitadosConfirmados || []).includes(nombre);
+        return '<li class="' + (asiste ? "si" : "no") + '">' + nombre + (confirmo ? (asiste ? " — asiste" : " — no asiste") : "") + "</li>";
+      }).join("");
+
+      const enlaceWa = generarEnlaceWhatsApp(config, familia);
+      const enlaceDirecto = window.location.href.replace(/admin\.html.*$/, "Index.html") + "?f=" + encodeURIComponent(familia.slug);
+
+      fila.innerHTML =
+        '<div class="fila-familia-cabecera">' +
+          "<h2>" + familia.nombre + "</h2>" +
+          '<span class="estado ' + (confirmo ? "confirmado" : "pendiente") + '">' + (confirmo ? "Confirmó" : "Pendiente") + "</span>" +
+        "</div>" +
+        '<ul class="lista-invitados-admin">' + listaHTML + "</ul>" +
+        '<div class="acciones-familia">' +
+          '<a class="whatsapp" href="' + enlaceWa + '" target="_blank" rel="noopener">Enviar por WhatsApp</a>' +
+          '<button class="copiar" data-enlace="' + enlaceDirecto + '">Copiar enlace</button>' +
+        "</div>";
+
+      contenedor.appendChild(fila);
+    }
+
+    document.getElementById("numFamilias").textContent = familias.length;
+    document.getElementById("numConfirmadas").textContent = confirmadas;
+    document.getElementById("numPersonasSi").textContent = personasSi;
+
+    contenedor.querySelectorAll("button.copiar").forEach(boton => {
+      boton.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(boton.dataset.enlace);
+          const textoOriginal = boton.textContent;
+          boton.textContent = "¡Copiado!";
+          setTimeout(() => { boton.textContent = textoOriginal; }, 1500);
+        } catch (error) {
+          alert(boton.dataset.enlace);
+        }
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>

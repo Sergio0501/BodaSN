@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editar invitación — Sergio &amp; Natalia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-primary: #405044; --color-secondary: #c5a66a; --color-background: #f7f2e9;
+    --color-surface: #fffdf8; --color-text: #292b28; --color-text-soft: #686b65;
+    --color-border: rgba(41,43,40,0.16);
+    --font-heading: "Cormorant Garamond", serif; --font-body: "Montserrat", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: var(--font-body); background: var(--color-background); color: var(--color-text); line-height: 1.5; }
+  h1, h2 { font-family: var(--font-heading); color: var(--color-primary); font-weight: 600; }
+  .contenedor { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem 6rem; }
+
+  #pantallaLogin { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+  .caja-login { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 1rem; padding: 2.5rem 2rem; max-width: 340px; width: 100%; text-align: center; box-shadow: 0 18px 50px rgba(31,33,30,0.1); }
+  .caja-login input { width: 100%; min-height: 48px; padding: 0.7rem 1rem; border: 1px solid var(--color-border); border-radius: 0.6rem; font-family: var(--font-body); font-size: 1rem; margin-bottom: 1rem; }
+  .caja-login button { width: 100%; min-height: 48px; background: var(--color-primary); color: var(--color-surface); border: none; border-radius: 999px; font-size: 0.85rem; text-transform: uppercase; cursor: pointer; }
+  .error-login { color: #8a3a2c; font-size: 0.85rem; min-height: 1.2rem; margin-top: -0.4rem; margin-bottom: 0.8rem; }
+
+  .encabezado { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
+  .encabezado a { color: var(--color-text-soft); font-size: 0.85rem; text-decoration: none; border-bottom: 1px solid var(--color-border); }
+
+  .bloque { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 1rem; padding: 1.6rem; margin-bottom: 1.4rem; }
+  .bloque h2 { font-size: 1.35rem; margin: 0 0 1.2rem; }
+  .campo { margin-bottom: 1.1rem; }
+  .campo label { display: block; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-soft); margin-bottom: 0.4rem; }
+  .campo input, .campo textarea, .campo select {
+    width: 100%; min-height: 46px; padding: 0.6rem 0.9rem; border: 1px solid var(--color-border);
+    border-radius: 0.5rem; font-family: var(--font-body); font-size: 0.95rem; background: #fff; color: var(--color-text);
+  }
+  .campo textarea { min-height: 90px; resize: vertical; }
+  .fila-dos { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+  @media (min-width: 560px) { .fila-dos { grid-template-columns: 1fr 1fr; } }
+  .campo-color { display: flex; align-items: center; gap: 0.8rem; }
+  .campo-color input[type="color"] { width: 46px; height: 46px; padding: 0; border: 1px solid var(--color-border); border-radius: 0.5rem; min-height: unset; }
+
+  .item-repetible { border: 1px solid var(--color-border); border-radius: 0.7rem; padding: 1rem; margin-bottom: 0.8rem; position: relative; }
+  .item-repetible .quitar { position: absolute; top: 0.6rem; right: 0.6rem; background: none; border: none; color: #8a3a2c; font-size: 0.78rem; cursor: pointer; text-decoration: underline; }
+  .btn-agregar { background: none; border: 1px dashed var(--color-secondary); color: #8a6d1f; border-radius: 0.6rem; padding: 0.7rem 1rem; font-size: 0.85rem; cursor: pointer; width: 100%; min-height: 44px; }
+
+  .btn-principal { width: 100%; min-height: 50px; background: var(--color-primary); color: var(--color-surface); border: none; border-radius: 999px; font-size: 0.9rem; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; margin-top: 0.6rem; }
+  .btn-secundario { width: 100%; min-height: 44px; background: none; border: 1px solid var(--color-border); color: var(--color-text); border-radius: 999px; font-size: 0.82rem; cursor: pointer; margin-top: 0.6rem; }
+
+  .mensaje-guardado { text-align: center; font-size: 0.9rem; color: var(--color-primary); background: rgba(64,80,68,0.1); border-radius: 0.7rem; padding: 0.9rem; margin-top: 1rem; display: none; }
+  .mensaje-guardado.visible { display: block; }
+
+  .fila-invitado { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .fila-invitado input { flex: 1; }
+  .fila-invitado button { border: none; background: none; color: #8a3a2c; font-size: 1.1rem; cursor: pointer; width: 40px; }
+</style>
+</head>
+<body>
+
+<div id="pantallaLogin">
+  <div class="caja-login">
+    <h1>Editar invitación</h1>
+    <input type="password" id="campoPassword" placeholder="Contraseña" autocomplete="current-password">
+    <p class="error-login" id="errorLogin"></p>
+    <button id="btnEntrar">Entrar</button>
+  </div>
+</div>
+
+<div class="contenedor" id="panelEditar" hidden>
+  <div class="encabezado">
+    <h1>Editar invitación</h1>
+    <a href="admin.html">← Ver confirmaciones</a>
+  </div>
+
+  <form id="formEditar">
+
+    <div class="bloque">
+      <h2>Novios y fecha</h2>
+      <div class="fila-dos">
+        <div class="campo"><label>Nombre 1</label><input type="text" id="nombreNovio"></div>
+        <div class="campo"><label>Nombre 2</label><input type="text" id="nombreNovia"></div>
+      </div>
+      <div class="fila-dos">
+        <div class="campo"><label>Fecha y hora de la boda</label><input type="datetime-local" id="fechaBoda"></div>
+        <div class="campo"><label>Plazo límite para RSVP</label><input type="date" id="fechaLimiteRSVP"></div>
+      </div>
+      <div class="campo"><label>Frase de la portada</label><textarea id="fraseCarta"></textarea></div>
+    </div>
+
+    <div class="bloque">
+      <h2>Lugar</h2>
+      <div class="campo"><label>Nombre del lugar</label><input type="text" id="lugarNombre"></div>
+      <div class="campo"><label>Dirección</label><input type="text" id="lugarDireccion"></div>
+      <div class="campo"><label>Texto de búsqueda para el mapa (nombre + ciudad)</label><input type="text" id="mapaQuery"></div>
+    </div>
+
+    <div class="bloque">
+      <h2>Nuestra historia</h2>
+      <div class="campo"><label>Texto</label><textarea id="historiaTexto"></textarea></div>
+    </div>
+
+    <div class="bloque">
+      <h2>Itinerario</h2>
+      <div id="listaItinerarioEditor"></div>
+      <button type="button" class="btn-agregar" id="btnAgregarItinerario">+ Agregar actividad</button>
+    </div>
+
+    <div class="bloque">
+      <h2>Vestuario y regalos</h2>
+      <div class="campo"><label>Título del vestuario</label><input type="text" id="vestuarioTitulo"></div>
+      <div class="campo"><label>Recomendaciones (una por línea)</label><textarea id="recomendaciones" placeholder="Escribe una recomendación por línea"></textarea></div>
+      <div class="campo"><label>Texto de regalos</label><textarea id="regalosTexto"></textarea></div>
+      <div class="campo"><label>Aviso bajo la lista de invitados</label><textarea id="restriccionInvitados"></textarea></div>
+      <div class="campo"><label>Nota de privacidad (bajo el botón de RSVP)</label><textarea id="notaPrivacidad"></textarea></div>
+    </div>
+
+    <div class="bloque">
+      <h2>Colores</h2>
+      <div class="fila-dos">
+        <div class="campo campo-color"><input type="color" id="colorPrimary"><label>Color principal (verde)</label></div>
+        <div class="campo campo-color"><input type="color" id="colorSecondary"><label>Color de acento (dorado)</label></div>
+      </div>
+      <div class="fila-dos">
+        <div class="campo campo-color"><input type="color" id="colorBackground"><label>Fondo</label></div>
+        <div class="campo campo-color"><input type="color" id="colorSurface"><label>Superficie / tarjetas</label></div>
+      </div>
+    </div>
+
+    <div class="bloque">
+      <h2>Fotos</h2>
+      <p style="font-size:0.85rem; color:var(--color-text-soft); margin-bottom:1rem;">Pega el enlace de cada foto (por ejemplo, un enlace de Google Drive público, Imgur, o donde la tengas alojada).</p>
+      <div class="campo"><label>Foto de portada</label><input type="url" id="fotoPortada" placeholder="https://..."></div>
+      <div class="campo"><label>Foto de historia 1</label><input type="url" id="fotoHistoria1" placeholder="https://..."></div>
+      <div class="campo"><label>Foto de historia 2</label><input type="url" id="fotoHistoria2" placeholder="https://..."></div>
+    </div>
+
+    <div class="bloque">
+      <h2>Familias e invitados</h2>
+      <div id="listaFamiliasEditor"></div>
+      <button type="button" class="btn-agregar" id="btnAgregarFamilia">+ Agregar familia</button>
+    </div>
+
+    <div class="bloque">
+      <h2>Contraseña de acceso</h2>
+      <div class="campo"><label>Nueva contraseña para admin.html y editar.html</label><input type="text" id="nuevaPassword" placeholder="Déjalo vacío para no cambiarla"></div>
+    </div>
+
+    <button type="submit" class="btn-principal">Guardar cambios</button>
+    <div class="mensaje-guardado" id="mensajeGuardado">Cambios guardados correctamente.</div>
+  </form>
+</div>
+
+<template id="plantillaItinerario">
+  <div class="item-repetible fila-itinerario">
+    <button type="button" class="quitar">Quitar</button>
+    <div class="fila-dos">
+      <div class="campo"><label>Hora</label><input type="text" class="it-hora" placeholder="4:00 p. m."></div>
+      <div class="campo"><label>Actividad</label><input type="text" class="it-titulo" placeholder="Ceremonia"></div>
+    </div>
+    <div class="campo"><label>Descripción (opcional)</label><input type="text" class="it-desc"></div>
+  </div>
+</template>
+
+<template id="plantillaFamilia">
+  <div class="item-repetible fila-familia-editor">
+    <button type="button" class="quitar">Quitar familia</button>
+    <div class="campo"><label>Nombre de la familia / grupo</label><input type="text" class="fam-nombre" placeholder="Familia Pérez Gómez"></div>
+    <div class="campo"><label>Identificador del enlace (sin espacios ni tildes)</label><input type="text" class="fam-slug" placeholder="perez-gomez"></div>
+    <div class="campo"><label>Invitados</label><div class="fam-invitados-lista"></div>
+      <button type="button" class="btn-agregar fam-agregar-invitado">+ Agregar invitado</button>
+    </div>
+  </div>
+</template>
+
+<script>
+(function () {
+  "use strict";
+  const CLAVE_CONFIG = "invitacion:config";
+  const CLAVE_FAMILIAS = "invitacion:familias";
+  const CLAVE_PASSWORD = "invitacion:admin-password";
+  const PASSWORD_POR_DEFECTO = "boda2026";
+
+  const CONFIG_DEFECTO = {
+    nombreNovio: "Sergio", nombreNovia: "Natalia",
+    fechaBodaISO: "2026-11-14T16:00:00-05:00",
+    fechaLimiteRSVPISO: "2026-10-01T23:59:59-05:00",
+    fraseCarta: "Dos caminos que se encontraron para no separarse nunca más.",
+    lugarNombre: "Hacienda El Vergel",
+    lugarDireccion: "Km 3 vía Guarne, Antioquia, Colombia",
+    mapaQuery: "Hacienda El Vergel Guarne Antioquia Colombia",
+    historiaTexto: "Nos conocimos hace algunos años y, entre risas y casualidades, supimos que queríamos construir una vida juntos.",
+    itinerario: [
+      { hora: "4:00 p. m.", titulo: "Ceremonia", descripcion: "Jardín principal." },
+      { hora: "5:00 p. m.", titulo: "Cóctel de bienvenida", descripcion: "Bebidas y bocados en la terraza." },
+      { hora: "6:30 p. m.", titulo: "Cena", descripcion: "Salón principal." },
+      { hora: "8:00 p. m.", titulo: "Fiesta", descripcion: "Música y baile hasta el amanecer." }
+    ],
+    vestuarioTitulo: "Formal / Elegante",
+    recomendaciones: [
+      "El clima en Santa Elena suele ser fresco, te recomendamos llevar un saco o chaqueta ligera.",
+      "El evento es al aire libre y con zonas verdes, usa zapatos cómodos. Te pedimos llegar con anticipación para no perderte la ceremonia."
+    ],
+    regalosTexto: "Tu presencia es nuestro mejor regalo. Si deseas obsequiarnos algo adicional, tendremos lluvia de sobres.",
+    restriccionInvitados: "Por organización y capacidad del lugar, únicamente podrán asistir los adultos y niños que aparezcan incluidos en esta invitación. Gracias por comprender y respetar nuestra lista de invitados.",
+    notaPrivacidad: "Los datos serán utilizados únicamente para organizar nuestra boda. Puedes volver a este enlace y actualizar tu respuesta cuando quieras, antes de la fecha límite.",
+    colores: { primary: "#405044", secondary: "#c5a66a", background: "#f7f2e9", surface: "#fffdf8" },
+    fotos: { portada: "", historia1: "", historia2: "" }
+  };
+
+  const FAMILIAS_DEFECTO = [
+    { slug: "ocampo-jurado", nombre: "Familia Ocampo Jurado", invitados: ["Carlos Ocampo", "María Jurado", "Juan Ocampo"] }
+  ];
+
+  const pantallaLogin = document.getElementById("pantallaLogin");
+  const panelEditar = document.getElementById("panelEditar");
+  const campoPassword = document.getElementById("campoPassword");
+  const errorLogin = document.getElementById("errorLogin");
+
+  async function obtenerPasswordGuardada() {
+    try {
+      const resultado = await window.storage.get(CLAVE_PASSWORD, true);
+      if (resultado && resultado.value) return resultado.value;
+    } catch (error) { /* aún no se ha configurado una propia */ }
+    return PASSWORD_POR_DEFECTO;
+  }
+
+  async function intentarEntrar() {
+    const passwordActual = await obtenerPasswordGuardada();
+    if (campoPassword.value === passwordActual) {
+      pantallaLogin.hidden = true;
+      panelEditar.hidden = false;
+      cargarFormulario();
+    } else {
+      errorLogin.textContent = "Contraseña incorrecta.";
+    }
+  }
+
+  document.getElementById("btnEntrar").addEventListener("click", intentarEntrar);
+  campoPassword.addEventListener("keydown", (e) => { if (e.key === "Enter") intentarEntrar(); });
+
+  async function cargarJSON(clave, porDefecto) {
+    try {
+      const resultado = await window.storage.get(clave, true);
+      if (resultado && resultado.value) return JSON.parse(resultado.value);
+    } catch (error) { /* no existe todavía */ }
+    return porDefecto;
+  }
+
+  function isoParaInputLocal(iso) {
+    const fecha = new Date(iso);
+    const desplazamiento = fecha.getTimezoneOffset();
+    const local = new Date(fecha.getTime() - desplazamiento * 60000);
+    return local.toISOString().slice(0, 16);
+  }
+  function isoParaInputFecha(iso) { return new Date(iso).toISOString().slice(0, 10); }
+
+  let config, familias;
+
+  async function cargarFormulario() {
+    config = await cargarJSON(CLAVE_CONFIG, CONFIG_DEFECTO);
+    familias = await cargarJSON(CLAVE_FAMILIAS, FAMILIAS_DEFECTO);
+
+    document.getElementById("nombreNovio").value = config.nombreNovio;
+    document.getElementById("nombreNovia").value = config.nombreNovia;
+    document.getElementById("fechaBoda").value = isoParaInputLocal(config.fechaBodaISO);
+    document.getElementById("fechaLimiteRSVP").value = isoParaInputFecha(config.fechaLimiteRSVPISO);
+    document.getElementById("fraseCarta").value = config.fraseCarta;
+    document.getElementById("lugarNombre").value = config.lugarNombre;
+    document.getElementById("lugarDireccion").value = config.lugarDireccion;
+    document.getElementById("mapaQuery").value = config.mapaQuery;
+    document.getElementById("historiaTexto").value = config.historiaTexto;
+    document.getElementById("vestuarioTitulo").value = config.vestuarioTitulo;
+    document.getElementById("recomendaciones").value = (config.recomendaciones || []).join("\n");
+    document.getElementById("regalosTexto").value = config.regalosTexto;
+    document.getElementById("restriccionInvitados").value = config.restriccionInvitados || "";
+    document.getElementById("notaPrivacidad").value = config.notaPrivacidad || "";
+    document.getElementById("colorPrimary").value = config.colores.primary;
+    document.getElementById("colorSecondary").value = config.colores.secondary;
+    document.getElementById("colorBackground").value = config.colores.background;
+    document.getElementById("colorSurface").value = config.colores.surface;
+    document.getElementById("fotoPortada").value = (config.fotos && config.fotos.portada) || "";
+    document.getElementById("fotoHistoria1").value = (config.fotos && config.fotos.historia1) || "";
+    document.getElementById("fotoHistoria2").value = (config.fotos && config.fotos.historia2) || "";
+
+    const listaItinerario = document.getElementById("listaItinerarioEditor");
+    listaItinerario.innerHTML = "";
+    config.itinerario.forEach(item => agregarFilaItinerario(item));
+
+    const listaFamilias = document.getElementById("listaFamiliasEditor");
+    listaFamilias.innerHTML = "";
+    familias.forEach(familia => agregarFilaFamilia(familia));
+  }
+
+  function agregarFilaItinerario(datos) {
+    const plantilla = document.getElementById("plantillaItinerario").content.cloneNode(true);
+    const fila = plantilla.querySelector(".fila-itinerario");
+    if (datos) {
+      fila.querySelector(".it-hora").value = datos.hora || "";
+      fila.querySelector(".it-titulo").value = datos.titulo || "";
+      fila.querySelector(".it-desc").value = datos.descripcion || "";
+    }
+    fila.querySelector(".quitar").addEventListener("click", () => fila.remove());
+    document.getElementById("listaItinerarioEditor").appendChild(fila);
+  }
+  document.getElementById("btnAgregarItinerario").addEventListener("click", () => agregarFilaItinerario(null));
+
+  function agregarFilaInvitado(contenedor, nombre) {
+    const fila = document.createElement("div");
+    fila.className = "fila-invitado";
+    fila.innerHTML = '<input type="text" class="inv-nombre" value="' + (nombre ? nombre.replace(/"/g, "&quot;") : "") + '" placeholder="Nombre del invitado"><button type="button">✕</button>';
+    fila.querySelector("button").addEventListener("click", () => fila.remove());
+    contenedor.appendChild(fila);
+  }
+
+  function agregarFilaFamilia(datos) {
+    const plantilla = document.getElementById("plantillaFamilia").content.cloneNode(true);
+    const fila = plantilla.querySelector(".fila-familia-editor");
+    const listaInvitados = fila.querySelector(".fam-invitados-lista");
+
+    if (datos) {
+      fila.querySelector(".fam-nombre").value = datos.nombre || "";
+      fila.querySelector(".fam-slug").value = datos.slug || "";
+      (datos.invitados || []).forEach(nombre => agregarFilaInvitado(listaInvitados, nombre));
+    }
+
+    fila.querySelector(".fam-agregar-invitado").addEventListener("click", () => agregarFilaInvitado(listaInvitados, ""));
+    fila.querySelector(".quitar").addEventListener("click", () => fila.remove());
+    document.getElementById("listaFamiliasEditor").appendChild(fila);
+  }
+  document.getElementById("btnAgregarFamilia").addEventListener("click", () => agregarFilaFamilia(null));
+
+  function generarSlug(texto) {
+    return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  }
+
+  document.getElementById("formEditar").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const nuevoConfig = {
+      nombreNovio: document.getElementById("nombreNovio").value.trim(),
+      nombreNovia: document.getElementById("nombreNovia").value.trim(),
+      fechaBodaISO: new Date(document.getElementById("fechaBoda").value).toISOString(),
+      fechaLimiteRSVPISO: new Date(document.getElementById("fechaLimiteRSVP").value + "T23:59:59").toISOString(),
+      fraseCarta: document.getElementById("fraseCarta").value.trim(),
+      lugarNombre: document.getElementById("lugarNombre").value.trim(),
+      lugarDireccion: document.getElementById("lugarDireccion").value.trim(),
+      mapaQuery: document.getElementById("mapaQuery").value.trim(),
+      historiaTexto: document.getElementById("historiaTexto").value.trim(),
+      itinerario: Array.from(document.querySelectorAll(".fila-itinerario")).map(fila => ({
+        hora: fila.querySelector(".it-hora").value.trim(),
+        titulo: fila.querySelector(".it-titulo").value.trim(),
+        descripcion: fila.querySelector(".it-desc").value.trim()
+      })),
+      vestuarioTitulo: document.getElementById("vestuarioTitulo").value.trim(),
+      recomendaciones: document.getElementById("recomendaciones").value.split("\n").map(s => s.trim()).filter(Boolean),
+      regalosTexto: document.getElementById("regalosTexto").value.trim(),
+      restriccionInvitados: document.getElementById("restriccionInvitados").value.trim(),
+      notaPrivacidad: document.getElementById("notaPrivacidad").value.trim(),
+      colores: {
+        primary: document.getElementById("colorPrimary").value,
+        secondary: document.getElementById("colorSecondary").value,
+        background: document.getElementById("colorBackground").value,
+        surface: document.getElementById("colorSurface").value
+      },
+      fotos: {
+        portada: document.getElementById("fotoPortada").value.trim(),
+        historia1: document.getElementById("fotoHistoria1").value.trim(),
+        historia2: document.getElementById("fotoHistoria2").value.trim()
+      }
+    };
+
+    const nuevasFamilias = Array.from(document.querySelectorAll(".fila-familia-editor")).map(fila => {
+      const nombre = fila.querySelector(".fam-nombre").value.trim();
+      let slug = fila.querySelector(".fam-slug").value.trim();
+      if (!slug) slug = generarSlug(nombre);
+      else slug = generarSlug(slug);
+      const invitados = Array.from(fila.querySelectorAll(".inv-nombre")).map(i => i.value.trim()).filter(Boolean);
+      return { nombre, slug, invitados };
+    }).filter(f => f.nombre);
+
+    try {
+      await window.storage.set(CLAVE_CONFIG, JSON.stringify(nuevoConfig), true);
+      await window.storage.set(CLAVE_FAMILIAS, JSON.stringify(nuevasFamilias), true);
+
+      const nuevaPassword = document.getElementById("nuevaPassword").value.trim();
+      if (nuevaPassword) {
+        await window.storage.set(CLAVE_PASSWORD, nuevaPassword, true);
+        document.getElementById("nuevaPassword").value = "";
+      }
+
+      const mensaje = document.getElementById("mensajeGuardado");
+      mensaje.classList.add("visible");
+      setTimeout(() => mensaje.classList.remove("visible"), 3000);
+    } catch (error) {
+      alert("Hubo un problema guardando los cambios. Intenta de nuevo.");
+    }
+  });
+})();
+</script>
+</body>
+</html>
