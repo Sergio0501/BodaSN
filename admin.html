@@ -110,7 +110,6 @@
   const CLAVE_CONFIG = "invitacion:config";
   const CLAVE_FAMILIAS = "invitacion:familias";
   const CLAVE_PASSWORD = "invitacion:admin-password";
-  const PREFIJO_RSVP = "invitacion:rsvp:";
   const PASSWORD_POR_DEFECTO = "boda2026"; // Cámbiala desde editar.html apenas entres.
 
   // Pega aquí la misma URL de Apps Script que usaste en Index.html y editar.html
@@ -179,16 +178,25 @@
   }
 
   function generarEnlaceWhatsApp(config, familia) {
-    const base = window.location.href.replace(/admin\.html.*$/, "index.html");
-    const enlace = base + "?f=" + encodeURIComponent(familia.slug);
+    const enlace = familia.enlace || (window.location.href.replace(/admin\.html.*$/, "index.html") + "?f=" + encodeURIComponent(familia.slug));
     const mensaje = "¡Hola " + familia.nombre + "! Con mucha alegría queremos invitarlos a nuestra boda. "
       + "Aquí está su invitación personalizada: " + enlace;
     return "https://wa.me/?text=" + encodeURIComponent(mensaje);
   }
 
+  async function apiGetConfirmaciones() {
+    try {
+      const respuesta = await fetch(API_URL + "?action=getConfirmaciones");
+      const datos = await respuesta.json();
+      if (datos && Array.isArray(datos.confirmaciones)) return datos.confirmaciones;
+    } catch (error) { /* sin conexión */ }
+    return [];
+  }
+
   async function cargarPanel() {
     const config = await cargarJSON(CLAVE_CONFIG, { nombreNovio: "Sergio", nombreNovia: "Natalia" });
     const familias = await apiGetFamilias();
+    const confirmaciones = await apiGetConfirmaciones();
 
     const contenedor = document.getElementById("listaFamilias");
     const mensajeVacio = document.getElementById("mensajeVacio");
@@ -206,7 +214,7 @@
     let personasSi = 0;
 
     for (const familia of familias) {
-      const datosRSVP = await cargarJSON(PREFIJO_RSVP + familia.slug, null);
+      const datosRSVP = confirmaciones.find(c => c.slug === familia.slug) || null;
       const confirmo = !!datosRSVP;
       if (confirmo) {
         confirmadas++;
@@ -222,7 +230,7 @@
       }).join("");
 
       const enlaceWa = generarEnlaceWhatsApp(config, familia);
-      const enlaceDirecto = window.location.href.replace(/admin\.html.*$/, "index.html") + "?f=" + encodeURIComponent(familia.slug);
+      const enlaceDirecto = familia.enlace || (window.location.href.replace(/admin\.html.*$/, "index.html") + "?f=" + encodeURIComponent(familia.slug));
 
       fila.innerHTML =
         '<div class="fila-familia-cabecera">' +
