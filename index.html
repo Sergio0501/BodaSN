@@ -411,6 +411,15 @@
     return { key: clave, value: valor };
   }
 
+  async function apiGetFamilias(porDefecto) {
+    try {
+      const respuesta = await fetch(API_URL + "?action=getFamilias");
+      const datos = await respuesta.json();
+      if (datos && Array.isArray(datos.familias) && datos.familias.length > 0) return datos.familias;
+    } catch (error) { /* sin conexión: se usa el valor por defecto */ }
+    return porDefecto;
+  }
+
   /* ============================================================
      VALORES POR DEFECTO — se usan si aún no se ha guardado nada
      desde la página de edición (editar.html)
@@ -467,7 +476,7 @@
 
   async function iniciar() {
     const config = await cargarJSON(CLAVE_CONFIG, true, CONFIG_DEFECTO);
-    const familias = await cargarJSON(CLAVE_FAMILIAS, true, FAMILIAS_DEFECTO);
+    const familias = await apiGetFamilias(FAMILIAS_DEFECTO);
 
     const familia = slugSolicitado
       ? familias.find(f => f.slug === slugSolicitado)

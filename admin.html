@@ -56,6 +56,12 @@
   .acciones-familia button.copiar { border-color: var(--color-secondary); color: #8a6d1f; }
 
   .vacio { text-align: center; color: var(--color-text-soft); padding: 3rem 1rem; }
+  .bloque-agregar { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 1rem; padding: 1.4rem; margin-bottom: 1.6rem; }
+  .bloque-agregar h2 { font-size: 1.15rem; margin: 0 0 0.9rem; }
+  .fila-agregar { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .fila-agregar input { flex: 1; min-width: 180px; min-height: 44px; padding: 0.6rem 0.9rem; border: 1px solid var(--color-border); border-radius: 0.5rem; font-family: var(--font-body); font-size: 0.9rem; }
+  .fila-agregar button { min-height: 44px; padding: 0 1.2rem; background: var(--color-primary); color: var(--color-surface); border: none; border-radius: 0.5rem; font-size: 0.85rem; cursor: pointer; }
+  .ayuda-agregar { font-size: 0.78rem; color: var(--color-text-soft); margin-top: 0.7rem; }
   .aviso { font-size: 0.82rem; color: var(--color-text-soft); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 0.8rem; padding: 1rem 1.2rem; margin-top: 2rem; }
 </style>
 </head>
@@ -82,8 +88,18 @@
     <div class="tarjeta-resumen"><span class="numero" id="numPersonasSi">0</span><span class="etiqueta">Personas asistiendo</span></div>
   </div>
 
+  <div class="bloque-agregar">
+    <h2>Agregar familia</h2>
+    <div class="fila-agregar">
+      <input type="text" id="nuevaFamiliaNombre" placeholder="Nombre de la familia (ej. Familia Pérez Gómez)">
+      <input type="text" id="nuevaFamiliaInvitados" placeholder="Invitados separados por coma (ej. Ana, Luis, Sofía)">
+      <button id="btnAgregarFamiliaAdmin">Agregar</button>
+    </div>
+    <p class="ayuda-agregar">También puedes escribir las familias directamente en la pestaña "Familias" de tu hoja de Google Sheets.</p>
+  </div>
+
   <div id="listaFamilias"></div>
-  <div class="vacio" id="mensajeVacio" hidden>Aún no hay familias registradas. Ve a "editar invitación" para agregarlas.</div>
+  <div class="vacio" id="mensajeVacio" hidden>Aún no hay familias registradas. Agrégalas arriba o desde la hoja de Google Sheets.</div>
 
   <p class="aviso">Esta protección con contraseña es una barrera simple pensada para uso personal, no un sistema de seguridad de nivel empresarial. No compartas la contraseña ni el enlace de esta página.</p>
 </div>
@@ -107,6 +123,23 @@
       if (datos && datos.value) return { key: datos.key, value: datos.value };
     } catch (error) { /* sin conexión o clave inexistente */ }
     return null;
+  }
+
+  async function apiGetFamilias() {
+    try {
+      const respuesta = await fetch(API_URL + "?action=getFamilias");
+      const datos = await respuesta.json();
+      if (datos && Array.isArray(datos.familias)) return datos.familias;
+    } catch (error) { /* sin conexión */ }
+    return [];
+  }
+
+  async function apiSetFamilias(familias) {
+    await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "setFamilias", familias: familias })
+    });
   }
 
   const pantallaLogin = document.getElementById("pantallaLogin");
@@ -155,7 +188,7 @@
 
   async function cargarPanel() {
     const config = await cargarJSON(CLAVE_CONFIG, { nombreNovio: "Sergio", nombreNovia: "Natalia" });
-    const familias = await cargarJSON(CLAVE_FAMILIAS, []);
+    const familias = await apiGetFamilias();
 
     const contenedor = document.getElementById("listaFamilias");
     const mensajeVacio = document.getElementById("mensajeVacio");
@@ -222,6 +255,36 @@
       });
     });
   }
+
+  function generarSlug(texto) {
+    return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  }
+
+  document.getElementById("btnAgregarFamiliaAdmin").addEventListener("click", async () => {
+    const boton = document.getElementById("btnAgregarFamiliaAdmin");
+    const nombre = document.getElementById("nuevaFamiliaNombre").value.trim();
+    const invitados = document.getElementById("nuevaFamiliaInvitados").value.split(",").map(s => s.trim()).filter(Boolean);
+
+    if (!nombre || invitados.length === 0) {
+      alert("Escribe el nombre de la familia y al menos un invitado.");
+      return;
+    }
+
+    boton.disabled = true;
+    boton.textContent = "Agregando...";
+
+    const familias = await apiGetFamilias();
+    familias.push({ slug: generarSlug(nombre), nombre: nombre, invitados: invitados });
+    await apiSetFamilias(familias);
+
+    document.getElementById("nuevaFamiliaNombre").value = "";
+    document.getElementById("nuevaFamiliaInvitados").value = "";
+    boton.disabled = false;
+    boton.textContent = "Agregar";
+
+    cargarPanel();
+  });
 })();
 </script>
 </body>

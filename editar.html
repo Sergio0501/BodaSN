@@ -235,6 +235,23 @@
     return { key: clave, value: valor };
   }
 
+  async function apiGetFamilias() {
+    try {
+      const respuesta = await fetch(API_URL + "?action=getFamilias");
+      const datos = await respuesta.json();
+      if (datos && Array.isArray(datos.familias)) return datos.familias;
+    } catch (error) { /* sin conexión */ }
+    return [];
+  }
+
+  async function apiSetFamilias(familias) {
+    await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "setFamilias", familias: familias })
+    });
+  }
+
   const pantallaLogin = document.getElementById("pantallaLogin");
   const panelEditar = document.getElementById("panelEditar");
   const campoPassword = document.getElementById("campoPassword");
@@ -282,7 +299,8 @@
 
   async function cargarFormulario() {
     config = await cargarJSON(CLAVE_CONFIG, CONFIG_DEFECTO);
-    familias = await cargarJSON(CLAVE_FAMILIAS, FAMILIAS_DEFECTO);
+    familias = await apiGetFamilias();
+    if (!familias || familias.length === 0) familias = FAMILIAS_DEFECTO;
 
     document.getElementById("nombreNovio").value = config.nombreNovio;
     document.getElementById("nombreNovia").value = config.nombreNovia;
@@ -405,7 +423,7 @@
 
     try {
       await apiSet(CLAVE_CONFIG, JSON.stringify(nuevoConfig));
-      await apiSet(CLAVE_FAMILIAS, JSON.stringify(nuevasFamilias));
+      await apiSetFamilias(nuevasFamilias);
 
       const nuevaPassword = document.getElementById("nuevaPassword").value.trim();
       if (nuevaPassword) {
