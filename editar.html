@@ -38,6 +38,10 @@
     border-radius: 0.5rem; font-family: var(--font-body); font-size: 0.95rem; background: #fff; color: var(--color-text);
   }
   .campo textarea { min-height: 90px; resize: vertical; }
+  .fila-subida { display: flex; align-items: center; gap: 0.7rem; margin-top: 0.5rem; }
+  .input-archivo { min-height: unset; padding: 0.3rem 0; border: none; font-size: 0.82rem; }
+  .estado-subida { font-size: 0.78rem; color: var(--color-text-soft); }
+  .vista-previa-foto { margin-top: 0.6rem; max-height: 140px; border-radius: 0.5rem; border: 1px solid var(--color-border); }
   .fila-dos { display: grid; grid-template-columns: 1fr; gap: 1rem; }
   @media (min-width: 560px) { .fila-dos { grid-template-columns: 1fr 1fr; } }
   .campo-color { display: flex; align-items: center; gap: 0.8rem; }
@@ -131,10 +135,37 @@
 
     <div class="bloque">
       <h2>Fotos</h2>
-      <p style="font-size:0.85rem; color:var(--color-text-soft); margin-bottom:1rem;">Pega el enlace de cada foto (por ejemplo, un enlace de Google Drive público, Imgur, o donde la tengas alojada).</p>
-      <div class="campo"><label>Foto de portada</label><input type="url" id="fotoPortada" placeholder="https://..."></div>
-      <div class="campo"><label>Foto de historia 1</label><input type="url" id="fotoHistoria1" placeholder="https://..."></div>
-      <div class="campo"><label>Foto de historia 2</label><input type="url" id="fotoHistoria2" placeholder="https://..."></div>
+      <p style="font-size:0.85rem; color:var(--color-text-soft); margin-bottom:1rem;">Puedes pegar el enlace de una foto (si ya tienes una que funcione), o subirla directamente desde tu computador con el botón "Subir foto" — esta opción no depende de enlaces externos.</p>
+
+      <div class="campo">
+        <label>Foto de portada</label>
+        <input type="url" id="fotoPortada" placeholder="https://...">
+        <div class="fila-subida">
+          <input type="file" id="archivoPortada" accept="image/*" class="input-archivo">
+          <span class="estado-subida" id="estadoPortada"></span>
+        </div>
+        <img class="vista-previa-foto" id="previaPortada" hidden>
+      </div>
+
+      <div class="campo">
+        <label>Foto de historia 1</label>
+        <input type="url" id="fotoHistoria1" placeholder="https://...">
+        <div class="fila-subida">
+          <input type="file" id="archivoHistoria1" accept="image/*" class="input-archivo">
+          <span class="estado-subida" id="estadoHistoria1"></span>
+        </div>
+        <img class="vista-previa-foto" id="previaHistoria1" hidden>
+      </div>
+
+      <div class="campo">
+        <label>Foto de historia 2</label>
+        <input type="url" id="fotoHistoria2" placeholder="https://...">
+        <div class="fila-subida">
+          <input type="file" id="archivoHistoria2" accept="image/*" class="input-archivo">
+          <span class="estado-subida" id="estadoHistoria2"></span>
+        </div>
+        <img class="vista-previa-foto" id="previaHistoria2" hidden>
+      </div>
     </div>
 
     <div class="bloque">
@@ -169,6 +200,7 @@
     <button type="button" class="quitar">Quitar familia</button>
     <div class="campo"><label>Nombre de la familia / grupo</label><input type="text" class="fam-nombre" placeholder="Familia Pérez Gómez"></div>
     <div class="campo"><label>Identificador del enlace (sin espacios ni tildes)</label><input type="text" class="fam-slug" placeholder="perez-gomez"></div>
+    <div class="campo"><label>Teléfono de WhatsApp (con indicativo, ej. 573001234567)</label><input type="tel" class="fam-telefono" placeholder="573001234567"></div>
     <div class="campo"><label>Invitados</label><div class="fam-invitados-lista"></div>
       <button type="button" class="btn-agregar fam-agregar-invitado">+ Agregar invitado</button>
     </div>
@@ -179,6 +211,9 @@
 (function () {
   "use strict";
   const CLAVE_CONFIG = "invitacion:config";
+  const CLAVE_FOTO_PORTADA = "invitacion:foto-portada";
+  const CLAVE_FOTO_HISTORIA1 = "invitacion:foto-historia1";
+  const CLAVE_FOTO_HISTORIA2 = "invitacion:foto-historia2";
   const CLAVE_FAMILIAS = "invitacion:familias";
   const CLAVE_PASSWORD = "invitacion:admin-password";
   const PASSWORD_POR_DEFECTO = "boda2026";
@@ -320,9 +355,12 @@
     document.getElementById("colorSecondary").value = config.colores.secondary;
     document.getElementById("colorBackground").value = config.colores.background;
     document.getElementById("colorSurface").value = config.colores.surface;
-    document.getElementById("fotoPortada").value = (config.fotos && config.fotos.portada) || "";
-    document.getElementById("fotoHistoria1").value = (config.fotos && config.fotos.historia1) || "";
-    document.getElementById("fotoHistoria2").value = (config.fotos && config.fotos.historia2) || "";
+    document.getElementById("fotoPortada").value = (await apiGet(CLAVE_FOTO_PORTADA) || {}).value || "";
+    document.getElementById("fotoHistoria1").value = (await apiGet(CLAVE_FOTO_HISTORIA1) || {}).value || "";
+    document.getElementById("fotoHistoria2").value = (await apiGet(CLAVE_FOTO_HISTORIA2) || {}).value || "";
+    actualizarVistaPrevia("fotoPortada", "previaPortada");
+    actualizarVistaPrevia("fotoHistoria1", "previaHistoria1");
+    actualizarVistaPrevia("fotoHistoria2", "previaHistoria2");
 
     const listaItinerario = document.getElementById("listaItinerarioEditor");
     listaItinerario.innerHTML = "";
@@ -332,6 +370,59 @@
     listaFamilias.innerHTML = "";
     familias.forEach(familia => agregarFilaFamilia(familia));
   }
+
+  function actualizarVistaPrevia(idCampoUrl, idImagenPrevia) {
+    const valor = document.getElementById(idCampoUrl).value.trim();
+    const img = document.getElementById(idImagenPrevia);
+    if (valor) { img.src = valor; img.hidden = false; } else { img.hidden = true; }
+  }
+
+  function comprimirImagen(archivo, anchoMaximo, calidad) {
+    return new Promise((resolve, reject) => {
+      const lector = new FileReader();
+      lector.onload = (e) => {
+        const imagen = new Image();
+        imagen.onload = () => {
+          const escala = Math.min(1, anchoMaximo / imagen.width);
+          const lienzo = document.createElement("canvas");
+          lienzo.width = Math.round(imagen.width * escala);
+          lienzo.height = Math.round(imagen.height * escala);
+          const contexto = lienzo.getContext("2d");
+          contexto.drawImage(imagen, 0, 0, lienzo.width, lienzo.height);
+          resolve(lienzo.toDataURL("image/jpeg", calidad));
+        };
+        imagen.onerror = reject;
+        imagen.src = e.target.result;
+      };
+      lector.onerror = reject;
+      lector.readAsDataURL(archivo);
+    });
+  }
+
+  function configurarSubidaFoto(idArchivo, idCampoUrl, idEstado, idImagenPrevia) {
+    document.getElementById(idArchivo).addEventListener("change", async (e) => {
+      const archivo = e.target.files[0];
+      if (!archivo) return;
+      const estado = document.getElementById(idEstado);
+      estado.textContent = "Procesando imagen...";
+      try {
+        const dataUrl = await comprimirImagen(archivo, 900, 0.72);
+        if (dataUrl.length > 45000) {
+          estado.textContent = "La imagen sigue siendo muy pesada incluso comprimida. Prueba con una foto más simple o de menor resolución.";
+          return;
+        }
+        document.getElementById(idCampoUrl).value = dataUrl;
+        actualizarVistaPrevia(idCampoUrl, idImagenPrevia);
+        estado.textContent = "Lista — no olvides darle \"Guardar cambios\" al final.";
+      } catch (error) {
+        estado.textContent = "No se pudo procesar esta imagen. Intenta con otro archivo.";
+      }
+    });
+  }
+
+  configurarSubidaFoto("archivoPortada", "fotoPortada", "estadoPortada", "previaPortada");
+  configurarSubidaFoto("archivoHistoria1", "fotoHistoria1", "estadoHistoria1", "previaHistoria1");
+  configurarSubidaFoto("archivoHistoria2", "fotoHistoria2", "estadoHistoria2", "previaHistoria2");
 
   function agregarFilaItinerario(datos) {
     const plantilla = document.getElementById("plantillaItinerario").content.cloneNode(true);
@@ -362,6 +453,7 @@
     if (datos) {
       fila.querySelector(".fam-nombre").value = datos.nombre || "";
       fila.querySelector(".fam-slug").value = datos.slug || "";
+      fila.querySelector(".fam-telefono").value = datos.telefono || "";
       (datos.invitados || []).forEach(nombre => agregarFilaInvitado(listaInvitados, nombre));
     }
 
@@ -404,25 +496,30 @@
         secondary: document.getElementById("colorSecondary").value,
         background: document.getElementById("colorBackground").value,
         surface: document.getElementById("colorSurface").value
-      },
-      fotos: {
-        portada: document.getElementById("fotoPortada").value.trim(),
-        historia1: document.getElementById("fotoHistoria1").value.trim(),
-        historia2: document.getElementById("fotoHistoria2").value.trim()
       }
     };
+
+    const fotoPortada = document.getElementById("fotoPortada").value.trim();
+    const fotoHistoria1 = document.getElementById("fotoHistoria1").value.trim();
+    const fotoHistoria2 = document.getElementById("fotoHistoria2").value.trim();
 
     const nuevasFamilias = Array.from(document.querySelectorAll(".fila-familia-editor")).map(fila => {
       const nombre = fila.querySelector(".fam-nombre").value.trim();
       let slug = fila.querySelector(".fam-slug").value.trim();
       if (!slug) slug = generarSlug(nombre);
       else slug = generarSlug(slug);
+      const telefono = fila.querySelector(".fam-telefono").value.replace(/\D/g, "");
       const invitados = Array.from(fila.querySelectorAll(".inv-nombre")).map(i => i.value.trim()).filter(Boolean);
-      return { nombre, slug, invitados };
+      return { nombre, slug, telefono, invitados };
     }).filter(f => f.nombre);
 
     try {
+      // Cada foto se guarda en su propia celda de la hoja para no toparse
+      // con el límite de tamaño de una sola celda de Google Sheets.
       await apiSet(CLAVE_CONFIG, JSON.stringify(nuevoConfig));
+      await apiSet(CLAVE_FOTO_PORTADA, fotoPortada);
+      await apiSet(CLAVE_FOTO_HISTORIA1, fotoHistoria1);
+      await apiSet(CLAVE_FOTO_HISTORIA2, fotoHistoria2);
       await apiSetFamilias(nuevasFamilias);
 
       const nuevaPassword = document.getElementById("nuevaPassword").value.trim();

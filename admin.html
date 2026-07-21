@@ -93,6 +93,7 @@
     <div class="fila-agregar">
       <input type="text" id="nuevaFamiliaNombre" placeholder="Nombre de la familia (ej. Familia Pérez Gómez)">
       <input type="text" id="nuevaFamiliaInvitados" placeholder="Invitados separados por coma (ej. Ana, Luis, Sofía)">
+      <input type="tel" id="nuevaFamiliaTelefono" placeholder="Teléfono WhatsApp (ej. 573001234567)">
       <button id="btnAgregarFamiliaAdmin">Agregar</button>
     </div>
     <p class="ayuda-agregar">También puedes escribir las familias directamente en la pestaña "Familias" de tu hoja de Google Sheets.</p>
@@ -181,7 +182,9 @@
     const enlace = familia.enlace || (window.location.href.replace(/admin\.html.*$/, "index.html") + "?f=" + encodeURIComponent(familia.slug));
     const mensaje = "¡Hola " + familia.nombre + "! Con mucha alegría queremos invitarlos a nuestra boda. "
       + "Aquí está su invitación personalizada: " + enlace;
-    return "https://wa.me/?text=" + encodeURIComponent(mensaje);
+    const telefono = (familia.telefono || "").replace(/\D/g, "");
+    // Si hay teléfono, se abre el chat directo con esa familia; si no, un mensaje genérico sin destinatario.
+    return "https://wa.me/" + telefono + "?text=" + encodeURIComponent(mensaje);
   }
 
   async function apiGetConfirmaciones() {
@@ -237,6 +240,7 @@
           "<h2>" + familia.nombre + "</h2>" +
           '<span class="estado ' + (confirmo ? "confirmado" : "pendiente") + '">' + (confirmo ? "Confirmó" : "Pendiente") + "</span>" +
         "</div>" +
+        (familia.telefono ? '<p style="font-size:0.82rem; color:var(--color-text-soft); margin:0.3rem 0 0;">📱 ' + familia.telefono + '</p>' : '') +
         '<ul class="lista-invitados-admin">' + listaHTML + "</ul>" +
         '<div class="acciones-familia">' +
           '<a class="whatsapp" href="' + enlaceWa + '" target="_blank" rel="noopener">Enviar por WhatsApp</a>' +
@@ -273,6 +277,7 @@
     const boton = document.getElementById("btnAgregarFamiliaAdmin");
     const nombre = document.getElementById("nuevaFamiliaNombre").value.trim();
     const invitados = document.getElementById("nuevaFamiliaInvitados").value.split(",").map(s => s.trim()).filter(Boolean);
+    const telefono = document.getElementById("nuevaFamiliaTelefono").value.replace(/\D/g, "");
 
     if (!nombre || invitados.length === 0) {
       alert("Escribe el nombre de la familia y al menos un invitado.");
@@ -283,11 +288,12 @@
     boton.textContent = "Agregando...";
 
     const familias = await apiGetFamilias();
-    familias.push({ slug: generarSlug(nombre), nombre: nombre, invitados: invitados });
+    familias.push({ slug: generarSlug(nombre), nombre: nombre, invitados: invitados, telefono: telefono });
     await apiSetFamilias(familias);
 
     document.getElementById("nuevaFamiliaNombre").value = "";
     document.getElementById("nuevaFamiliaInvitados").value = "";
+    document.getElementById("nuevaFamiliaTelefono").value = "";
     boton.disabled = false;
     boton.textContent = "Agregar";
 
