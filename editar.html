@@ -247,8 +247,12 @@
     return PASSWORD_POR_DEFECTO;
   }
 
+  console.log("editar.html: script cargado correctamente");
+
   async function intentarEntrar() {
+    console.log("Botón Entrar presionado");
     const passwordActual = await obtenerPasswordGuardada();
+    console.log("Contraseña esperada:", passwordActual, "| Contraseña escrita:", campoPassword.value);
     if (campoPassword.value === passwordActual) {
       pantallaLogin.hidden = true;
       panelEditar.hidden = false;
@@ -260,6 +264,7 @@
 
   document.getElementById("btnEntrar").addEventListener("click", intentarEntrar);
   campoPassword.addEventListener("keydown", (e) => { if (e.key === "Enter") intentarEntrar(); });
+  console.log("Listener del botón Entrar registrado");
 
   async function cargarJSON(clave, porDefecto) {
     try {
