@@ -213,6 +213,27 @@
     { slug: "ocampo-jurado", nombre: "Familia Ocampo Jurado", invitados: ["Carlos Ocampo", "María Jurado", "Juan Ocampo"] }
   ];
 
+  // Pega aquí la misma URL de Apps Script que usaste en Index.html y admin.html
+  const API_URL = "https://script.google.com/macros/s/AKfycbxiofZQI7SkEgk_fP7faR0N-88Riyp5CN-udvwpYRPzfQs-ZDqW_j5Iwu_aFMYJLRE5/exec";
+
+  async function apiGet(clave) {
+    try {
+      const respuesta = await fetch(API_URL + "?action=get&key=" + encodeURIComponent(clave));
+      const datos = await respuesta.json();
+      if (datos && datos.value) return { key: datos.key, value: datos.value };
+    } catch (error) { /* sin conexión o clave inexistente */ }
+    return null;
+  }
+
+  async function apiSet(clave, valor) {
+    await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "set", key: clave, value: valor })
+    });
+    return { key: clave, value: valor };
+  }
+
   const pantallaLogin = document.getElementById("pantallaLogin");
   const panelEditar = document.getElementById("panelEditar");
   const campoPassword = document.getElementById("campoPassword");
@@ -220,7 +241,7 @@
 
   async function obtenerPasswordGuardada() {
     try {
-      const resultado = await window.storage.get(CLAVE_PASSWORD, true);
+      const resultado = await apiGet(CLAVE_PASSWORD);
       if (resultado && resultado.value) return resultado.value;
     } catch (error) { /* aún no se ha configurado una propia */ }
     return PASSWORD_POR_DEFECTO;
@@ -242,7 +263,7 @@
 
   async function cargarJSON(clave, porDefecto) {
     try {
-      const resultado = await window.storage.get(clave, true);
+      const resultado = await apiGet(clave);
       if (resultado && resultado.value) return JSON.parse(resultado.value);
     } catch (error) { /* no existe todavía */ }
     return porDefecto;
@@ -382,12 +403,12 @@
     }).filter(f => f.nombre);
 
     try {
-      await window.storage.set(CLAVE_CONFIG, JSON.stringify(nuevoConfig), true);
-      await window.storage.set(CLAVE_FAMILIAS, JSON.stringify(nuevasFamilias), true);
+      await apiSet(CLAVE_CONFIG, JSON.stringify(nuevoConfig));
+      await apiSet(CLAVE_FAMILIAS, JSON.stringify(nuevasFamilias));
 
       const nuevaPassword = document.getElementById("nuevaPassword").value.trim();
       if (nuevaPassword) {
-        await window.storage.set(CLAVE_PASSWORD, nuevaPassword, true);
+        await apiSet(CLAVE_PASSWORD, nuevaPassword);
         document.getElementById("nuevaPassword").value = "";
       }
 

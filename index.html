@@ -388,6 +388,29 @@
   const CLAVE_FAMILIAS = "invitacion:familias";
   const PREFIJO_RSVP = "invitacion:rsvp:";
 
+  // Pega aquí la URL de tu aplicación web de Google Apps Script
+  // (termina en /exec). La consigues en: Extensiones > Apps Script >
+  // Implementar > Nueva implementación > Aplicación web.
+  const API_URL = "https://script.google.com/macros/s/AKfycbxiofZQI7SkEgk_fP7faR0N-88Riyp5CN-udvwpYRPzfQs-ZDqW_j5Iwu_aFMYJLRE5/exec";
+
+  async function apiGet(clave) {
+    try {
+      const respuesta = await fetch(API_URL + "?action=get&key=" + encodeURIComponent(clave));
+      const datos = await respuesta.json();
+      if (datos && datos.value) return { key: datos.key, value: datos.value };
+    } catch (error) { /* sin conexión o clave inexistente */ }
+    return null;
+  }
+
+  async function apiSet(clave, valor) {
+    await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "set", key: clave, value: valor })
+    });
+    return { key: clave, value: valor };
+  }
+
   /* ============================================================
      VALORES POR DEFECTO — se usan si aún no se ha guardado nada
      desde la página de edición (editar.html)
@@ -433,7 +456,7 @@
      ============================================================ */
   async function cargarJSON(clave, compartido, porDefecto) {
     try {
-      const resultado = await window.storage.get(clave, compartido);
+      const resultado = await apiGet(clave);
       if (resultado && resultado.value) return JSON.parse(resultado.value);
     } catch (error) { /* no existe todavía: se usa el valor por defecto */ }
     return porDefecto;
@@ -662,7 +685,7 @@
 
     (async function cargarConfirmacionGuardada() {
       try {
-        const resultado = await window.storage.get(claveRSVP, true);
+        const resultado = await apiGet(claveRSVP);
         if (resultado && resultado.value) {
           const datos = JSON.parse(resultado.value);
           (datos.invitadosConfirmados || []).forEach((valor) => {
@@ -692,12 +715,12 @@
       btnEnviarRSVP.textContent = "Guardando...";
 
       try {
-        await window.storage.set(claveRSVP, JSON.stringify({
+        await apiSet(claveRSVP, JSON.stringify({
           familiaSlug: familia.slug,
           familiaNombre: familia.nombre,
           invitadosConfirmados: seleccionados,
           confirmadoEl: new Date().toISOString()
-        }), true);
+        }));
 
         btnEnviarRSVP.textContent = "Actualizar confirmación";
         mensajeRSVP.textContent = "¡Gracias! Tu confirmación quedó guardada.";

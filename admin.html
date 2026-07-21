@@ -96,6 +96,18 @@
   const PREFIJO_RSVP = "invitacion:rsvp:";
   const PASSWORD_POR_DEFECTO = "boda2026"; // Cámbiala desde editar.html apenas entres.
 
+  // Pega aquí la misma URL de Apps Script que usaste en Index.html y editar.html
+  const API_URL = "https://script.google.com/macros/s/AKfycbxiofZQI7SkEgk_fP7faR0N-88Riyp5CN-udvwpYRPzfQs-ZDqW_j5Iwu_aFMYJLRE5/exec";
+
+  async function apiGet(clave) {
+    try {
+      const respuesta = await fetch(API_URL + "?action=get&key=" + encodeURIComponent(clave));
+      const datos = await respuesta.json();
+      if (datos && datos.value) return { key: datos.key, value: datos.value };
+    } catch (error) { /* sin conexión o clave inexistente */ }
+    return null;
+  }
+
   const pantallaLogin = document.getElementById("pantallaLogin");
   const panelAdmin = document.getElementById("panelAdmin");
   const campoPassword = document.getElementById("campoPassword");
@@ -104,7 +116,7 @@
 
   async function obtenerPasswordGuardada() {
     try {
-      const resultado = await window.storage.get(CLAVE_PASSWORD, true);
+      const resultado = await apiGet(CLAVE_PASSWORD);
       if (resultado && resultado.value) return resultado.value;
     } catch (error) { /* no se ha configurado una contraseña propia todavía */ }
     return PASSWORD_POR_DEFECTO;
@@ -126,14 +138,14 @@
 
   async function cargarJSON(clave, porDefecto) {
     try {
-      const resultado = await window.storage.get(clave, true);
+      const resultado = await apiGet(clave);
       if (resultado && resultado.value) return JSON.parse(resultado.value);
     } catch (error) { /* aún no existe */ }
     return porDefecto;
   }
 
   function generarEnlaceWhatsApp(config, familia) {
-    const base = window.location.href.replace(/admin\.html.*$/, "Index.html");
+    const base = window.location.href.replace(/admin\.html.*$/, "index.html");
     const enlace = base + "?f=" + encodeURIComponent(familia.slug);
     const mensaje = "¡Hola " + familia.nombre + "! Con mucha alegría queremos invitarlos a nuestra boda. "
       + "Aquí está su invitación personalizada: " + enlace;
@@ -176,7 +188,7 @@
       }).join("");
 
       const enlaceWa = generarEnlaceWhatsApp(config, familia);
-      const enlaceDirecto = window.location.href.replace(/admin\.html.*$/, "Index.html") + "?f=" + encodeURIComponent(familia.slug);
+      const enlaceDirecto = window.location.href.replace(/admin\.html.*$/, "index.html") + "?f=" + encodeURIComponent(familia.slug);
 
       fila.innerHTML =
         '<div class="fila-familia-cabecera">' +
