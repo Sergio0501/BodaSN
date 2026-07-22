@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="tituloPagina">Sergio &amp; Natalia — Invitación de boda</title>
 <meta name="description" content="Invitación de boda">
-F
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -227,6 +227,7 @@ F
   .flotante-rsvp.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
   .pantalla-error { min-height: 100svh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 2rem; }
+  .pantalla-error[hidden] { display: none !important; }
   .pantalla-error p { max-width: 320px; color: var(--color-text-soft); }
 
   @media (min-width: 600px) { .historia-grid { grid-template-columns: 1fr 1fr; } }
@@ -283,7 +284,7 @@ F
         <div><span class="cuenta-numero" id="cr-seg">00</span><span class="cuenta-etiqueta">Seg</span></div>
       </div>
       <a class="btn-calendario" id="btnCalendario" href="#" target="_blank" rel="noopener">Agregar a mi calendario</a>
-    </div>F
+    </div>
   </section>
 
   <section id="lugar">
@@ -331,7 +332,7 @@ F
   <section id="regalos">
     <div class="container">
       <span class="eyebrow">Regalos</span>
-      <h2>Lluvia de sobres</h2>
+      <h2>Un detalle opcional</h2>
       <p id="regalosTexto"></p>
     </div>
   </section>
