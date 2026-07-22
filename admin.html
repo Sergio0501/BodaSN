@@ -198,11 +198,21 @@
   }
 
   async function cargarPanel() {
-    const [config, familias, confirmaciones] = await Promise.all([
+    const [config, familiasCrudas, confirmaciones] = await Promise.all([
       cargarJSON(CLAVE_CONFIG, { nombreNovio: "Sergio", nombreNovia: "Natalia" }),
       apiGetFamilias(),
       apiGetConfirmaciones()
     ]);
+
+    // Si la hoja trae filas duplicadas, se muestra solo la más reciente de cada una.
+    const familias = [];
+    const slugsVistos = new Set();
+    for (let i = familiasCrudas.length - 1; i >= 0; i--) {
+      if (!slugsVistos.has(familiasCrudas[i].slug)) {
+        slugsVistos.add(familiasCrudas[i].slug);
+        familias.unshift(familiasCrudas[i]);
+      }
+    }
 
     const contenedor = document.getElementById("listaFamilias");
     const mensajeVacio = document.getElementById("mensajeVacio");
@@ -290,9 +300,29 @@
     boton.disabled = true;
     boton.textContent = "Agregando...";
 
+    const nuevoSlug = generarSlug(nombre);
     const familias = await apiGetFamilias();
-    familias.push({ slug: generarSlug(nombre), nombre: nombre, invitados: invitados, telefono: telefono });
-    await apiSetFamilias(familias);
+    const yaExiste = familias.findIndex(f => f.slug === nuevoSlug);
+    const nuevaFamilia = { slug: nuevoSlug, nombre: nombre, invitados: invitados, telefono: telefono };
+
+    if (yaExiste >= 0) {
+      familias[yaExiste] = nuevaFamilia;
+    } else {
+      familias.push(nuevaFamilia);
+    }
+
+    // Por seguridad, se eliminan duplicados por slug antes de guardar,
+    // quedándose con la versión más reciente de cada familia.
+    const familiasSinDuplicar = [];
+    const slugsVistos = new Set();
+    for (let i = familias.length - 1; i >= 0; i--) {
+      if (!slugsVistos.has(familias[i].slug)) {
+        slugsVistos.add(familias[i].slug);
+        familiasSinDuplicar.unshift(familias[i]);
+      }
+    }
+
+    await apiSetFamilias(familiasSinDuplicar);
 
     document.getElementById("nuevaFamiliaNombre").value = "";
     document.getElementById("nuevaFamiliaInvitados").value = "";
