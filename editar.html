@@ -159,11 +159,13 @@
         </div>
 
         <div class="campos-fuente-personalizada" id="camposFuentePersonalizada">
-          <p style="font-size:0.8rem; color:var(--color-text-soft); margin:0.9rem 0 0.6rem;">Solo se usa si elegiste "Personalizada" arriba. Pega la URL de la hoja de estilos (Adobe Fonts, Google Fonts, etc.) y el <code>font-family</code> exacto que te dieron.</p>
-          <label>URL de la hoja de estilos</label>
+          <p style="font-size:0.8rem; color:var(--color-text-soft); margin:0.9rem 0 0.6rem;">Solo se usa si elegiste "Personalizada" arriba. Si el título y el texto normal usan fuentes de sitios distintos (ej. una de Adobe y otra de Google), pega cada hoja de estilos por separado.</p>
+          <label>URL de la hoja de estilos (títulos)</label>
           <input type="url" id="fuentePersonalizadaUrl" placeholder="https://use.typekit.net/xxxxxxx.css">
           <label style="margin-top:0.7rem;">font-family para títulos</label>
           <input type="text" id="fuentePersonalizadaHeading" placeholder='"caslonian-std-l", serif'>
+          <label style="margin-top:0.9rem;">URL de la hoja de estilos (texto normal) — déjalo vacío si es la misma de arriba</label>
+          <input type="url" id="fuentePersonalizadaUrl2" placeholder="https://fonts.googleapis.com/css2?family=Lato&display=swap">
           <label style="margin-top:0.7rem;">font-family para el texto normal (opcional)</label>
           <input type="text" id="fuentePersonalizadaBody" placeholder='Déjalo vacío para usar Montserrat'>
         </div>
@@ -317,7 +319,7 @@
     tipografia: "clasico",
     galeria: [],
     galeriaEstilo: "cuadricula-3",
-    tipografiaPersonalizada: { url: "", heading: "", body: "" },
+    tipografiaPersonalizada: { url: "", url2: "", heading: "", body: "" },
     fotosHistoria: [],
     fotosHistoriaEstilo: "cuadricula-2",
     fotos: { portada: "", historia1: "", historia2: "" }
@@ -443,6 +445,7 @@
     document.getElementById("tipografia").value = config.tipografia || "clasico";
     const fp = config.tipografiaPersonalizada || {};
     document.getElementById("fuentePersonalizadaUrl").value = fp.url || "";
+    document.getElementById("fuentePersonalizadaUrl2").value = fp.url2 || "";
     document.getElementById("fuentePersonalizadaHeading").value = fp.heading || "";
     document.getElementById("fuentePersonalizadaBody").value = fp.body || "";
     actualizarVistaPreviaTipografia();
@@ -610,15 +613,23 @@
 
     if (seleccion === "personalizada") {
       const url = document.getElementById("fuentePersonalizadaUrl").value.trim();
+      const url2 = document.getElementById("fuentePersonalizadaUrl2").value.trim();
       const heading = document.getElementById("fuentePersonalizadaHeading").value.trim() || '"Cormorant Garamond", serif';
       const body = document.getElementById("fuentePersonalizadaBody").value.trim() || '"Montserrat", sans-serif';
 
-      if (url && !document.querySelector('link[data-fuente-personalizada]')) {
+      if (url && !document.querySelector('link[data-fuente-personalizada="1"]')) {
         const link = document.createElement("link");
         link.rel = "stylesheet";
         link.href = url;
-        link.setAttribute("data-fuente-personalizada", "true");
+        link.setAttribute("data-fuente-personalizada", "1");
         document.head.appendChild(link);
+      }
+      if (url2 && !document.querySelector('link[data-fuente-personalizada="2"]')) {
+        const link2 = document.createElement("link");
+        link2.rel = "stylesheet";
+        link2.href = url2;
+        link2.setAttribute("data-fuente-personalizada", "2");
+        document.head.appendChild(link2);
       }
 
       caja.querySelector(".vpt-titulo").style.fontFamily = heading;
@@ -632,6 +643,7 @@
   }
   document.getElementById("tipografia").addEventListener("change", actualizarVistaPreviaTipografia);
   document.getElementById("fuentePersonalizadaUrl").addEventListener("change", actualizarVistaPreviaTipografia);
+  document.getElementById("fuentePersonalizadaUrl2").addEventListener("change", actualizarVistaPreviaTipografia);
   document.getElementById("fuentePersonalizadaHeading").addEventListener("input", actualizarVistaPreviaTipografia);
   document.getElementById("fuentePersonalizadaBody").addEventListener("input", actualizarVistaPreviaTipografia);
 
@@ -727,6 +739,7 @@
       tipografia: document.getElementById("tipografia").value,
       tipografiaPersonalizada: {
         url: document.getElementById("fuentePersonalizadaUrl").value.trim(),
+        url2: document.getElementById("fuentePersonalizadaUrl2").value.trim(),
         heading: document.getElementById("fuentePersonalizadaHeading").value.trim(),
         body: document.getElementById("fuentePersonalizadaBody").value.trim()
       },

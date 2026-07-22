@@ -473,7 +473,7 @@
     tipografia: "clasico",
     galeria: [],
     galeriaEstilo: "cuadricula-3",
-    tipografiaPersonalizada: { url: "", heading: "", body: "" },
+    tipografiaPersonalizada: { url: "", url2: "", heading: "", body: "" },
     fotosHistoria: [],
     fotosHistoriaEstilo: "cuadricula-2",
     fotos: { portada: "", historia1: "", historia2: "" }
@@ -562,6 +562,12 @@
         link.rel = "stylesheet";
         link.href = fp.url;
         document.head.appendChild(link);
+      }
+      if (fp.url2) {
+        const link2 = document.createElement("link");
+        link2.rel = "stylesheet";
+        link2.href = fp.url2;
+        document.head.appendChild(link2);
       }
       raiz.setProperty("--font-heading", fp.heading || ESTILOS_TIPOGRAFICOS.clasico.heading);
       raiz.setProperty("--font-body", fp.body || ESTILOS_TIPOGRAFICOS.clasico.body);
