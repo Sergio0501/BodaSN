@@ -386,6 +386,9 @@
      CLAVES DE ALMACENAMIENTO (base de datos compartida)
      ============================================================ */
   const CLAVE_CONFIG = "invitacion:config";
+  const CLAVE_FOTO_PORTADA = "invitacion:foto-portada";
+  const CLAVE_FOTO_HISTORIA1 = "invitacion:foto-historia1";
+  const CLAVE_FOTO_HISTORIA2 = "invitacion:foto-historia2";
 
   // Pega aquí la URL de tu aplicación web de Google Apps Script
   // (termina en /exec). La consigues en: Extensiones > Apps Script >
@@ -478,10 +481,19 @@
     // sin esperar a que terminen las peticiones a la base de datos.
     inicializarSobre();
 
-    const [config, familias] = await Promise.all([
+    const [config, familias, resPortada, resHistoria1, resHistoria2] = await Promise.all([
       cargarJSON(CLAVE_CONFIG, true, CONFIG_DEFECTO),
-      apiGetFamilias(FAMILIAS_DEFECTO)
+      apiGetFamilias(FAMILIAS_DEFECTO),
+      apiGet(CLAVE_FOTO_PORTADA),
+      apiGet(CLAVE_FOTO_HISTORIA1),
+      apiGet(CLAVE_FOTO_HISTORIA2)
     ]);
+
+    config.fotos = {
+      portada: (resPortada && resPortada.value) || (config.fotos && config.fotos.portada) || "",
+      historia1: (resHistoria1 && resHistoria1.value) || (config.fotos && config.fotos.historia1) || "",
+      historia2: (resHistoria2 && resHistoria2.value) || (config.fotos && config.fotos.historia2) || ""
+    };
 
     const familia = slugSolicitado
       ? familias.find(f => f.slug === slugSolicitado)
