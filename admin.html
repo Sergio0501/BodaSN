@@ -6,6 +6,7 @@
 <title>Admin — Boda Sergio &amp; Natalia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://script.google.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -109,7 +110,6 @@
 (function () {
   "use strict";
   const CLAVE_CONFIG = "invitacion:config";
-  const CLAVE_FAMILIAS = "invitacion:familias";
   const CLAVE_PASSWORD = "invitacion:admin-password";
   const PASSWORD_POR_DEFECTO = "boda2026"; // Cámbiala desde editar.html apenas entres.
 
@@ -197,9 +197,11 @@
   }
 
   async function cargarPanel() {
-    const config = await cargarJSON(CLAVE_CONFIG, { nombreNovio: "Sergio", nombreNovia: "Natalia" });
-    const familias = await apiGetFamilias();
-    const confirmaciones = await apiGetConfirmaciones();
+    const [config, familias, confirmaciones] = await Promise.all([
+      cargarJSON(CLAVE_CONFIG, { nombreNovio: "Sergio", nombreNovia: "Natalia" }),
+      apiGetFamilias(),
+      apiGetConfirmaciones()
+    ]);
 
     const contenedor = document.getElementById("listaFamilias");
     const mensajeVacio = document.getElementById("mensajeVacio");

@@ -6,6 +6,9 @@
 <title>Editar invitación — Sergio &amp; Natalia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://api.github.com">
+<link rel="preconnect" href="https://raw.githubusercontent.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -229,7 +232,6 @@
   const CLAVE_FOTO_PORTADA = "invitacion:foto-portada";
   const CLAVE_FOTO_HISTORIA1 = "invitacion:foto-historia1";
   const CLAVE_FOTO_HISTORIA2 = "invitacion:foto-historia2";
-  const CLAVE_FAMILIAS = "invitacion:familias";
   const CLAVE_PASSWORD = "invitacion:admin-password";
   const PASSWORD_POR_DEFECTO = "boda2026";
 
@@ -348,9 +350,16 @@
   let config, familias;
 
   async function cargarFormulario() {
-    config = await cargarJSON(CLAVE_CONFIG, CONFIG_DEFECTO);
-    familias = await apiGetFamilias();
-    if (!familias || familias.length === 0) familias = FAMILIAS_DEFECTO;
+    const [configCargado, familiasCargadas, resPortada, resHistoria1, resHistoria2] = await Promise.all([
+      cargarJSON(CLAVE_CONFIG, CONFIG_DEFECTO),
+      apiGetFamilias(),
+      apiGet(CLAVE_FOTO_PORTADA),
+      apiGet(CLAVE_FOTO_HISTORIA1),
+      apiGet(CLAVE_FOTO_HISTORIA2)
+    ]);
+
+    config = configCargado;
+    familias = (familiasCargadas && familiasCargadas.length > 0) ? familiasCargadas : FAMILIAS_DEFECTO;
 
     document.getElementById("nombreNovio").value = config.nombreNovio;
     document.getElementById("nombreNovia").value = config.nombreNovia;
@@ -370,9 +379,9 @@
     document.getElementById("colorSecondary").value = config.colores.secondary;
     document.getElementById("colorBackground").value = config.colores.background;
     document.getElementById("colorSurface").value = config.colores.surface;
-    document.getElementById("fotoPortada").value = (await apiGet(CLAVE_FOTO_PORTADA) || {}).value || "";
-    document.getElementById("fotoHistoria1").value = (await apiGet(CLAVE_FOTO_HISTORIA1) || {}).value || "";
-    document.getElementById("fotoHistoria2").value = (await apiGet(CLAVE_FOTO_HISTORIA2) || {}).value || "";
+    document.getElementById("fotoPortada").value = (resPortada || {}).value || "";
+    document.getElementById("fotoHistoria1").value = (resHistoria1 || {}).value || "";
+    document.getElementById("fotoHistoria2").value = (resHistoria2 || {}).value || "";
     actualizarVistaPrevia("fotoPortada", "previaPortada");
     actualizarVistaPrevia("fotoHistoria1", "previaHistoria1");
     actualizarVistaPrevia("fotoHistoria2", "previaHistoria2");
@@ -586,15 +595,18 @@
     try {
       // Cada foto se guarda en su propia celda de la hoja para no toparse
       // con el límite de tamaño de una sola celda de Google Sheets.
-      await apiSet(CLAVE_CONFIG, JSON.stringify(nuevoConfig));
-      await apiSet(CLAVE_FOTO_PORTADA, fotoPortada);
-      await apiSet(CLAVE_FOTO_HISTORIA1, fotoHistoria1);
-      await apiSet(CLAVE_FOTO_HISTORIA2, fotoHistoria2);
-      await apiSetFamilias(nuevasFamilias);
-
       const nuevaPassword = document.getElementById("nuevaPassword").value.trim();
+
+      await Promise.all([
+        apiSet(CLAVE_CONFIG, JSON.stringify(nuevoConfig)),
+        apiSet(CLAVE_FOTO_PORTADA, fotoPortada),
+        apiSet(CLAVE_FOTO_HISTORIA1, fotoHistoria1),
+        apiSet(CLAVE_FOTO_HISTORIA2, fotoHistoria2),
+        apiSetFamilias(nuevasFamilias),
+        nuevaPassword ? apiSet(CLAVE_PASSWORD, nuevaPassword) : Promise.resolve()
+      ]);
+
       if (nuevaPassword) {
-        await apiSet(CLAVE_PASSWORD, nuevaPassword);
         document.getElementById("nuevaPassword").value = "";
       }
 
