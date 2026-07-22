@@ -105,6 +105,7 @@
         <div class="campo"><label>Fecha y hora de la boda</label><input type="datetime-local" id="fechaBoda"></div>
         <div class="campo"><label>Plazo límite para RSVP</label><input type="date" id="fechaLimiteRSVP"></div>
       </div>
+      <div class="campo"><label>Mensaje del plazo de RSVP (usa <code>{fecha}</code> donde quieras que aparezca la fecha)</label><input type="text" id="rsvpPlazoMensaje" placeholder="Por favor confírmanos antes del {fecha}."></div>
       <div class="campo"><label>Frase de la portada</label><textarea id="fraseCarta"></textarea></div>
     </div>
 
@@ -133,7 +134,6 @@
       <div class="campo"><label>Texto de regalos</label><textarea id="regalosTexto"></textarea></div>
       <div class="campo"><label>Aviso bajo la lista de invitados</label><textarea id="restriccionInvitados"></textarea></div>
       <div class="campo"><label>Alerta importante (destacada en rojo, debajo del aviso anterior)</label><textarea id="alertaImportante" placeholder="Ej: Si no confirmas tu asistencia no podrás ingresar."></textarea></div>
-      <div class="campo"><label>Mensaje del plazo de RSVP (usa <code>{fecha}</code> donde quieras que aparezca la fecha)</label><input type="text" id="rsvpPlazoMensaje" placeholder="Por favor confírmanos antes del {fecha}."></div>
       <div class="campo"><label>Nota de privacidad (bajo el botón de RSVP)</label><textarea id="notaPrivacidad"></textarea></div>
     </div>
 
