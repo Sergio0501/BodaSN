@@ -605,6 +605,21 @@
     romantico: { heading: '"Playfair Display", serif', body: '"Lato", sans-serif' }
   };
 
+  function asegurarHojaDeEstilo(id, url) {
+    let link = document.querySelector('link[data-fuente-personalizada="' + id + '"]');
+    if (!url) {
+      if (link) link.remove();
+      return;
+    }
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.setAttribute("data-fuente-personalizada", id);
+      document.head.appendChild(link);
+    }
+    if (link.href !== url) link.href = url;
+  }
+
   function actualizarVistaPreviaTipografia() {
     const seleccion = document.getElementById("tipografia").value;
     const caja = document.getElementById("vistaPreviaTipografia");
@@ -617,20 +632,8 @@
       const heading = document.getElementById("fuentePersonalizadaHeading").value.trim() || '"Cormorant Garamond", serif';
       const body = document.getElementById("fuentePersonalizadaBody").value.trim() || '"Montserrat", sans-serif';
 
-      if (url && !document.querySelector('link[data-fuente-personalizada="1"]')) {
-        const link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.href = url;
-        link.setAttribute("data-fuente-personalizada", "1");
-        document.head.appendChild(link);
-      }
-      if (url2 && !document.querySelector('link[data-fuente-personalizada="2"]')) {
-        const link2 = document.createElement("link");
-        link2.rel = "stylesheet";
-        link2.href = url2;
-        link2.setAttribute("data-fuente-personalizada", "2");
-        document.head.appendChild(link2);
-      }
+      asegurarHojaDeEstilo("1", url);
+      asegurarHojaDeEstilo("2", url2);
 
       caja.querySelector(".vpt-titulo").style.fontFamily = heading;
       caja.querySelector(".vpt-cuerpo").style.fontFamily = body;
