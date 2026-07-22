@@ -216,6 +216,7 @@
 
   /* RSVP */
   #rsvp { text-align: center; }
+  .rsvp-plazo-texto { display: inline-block; margin-top: 1rem; padding: 0.6rem 1.2rem; font-size: 1rem; font-weight: 600; color: var(--color-primary); background: rgba(197,166,106,0.18); border: 1px solid var(--color-secondary); border-radius: 999px; }
   .rsvp-form { max-width: 420px; margin: 2rem auto 0; text-align: left; }
   .campo { margin-bottom: 1.4rem; }
   .lista-checks { list-style: none; }
@@ -365,7 +366,7 @@
     <div class="container center">
       <span class="eyebrow">RSVP</span>
       <h2>Confirma tu asistencia</h2>
-      <p style="color:var(--color-text-soft); margin-top:0.6rem;" id="rsvpPlazoTexto"></p>
+      <p class="rsvp-plazo-texto" id="rsvpPlazoTexto"></p>
 
       <form class="rsvp-form" id="formRSVP" novalidate>
         <div class="campo" id="campoEstadoCarga">
@@ -477,6 +478,7 @@
     ],
     restriccionInvitados: "Por organización y capacidad del lugar, únicamente podrán asistir los adultos y niños que aparezcan incluidos en esta invitación. Gracias por comprender y respetar nuestra lista de invitados.",
     alertaImportante: "Si no confirmas tu asistencia no podrás ingresar.",
+    rsvpPlazoMensaje: "Por favor confírmanos antes del {fecha}.",
     regalosTexto: "Tu presencia es nuestro mejor regalo. Si deseas obsequiarnos algo adicional, tendremos lluvia de sobres.",
     notaPrivacidad: "Los datos serán utilizados únicamente para organizar nuestra boda. Puedes volver a este enlace y actualizar tu respuesta cuando quieras, antes de la fecha límite.",
     colores: { primary: "#405044", secondary: "#c5a66a", background: "#f7f2e9", surface: "#fffdf8" },
@@ -685,7 +687,9 @@
     document.getElementById("footerFirma").textContent = config.nombreNovio + " & " + config.nombreNovia;
 
     const plazo = new Date(config.fechaLimiteRSVPISO);
-    document.getElementById("rsvpPlazoTexto").textContent = "Por favor confírmanos antes del " + plazo.toLocaleDateString("es-CO", { day: "numeric", month: "long", year: "numeric" }) + ".";
+    const plazoFormateada = plazo.toLocaleDateString("es-CO", { day: "numeric", month: "long", year: "numeric" });
+    const plantillaPlazo = config.rsvpPlazoMensaje || "Por favor confírmanos antes del {fecha}.";
+    document.getElementById("rsvpPlazoTexto").textContent = plantillaPlazo.replace("{fecha}", plazoFormateada);
     document.getElementById("notaPrivacidad").textContent = config.notaPrivacidad;
 
     const listaChecks = document.getElementById("listaChecksRSVP");
