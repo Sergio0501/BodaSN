@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://script.google.com">
 <link rel="preconnect" href="https://api.github.com">
 <link rel="preconnect" href="https://raw.githubusercontent.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&family=Montserrat:wght@400;500;600&family=Poppins:wght@400;500;600&family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Lato:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --color-primary: #405044; --color-secondary: #c5a66a; --color-background: #f7f2e9;
@@ -42,6 +42,11 @@
     border-radius: 0.5rem; font-family: var(--font-body); font-size: 0.95rem; background: #fff; color: var(--color-text);
   }
   .campo textarea { min-height: 90px; resize: vertical; }
+  .vista-previa-tipografia { margin-top: 0.9rem; padding: 1.2rem; border: 1px solid var(--color-border); border-radius: 0.8rem; background: #fff; text-align: center; }
+  .vista-previa-tipografia .vpt-titulo { font-size: 1.8rem; color: var(--color-primary); margin-bottom: 0.4rem; }
+  .vista-previa-tipografia .vpt-cuerpo { font-size: 0.85rem; color: var(--color-text-soft); }
+  .campos-fuente-personalizada label { display: block; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-soft); margin-bottom: 0.3rem; }
+  .campos-fuente-personalizada input { margin-bottom: 0.3rem; }
   .fila-subida { display: flex; align-items: center; gap: 0.7rem; margin-top: 0.5rem; }
   .input-archivo { min-height: unset; padding: 0.3rem 0; border: none; font-size: 0.82rem; }
   .estado-subida { font-size: 0.78rem; color: var(--color-text-soft); }
@@ -146,7 +151,22 @@
           <option value="clasico">Clásico elegante (Cormorant + Montserrat)</option>
           <option value="moderno">Moderno minimalista (Poppins + Inter)</option>
           <option value="romantico">Romántico floral (Playfair Display + Lato)</option>
+          <option value="personalizada">Personalizada (mi propia fuente)</option>
         </select>
+        <div class="vista-previa-tipografia" id="vistaPreviaTipografia">
+          <p class="vpt-titulo">Sergio &amp; Natalia</p>
+          <p class="vpt-cuerpo">Así se ve el texto normal de la invitación con este estilo.</p>
+        </div>
+
+        <div class="campos-fuente-personalizada" id="camposFuentePersonalizada">
+          <p style="font-size:0.8rem; color:var(--color-text-soft); margin:0.9rem 0 0.6rem;">Solo se usa si elegiste "Personalizada" arriba. Pega la URL de la hoja de estilos (Adobe Fonts, Google Fonts, etc.) y el <code>font-family</code> exacto que te dieron.</p>
+          <label>URL de la hoja de estilos</label>
+          <input type="url" id="fuentePersonalizadaUrl" placeholder="https://use.typekit.net/xxxxxxx.css">
+          <label style="margin-top:0.7rem;">font-family para títulos</label>
+          <input type="text" id="fuentePersonalizadaHeading" placeholder='"caslonian-std-l", serif'>
+          <label style="margin-top:0.7rem;">font-family para el texto normal (opcional)</label>
+          <input type="text" id="fuentePersonalizadaBody" placeholder='Déjalo vacío para usar Montserrat'>
+        </div>
       </div>
     </div>
 
@@ -297,6 +317,7 @@
     tipografia: "clasico",
     galeria: [],
     galeriaEstilo: "cuadricula-3",
+    tipografiaPersonalizada: { url: "", heading: "", body: "" },
     fotosHistoria: [],
     fotosHistoriaEstilo: "cuadricula-2",
     fotos: { portada: "", historia1: "", historia2: "" }
@@ -420,6 +441,11 @@
     document.getElementById("colorBackground").value = config.colores.background;
     document.getElementById("colorSurface").value = config.colores.surface;
     document.getElementById("tipografia").value = config.tipografia || "clasico";
+    const fp = config.tipografiaPersonalizada || {};
+    document.getElementById("fuentePersonalizadaUrl").value = fp.url || "";
+    document.getElementById("fuentePersonalizadaHeading").value = fp.heading || "";
+    document.getElementById("fuentePersonalizadaBody").value = fp.body || "";
+    actualizarVistaPreviaTipografia();
     document.getElementById("galeriaEstilo").value = config.galeriaEstilo || "cuadricula-3";
     document.getElementById("listaGaleriaEditor").innerHTML = "";
     (config.galeria || []).forEach(ruta => agregarFilaFotoGaleria(ruta));
@@ -496,8 +522,6 @@
   }
 
   configurarSubidaFoto("archivoPortada", "fotoPortada", "estadoPortada", "previaPortada");
-  configurarSubidaFoto("archivoHistoria1", "fotoHistoria1", "estadoHistoria1", "previaHistoria1");
-  configurarSubidaFoto("archivoHistoria2", "fotoHistoria2", "estadoHistoria2", "previaHistoria2");
 
   /* ---------- Galería de fotos desde la carpeta "fotos" en GitHub ---------- */
   const GITHUB_OWNER = "Sergio0501";
@@ -571,6 +595,45 @@
     document.getElementById("listaItinerarioEditor").appendChild(fila);
   }
   document.getElementById("btnAgregarItinerario").addEventListener("click", () => agregarFilaItinerario(null));
+
+  const ESTILOS_TIPOGRAFICOS_PREVIA = {
+    clasico: { heading: '"Cormorant Garamond", serif', body: '"Montserrat", sans-serif' },
+    moderno: { heading: '"Poppins", sans-serif', body: '"Inter", sans-serif' },
+    romantico: { heading: '"Playfair Display", serif', body: '"Lato", sans-serif' }
+  };
+
+  function actualizarVistaPreviaTipografia() {
+    const seleccion = document.getElementById("tipografia").value;
+    const caja = document.getElementById("vistaPreviaTipografia");
+    const camposPersonalizada = document.getElementById("camposFuentePersonalizada");
+    camposPersonalizada.style.display = (seleccion === "personalizada") ? "block" : "none";
+
+    if (seleccion === "personalizada") {
+      const url = document.getElementById("fuentePersonalizadaUrl").value.trim();
+      const heading = document.getElementById("fuentePersonalizadaHeading").value.trim() || '"Cormorant Garamond", serif';
+      const body = document.getElementById("fuentePersonalizadaBody").value.trim() || '"Montserrat", sans-serif';
+
+      if (url && !document.querySelector('link[data-fuente-personalizada]')) {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = url;
+        link.setAttribute("data-fuente-personalizada", "true");
+        document.head.appendChild(link);
+      }
+
+      caja.querySelector(".vpt-titulo").style.fontFamily = heading;
+      caja.querySelector(".vpt-cuerpo").style.fontFamily = body;
+      return;
+    }
+
+    const estilo = ESTILOS_TIPOGRAFICOS_PREVIA[seleccion] || ESTILOS_TIPOGRAFICOS_PREVIA.clasico;
+    caja.querySelector(".vpt-titulo").style.fontFamily = estilo.heading;
+    caja.querySelector(".vpt-cuerpo").style.fontFamily = estilo.body;
+  }
+  document.getElementById("tipografia").addEventListener("change", actualizarVistaPreviaTipografia);
+  document.getElementById("fuentePersonalizadaUrl").addEventListener("change", actualizarVistaPreviaTipografia);
+  document.getElementById("fuentePersonalizadaHeading").addEventListener("input", actualizarVistaPreviaTipografia);
+  document.getElementById("fuentePersonalizadaBody").addEventListener("input", actualizarVistaPreviaTipografia);
 
   function agregarFilaFoto(contenedorId, ruta) {
     const plantilla = document.getElementById("plantillaFotoGaleria").content.cloneNode(true);
@@ -662,6 +725,11 @@
         surface: document.getElementById("colorSurface").value
       },
       tipografia: document.getElementById("tipografia").value,
+      tipografiaPersonalizada: {
+        url: document.getElementById("fuentePersonalizadaUrl").value.trim(),
+        heading: document.getElementById("fuentePersonalizadaHeading").value.trim(),
+        body: document.getElementById("fuentePersonalizadaBody").value.trim()
+      },
       galeriaEstilo: document.getElementById("galeriaEstilo").value,
       galeria: Array.from(document.querySelectorAll("#listaGaleriaEditor .galeria-ruta")).map(i => i.value.trim()).filter(Boolean),
       fotosHistoriaEstilo: document.getElementById("fotosHistoriaEstilo").value,

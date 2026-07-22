@@ -473,6 +473,7 @@
     tipografia: "clasico",
     galeria: [],
     galeriaEstilo: "cuadricula-3",
+    tipografiaPersonalizada: { url: "", heading: "", body: "" },
     fotosHistoria: [],
     fotosHistoriaEstilo: "cuadricula-2",
     fotos: { portada: "", historia1: "", historia2: "" }
@@ -553,6 +554,20 @@
       raiz.setProperty("--color-background", config.colores.background);
       raiz.setProperty("--color-surface", config.colores.surface);
     }
+
+    if (config.tipografia === "personalizada" && config.tipografiaPersonalizada) {
+      const fp = config.tipografiaPersonalizada;
+      if (fp.url) {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = fp.url;
+        document.head.appendChild(link);
+      }
+      raiz.setProperty("--font-heading", fp.heading || ESTILOS_TIPOGRAFICOS.clasico.heading);
+      raiz.setProperty("--font-body", fp.body || ESTILOS_TIPOGRAFICOS.clasico.body);
+      return;
+    }
+
     const tipografia = ESTILOS_TIPOGRAFICOS[config.tipografia] || ESTILOS_TIPOGRAFICOS.clasico;
     raiz.setProperty("--font-heading", tipografia.heading);
     raiz.setProperty("--font-body", tipografia.body);
