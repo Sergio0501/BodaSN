@@ -411,6 +411,19 @@
     config = configCargado;
     familias = (familiasCargadas && familiasCargadas.length > 0) ? familiasCargadas : FAMILIAS_DEFECTO;
 
+    // Si la hoja traía filas duplicadas, se muestra solo la más reciente de cada una.
+    {
+      const limpias = [];
+      const vistos = new Set();
+      for (let i = familias.length - 1; i >= 0; i--) {
+        if (!vistos.has(familias[i].slug)) {
+          vistos.add(familias[i].slug);
+          limpias.unshift(familias[i]);
+        }
+      }
+      familias = limpias;
+    }
+
     document.getElementById("nombreNovio").value = config.nombreNovio;
     document.getElementById("nombreNovia").value = config.nombreNovia;
     document.getElementById("fechaBoda").value = isoParaInputLocal(config.fechaBodaISO);
@@ -712,6 +725,17 @@
       return { nombre, slug, telefono, invitados };
     }).filter(f => f.nombre);
 
+    // Se eliminan duplicados por slug (por si la hoja ya traía repetidos),
+    // quedándose con la fila más reciente de cada familia.
+    const familiasSinDuplicar = [];
+    const slugsVistos = new Set();
+    for (let i = nuevasFamilias.length - 1; i >= 0; i--) {
+      if (!slugsVistos.has(nuevasFamilias[i].slug)) {
+        slugsVistos.add(nuevasFamilias[i].slug);
+        familiasSinDuplicar.unshift(nuevasFamilias[i]);
+      }
+    }
+
     try {
       // Cada foto se guarda en su propia celda de la hoja para no toparse
       // con el límite de tamaño de una sola celda de Google Sheets.
@@ -720,7 +744,7 @@
       await Promise.all([
         apiSet(CLAVE_CONFIG, JSON.stringify(nuevoConfig)),
         apiSet(CLAVE_FOTO_PORTADA, fotoPortada),
-        apiSetFamilias(nuevasFamilias),
+        apiSetFamilias(familiasSinDuplicar),
         nuevaPassword ? apiSet(CLAVE_PASSWORD, nuevaPassword) : Promise.resolve()
       ]);
 
