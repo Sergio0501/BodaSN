@@ -153,6 +153,8 @@
   .lista-invitados { list-style: none; max-width: 340px; margin: 1.6rem auto 0; border-top: 1px solid var(--color-border); }
   .lista-invitados li { padding: 0.85rem 0; border-bottom: 1px solid var(--color-border); font-family: var(--font-heading); font-size: 1.15rem; color: var(--color-text); }
   .restriccion-invitados { max-width: 380px; margin: 1.4rem auto 0; font-size: 0.85rem; color: var(--color-text-soft); line-height: 1.5; text-align: center; white-space: pre-line; }
+  .codigo-invitacion { margin: 1.4rem auto 0; font-size: 0.78rem; letter-spacing: 0.04em; color: var(--color-text-soft); text-align: center; }
+  .codigo-invitacion #codigoInvitacion { display: inline-block; font-family: var(--font-body); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-primary); background: rgba(64,80,68,0.08); padding: 0.3rem 0.9rem; border-radius: 999px; margin-top: 0.5rem; }
 
   /* FECHA */
   #fecha { background: var(--color-primary); color: var(--color-surface); text-align: center; }
@@ -280,6 +282,7 @@
       <hr class="divider">
       <p>Esta invitación está reservada especialmente para <span id="saludoCupos"></span></p>
       <ul class="lista-invitados" id="listaInvitadosSaludo"></ul>
+      <p class="codigo-invitacion">Código de invitación:<br><span id="codigoInvitacion"></span></p>
       <p class="restriccion-invitados" id="restriccionInvitados"></p>
     </div>
   </section>
@@ -630,6 +633,7 @@
 
     document.getElementById("saludoFamilia").textContent = familia.nombre;
     document.getElementById("saludoCupos").textContent = familia.invitados.length;
+    document.getElementById("codigoInvitacion").textContent = familia.slug;
     const listaSaludo = document.getElementById("listaInvitadosSaludo");
     listaSaludo.innerHTML = "";
     familia.invitados.forEach(nombre => {
