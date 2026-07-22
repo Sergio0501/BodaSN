@@ -132,6 +132,7 @@
       <div class="campo"><label>Recomendaciones (una por línea)</label><textarea id="recomendaciones" placeholder="Escribe una recomendación por línea"></textarea></div>
       <div class="campo"><label>Texto de regalos</label><textarea id="regalosTexto"></textarea></div>
       <div class="campo"><label>Aviso bajo la lista de invitados</label><textarea id="restriccionInvitados"></textarea></div>
+      <div class="campo"><label>Alerta importante (destacada en rojo, debajo del aviso anterior)</label><textarea id="alertaImportante" placeholder="Ej: Si no confirmas tu asistencia no podrás ingresar."></textarea></div>
       <div class="campo"><label>Nota de privacidad (bajo el botón de RSVP)</label><textarea id="notaPrivacidad"></textarea></div>
     </div>
 
@@ -302,6 +303,7 @@
     ],
     regalosTexto: "Tu presencia es nuestro mejor regalo. Si deseas obsequiarnos algo adicional, tendremos lluvia de sobres.",
     restriccionInvitados: "Por organización y capacidad del lugar, únicamente podrán asistir los adultos y niños que aparezcan incluidos en esta invitación. Gracias por comprender y respetar nuestra lista de invitados.",
+    alertaImportante: "Si no confirmas tu asistencia no podrás ingresar.",
     notaPrivacidad: "Los datos serán utilizados únicamente para organizar nuestra boda. Puedes volver a este enlace y actualizar tu respuesta cuando quieras, antes de la fecha límite.",
     colores: { primary: "#405044", secondary: "#c5a66a", background: "#f7f2e9", surface: "#fffdf8" },
     tipografia: "adobe",
@@ -437,6 +439,7 @@
     document.getElementById("recomendaciones").value = (config.recomendaciones || []).join("\n");
     document.getElementById("regalosTexto").value = config.regalosTexto;
     document.getElementById("restriccionInvitados").value = config.restriccionInvitados || "";
+    document.getElementById("alertaImportante").value = config.alertaImportante || "";
     document.getElementById("notaPrivacidad").value = config.notaPrivacidad || "";
     document.getElementById("colorPrimary").value = config.colores.primary;
     document.getElementById("colorSecondary").value = config.colores.secondary;
@@ -699,6 +702,7 @@
       recomendaciones: document.getElementById("recomendaciones").value.split("\n").map(s => s.trim()).filter(Boolean),
       regalosTexto: document.getElementById("regalosTexto").value.trim(),
       restriccionInvitados: document.getElementById("restriccionInvitados").value.trim(),
+      alertaImportante: document.getElementById("alertaImportante").value.trim(),
       notaPrivacidad: document.getElementById("notaPrivacidad").value.trim(),
       colores: {
         primary: document.getElementById("colorPrimary").value,
