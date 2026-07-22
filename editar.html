@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2232%22%20fill%3D%22%23405044%22/%3E%0A%3Ctext%20x%3D%2232%22%20y%3D%2241%22%20font-family%3D%22Georgia%2C%20%27Times%20New%20Roman%27%2C%20serif%22%20font-size%3D%2222%22%20font-weight%3D%22600%22%20fill%3D%22%23c5a66a%22%20text-anchor%3D%22middle%22%3ES%26%2338%3BN%3C/text%3E%0A%3C/svg%3E">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Editar invitación — Sergio &amp; Natalia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -163,28 +164,23 @@
         </div>
         <img class="vista-previa-foto" id="previaPortada" hidden>
       </div>
+    </div>
+
+    <div class="bloque">
+      <h2>Fotos de nuestra historia</h2>
+      <p style="font-size:0.85rem; color:var(--color-text-soft); margin-bottom:1rem;">Agrega tantas fotos como quieras para la sección "Nuestra historia".</p>
 
       <div class="campo">
-        <label>Foto de historia 1</label>
-        <input type="text" id="fotoHistoria1" placeholder="fotos/historia1.jpg">
-        <div class="fila-subida">
-          <button type="button" class="btn-galeria" data-campo="fotoHistoria1">Elegir de galería</button>
-          <input type="file" id="archivoHistoria1" accept="image/*" class="input-archivo">
-          <span class="estado-subida" id="estadoHistoria1"></span>
-        </div>
-        <img class="vista-previa-foto" id="previaHistoria1" hidden>
+        <label>Cómo se ven en la invitación</label>
+        <select id="fotosHistoriaEstilo">
+          <option value="cuadricula-2">Cuadrícula (2 columnas)</option>
+          <option value="cuadricula-3">Cuadrícula pequeña (3 columnas)</option>
+          <option value="lista">Lista (una foto por fila, tamaño grande)</option>
+        </select>
       </div>
 
-      <div class="campo">
-        <label>Foto de historia 2</label>
-        <input type="text" id="fotoHistoria2" placeholder="fotos/historia2.jpg">
-        <div class="fila-subida">
-          <button type="button" class="btn-galeria" data-campo="fotoHistoria2">Elegir de galería</button>
-          <input type="file" id="archivoHistoria2" accept="image/*" class="input-archivo">
-          <span class="estado-subida" id="estadoHistoria2"></span>
-        </div>
-        <img class="vista-previa-foto" id="previaHistoria2" hidden>
-      </div>
+      <div id="listaFotosHistoriaEditor"></div>
+      <button type="button" class="btn-agregar" id="btnAgregarFotoHistoria">+ Agregar foto</button>
     </div>
 
     <div class="bloque">
@@ -301,6 +297,8 @@
     tipografia: "clasico",
     galeria: [],
     galeriaEstilo: "cuadricula-3",
+    fotosHistoria: [],
+    fotosHistoriaEstilo: "cuadricula-2",
     fotos: { portada: "", historia1: "", historia2: "" }
   };
 
@@ -425,12 +423,19 @@
     document.getElementById("galeriaEstilo").value = config.galeriaEstilo || "cuadricula-3";
     document.getElementById("listaGaleriaEditor").innerHTML = "";
     (config.galeria || []).forEach(ruta => agregarFilaFotoGaleria(ruta));
+
     document.getElementById("fotoPortada").value = (resPortada || {}).value || "";
-    document.getElementById("fotoHistoria1").value = (resHistoria1 || {}).value || "";
-    document.getElementById("fotoHistoria2").value = (resHistoria2 || {}).value || "";
     actualizarVistaPrevia("fotoPortada", "previaPortada");
-    actualizarVistaPrevia("fotoHistoria1", "previaHistoria1");
-    actualizarVistaPrevia("fotoHistoria2", "previaHistoria2");
+
+    document.getElementById("fotosHistoriaEstilo").value = config.fotosHistoriaEstilo || "cuadricula-2";
+    document.getElementById("listaFotosHistoriaEditor").innerHTML = "";
+    let fotosHistoria = config.fotosHistoria;
+    if (!fotosHistoria || fotosHistoria.length === 0) {
+      // Migración: si aún no existe la lista nueva, se rescatan las 2 fotos
+      // que hayas guardado antes con el sistema anterior, para no perderlas.
+      fotosHistoria = [(resHistoria1 || {}).value, (resHistoria2 || {}).value].filter(Boolean);
+    }
+    fotosHistoria.forEach(ruta => agregarFilaFotoHistoria(ruta));
 
     const listaItinerario = document.getElementById("listaItinerarioEditor");
     listaItinerario.innerHTML = "";
@@ -567,7 +572,7 @@
   }
   document.getElementById("btnAgregarItinerario").addEventListener("click", () => agregarFilaItinerario(null));
 
-  function agregarFilaFotoGaleria(ruta) {
+  function agregarFilaFoto(contenedorId, ruta) {
     const plantilla = document.getElementById("plantillaFotoGaleria").content.cloneNode(true);
     const fila = plantilla.querySelector(".fila-foto-galeria");
     const input = fila.querySelector(".galeria-ruta");
@@ -585,13 +590,16 @@
     });
 
     fila.querySelector(".btn-galeria-item").addEventListener("click", () => {
-      abrirGaleria(input, "Foto de la galería", previa);
+      abrirGaleria(input, "Foto", previa);
     });
 
     fila.querySelector(".quitar").addEventListener("click", () => fila.remove());
-    document.getElementById("listaGaleriaEditor").appendChild(fila);
+    document.getElementById(contenedorId).appendChild(fila);
   }
+  function agregarFilaFotoGaleria(ruta) { agregarFilaFoto("listaGaleriaEditor", ruta); }
+  function agregarFilaFotoHistoria(ruta) { agregarFilaFoto("listaFotosHistoriaEditor", ruta); }
   document.getElementById("btnAgregarFotoGaleria").addEventListener("click", () => agregarFilaFotoGaleria(null));
+  document.getElementById("btnAgregarFotoHistoria").addEventListener("click", () => agregarFilaFotoHistoria(null));
 
   function agregarFilaInvitado(contenedor, nombre) {
     const fila = document.createElement("div");
@@ -655,12 +663,12 @@
       },
       tipografia: document.getElementById("tipografia").value,
       galeriaEstilo: document.getElementById("galeriaEstilo").value,
-      galeria: Array.from(document.querySelectorAll(".galeria-ruta")).map(i => i.value.trim()).filter(Boolean)
+      galeria: Array.from(document.querySelectorAll("#listaGaleriaEditor .galeria-ruta")).map(i => i.value.trim()).filter(Boolean),
+      fotosHistoriaEstilo: document.getElementById("fotosHistoriaEstilo").value,
+      fotosHistoria: Array.from(document.querySelectorAll("#listaFotosHistoriaEditor .galeria-ruta")).map(i => i.value.trim()).filter(Boolean)
     };
 
     const fotoPortada = document.getElementById("fotoPortada").value.trim();
-    const fotoHistoria1 = document.getElementById("fotoHistoria1").value.trim();
-    const fotoHistoria2 = document.getElementById("fotoHistoria2").value.trim();
 
     const nuevasFamilias = Array.from(document.querySelectorAll(".fila-familia-editor")).map(fila => {
       const nombre = fila.querySelector(".fam-nombre").value.trim();
@@ -680,8 +688,6 @@
       await Promise.all([
         apiSet(CLAVE_CONFIG, JSON.stringify(nuevoConfig)),
         apiSet(CLAVE_FOTO_PORTADA, fotoPortada),
-        apiSet(CLAVE_FOTO_HISTORIA1, fotoHistoria1),
-        apiSet(CLAVE_FOTO_HISTORIA2, fotoHistoria2),
         apiSetFamilias(nuevasFamilias),
         nuevaPassword ? apiSet(CLAVE_PASSWORD, nuevaPassword) : Promise.resolve()
       ]);

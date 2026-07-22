@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2232%22%20fill%3D%22%23405044%22/%3E%0A%3Ctext%20x%3D%2232%22%20y%3D%2241%22%20font-family%3D%22Georgia%2C%20%27Times%20New%20Roman%27%2C%20serif%22%20font-size%3D%2222%22%20font-weight%3D%22600%22%20fill%3D%22%23c5a66a%22%20text-anchor%3D%22middle%22%3ES%26%2338%3BN%3C/text%3E%0A%3C/svg%3E">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="tituloPagina">Sergio &amp; Natalia — Invitación de boda</title>
 <meta name="description" content="Invitación de boda">
@@ -314,10 +315,7 @@
     <div class="container center">
       <span class="eyebrow">Nuestra historia</span>
       <h2>Cómo empezó todo</h2>
-      <div class="historia-grid">
-        <figure class="historia-foto" id="historiaFoto1"><figcaption>Reemplazar con foto</figcaption></figure>
-        <figure class="historia-foto" id="historiaFoto2"><figcaption>Reemplazar con foto</figcaption></figure>
-      </div>
+      <div class="galeria-fotos" id="galeriaHistoria"></div>
       <p id="historiaTexto"></p>
     </div>
   </section>
@@ -475,6 +473,8 @@
     tipografia: "clasico",
     galeria: [],
     galeriaEstilo: "cuadricula-3",
+    fotosHistoria: [],
+    fotosHistoriaEstilo: "cuadricula-2",
     fotos: { portada: "", historia1: "", historia2: "" }
   };
 
@@ -510,10 +510,15 @@
     ]);
 
     config.fotos = {
-      portada: (resPortada && resPortada.value) || (config.fotos && config.fotos.portada) || "",
-      historia1: (resHistoria1 && resHistoria1.value) || (config.fotos && config.fotos.historia1) || "",
-      historia2: (resHistoria2 && resHistoria2.value) || (config.fotos && config.fotos.historia2) || ""
+      portada: (resPortada && resPortada.value) || (config.fotos && config.fotos.portada) || ""
     };
+
+    if (!config.fotosHistoria || config.fotosHistoria.length === 0) {
+      config.fotosHistoria = [
+        (resHistoria1 && resHistoria1.value) || "",
+        (resHistoria2 && resHistoria2.value) || ""
+      ].filter(Boolean);
+    }
 
     const familia = slugSolicitado
       ? familias.find(f => f.slug === slugSolicitado)
@@ -582,6 +587,29 @@
     });
   }
 
+  function renderizarFotosHistoria(config) {
+    const contenedor = document.getElementById("galeriaHistoria");
+    const fotos = config.fotosHistoria || [];
+    contenedor.className = "galeria-fotos " + (config.fotosHistoriaEstilo || "cuadricula-2");
+    contenedor.innerHTML = "";
+
+    if (fotos.length === 0) {
+      const marcador = document.createElement("div");
+      marcador.className = "historia-foto";
+      marcador.textContent = "Agrega fotos desde editar.html";
+      contenedor.appendChild(marcador);
+      return;
+    }
+
+    fotos.forEach(ruta => {
+      const img = document.createElement("img");
+      img.src = ruta;
+      img.loading = "lazy";
+      img.alt = "Foto de nuestra historia";
+      contenedor.appendChild(img);
+    });
+  }
+
   function renderizarContenido(config, familia) {
     const iniciales = (config.nombreNovio || "").charAt(0) + " & " + (config.nombreNovia || "").charAt(0);
 
@@ -620,16 +648,7 @@
     document.getElementById("mapaIframe").src = config.mapaEmbedUrl || ("https://www.google.com/maps?q=" + consultaMapa + "&output=embed");
     document.getElementById("btnMapa").href = "https://www.google.com/maps/search/?api=1&query=" + consultaMapa;
 
-    if (config.fotos && config.fotos.historia1) {
-      const foto1 = document.getElementById("historiaFoto1");
-      foto1.style.backgroundImage = "url('" + config.fotos.historia1 + "')";
-      foto1.innerHTML = "";
-    }
-    if (config.fotos && config.fotos.historia2) {
-      const foto2 = document.getElementById("historiaFoto2");
-      foto2.style.backgroundImage = "url('" + config.fotos.historia2 + "')";
-      foto2.innerHTML = "";
-    }
+    renderizarFotosHistoria(config);
     document.getElementById("historiaTexto").textContent = config.historiaTexto;
 
     const listaItinerario = document.getElementById("listaItinerario");
