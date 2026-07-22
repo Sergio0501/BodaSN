@@ -139,6 +139,14 @@
         <div class="campo campo-color"><input type="color" id="colorBackground"><label>Fondo</label></div>
         <div class="campo campo-color"><input type="color" id="colorSurface"><label>Superficie / tarjetas</label></div>
       </div>
+      <div class="campo">
+        <label>Estilo tipográfico</label>
+        <select id="tipografia">
+          <option value="clasico">Clásico elegante (Cormorant + Montserrat)</option>
+          <option value="moderno">Moderno minimalista (Poppins + Inter)</option>
+          <option value="romantico">Romántico floral (Playfair Display + Lato)</option>
+        </select>
+      </div>
     </div>
 
     <div class="bloque">
@@ -178,6 +186,37 @@
         <img class="vista-previa-foto" id="previaHistoria2" hidden>
       </div>
     </div>
+
+    <div class="bloque">
+      <h2>Galería de fotos</h2>
+      <p style="font-size:0.85rem; color:var(--color-text-soft); margin-bottom:1rem;">Agrega tantas fotos como quieras. Usa "Elegir de galería" para tomarlas de tu carpeta <code>fotos</code> en GitHub, o pega la ruta a mano.</p>
+
+      <div class="campo">
+        <label>Cómo se ven en la invitación</label>
+        <select id="galeriaEstilo">
+          <option value="cuadricula-3">Cuadrícula pequeña (3 columnas)</option>
+          <option value="cuadricula-2">Cuadrícula grande (2 columnas)</option>
+          <option value="lista">Lista (una foto por fila, tamaño grande)</option>
+        </select>
+      </div>
+
+      <div id="listaGaleriaEditor"></div>
+      <button type="button" class="btn-agregar" id="btnAgregarFotoGaleria">+ Agregar foto</button>
+    </div>
+
+    <template id="plantillaFotoGaleria">
+      <div class="item-repetible fila-foto-galeria">
+        <button type="button" class="quitar">Quitar</button>
+        <div class="campo">
+          <label>Ruta o enlace de la foto</label>
+          <input type="text" class="galeria-ruta" placeholder="fotos/nombre.jpg">
+          <div class="fila-subida">
+            <button type="button" class="btn-galeria-item">Elegir de galería</button>
+          </div>
+          <img class="vista-previa-foto galeria-previa" hidden>
+        </div>
+      </div>
+    </template>
 
     <div class="bloque" id="panelGaleria" hidden>
       <h2>Galería de fotos (carpeta "fotos" en GitHub)</h2>
@@ -259,6 +298,9 @@
     restriccionInvitados: "Por organización y capacidad del lugar, únicamente podrán asistir los adultos y niños que aparezcan incluidos en esta invitación. Gracias por comprender y respetar nuestra lista de invitados.",
     notaPrivacidad: "Los datos serán utilizados únicamente para organizar nuestra boda. Puedes volver a este enlace y actualizar tu respuesta cuando quieras, antes de la fecha límite.",
     colores: { primary: "#405044", secondary: "#c5a66a", background: "#f7f2e9", surface: "#fffdf8" },
+    tipografia: "clasico",
+    galeria: [],
+    galeriaEstilo: "cuadricula-3",
     fotos: { portada: "", historia1: "", historia2: "" }
   };
 
@@ -379,6 +421,10 @@
     document.getElementById("colorSecondary").value = config.colores.secondary;
     document.getElementById("colorBackground").value = config.colores.background;
     document.getElementById("colorSurface").value = config.colores.surface;
+    document.getElementById("tipografia").value = config.tipografia || "clasico";
+    document.getElementById("galeriaEstilo").value = config.galeriaEstilo || "cuadricula-3";
+    document.getElementById("listaGaleriaEditor").innerHTML = "";
+    (config.galeria || []).forEach(ruta => agregarFilaFotoGaleria(ruta));
     document.getElementById("fotoPortada").value = (resPortada || {}).value || "";
     document.getElementById("fotoHistoria1").value = (resHistoria1 || {}).value || "";
     document.getElementById("fotoHistoria2").value = (resHistoria2 || {}).value || "";
@@ -457,11 +503,9 @@
   const panelGaleria = document.getElementById("panelGaleria");
   const rejillaGaleria = document.getElementById("rejillaGaleria");
   const campoGaleriaActual = document.getElementById("campoGaleriaActual");
-  let campoDestinoGaleria = null;
 
-  async function abrirGaleria(idCampo) {
-    campoDestinoGaleria = idCampo;
-    campoGaleriaActual.textContent = document.querySelector('[data-campo="' + idCampo + '"]').closest(".campo").querySelector("label").textContent;
+  async function abrirGaleria(inputElemento, etiqueta, imgPrevia) {
+    campoGaleriaActual.textContent = etiqueta || "";
     panelGaleria.hidden = false;
     rejillaGaleria.innerHTML = "Cargando fotos...";
     panelGaleria.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -485,10 +529,11 @@
         div.innerHTML = '<img src="' + archivo.download_url + '" alt="' + archivo.name + '" loading="lazy">';
         div.title = archivo.name;
         div.addEventListener("click", () => {
-          const campoInput = document.getElementById(campoDestinoGaleria);
-          campoInput.value = CARPETA_FOTOS + "/" + archivo.name;
-          const idPrevia = "previa" + campoDestinoGaleria.replace("foto", "");
-          actualizarVistaPrevia(campoDestinoGaleria, idPrevia);
+          inputElemento.value = CARPETA_FOTOS + "/" + archivo.name;
+          if (imgPrevia) {
+            imgPrevia.src = archivo.download_url;
+            imgPrevia.hidden = false;
+          }
           panelGaleria.hidden = true;
         });
         rejillaGaleria.appendChild(div);
@@ -498,8 +543,14 @@
     }
   }
 
-  document.querySelectorAll(".btn-galeria").forEach(boton => {
-    boton.addEventListener("click", () => abrirGaleria(boton.dataset.campo));
+  document.querySelectorAll(".btn-galeria[data-campo]").forEach(boton => {
+    boton.addEventListener("click", () => {
+      const idCampo = boton.dataset.campo;
+      const inputElemento = document.getElementById(idCampo);
+      const etiqueta = boton.closest(".campo").querySelector("label").textContent;
+      const imgPrevia = document.getElementById("previa" + idCampo.replace("foto", ""));
+      abrirGaleria(inputElemento, etiqueta, imgPrevia);
+    });
   });
   document.getElementById("btnCerrarGaleria").addEventListener("click", () => { panelGaleria.hidden = true; });
 
@@ -515,6 +566,32 @@
     document.getElementById("listaItinerarioEditor").appendChild(fila);
   }
   document.getElementById("btnAgregarItinerario").addEventListener("click", () => agregarFilaItinerario(null));
+
+  function agregarFilaFotoGaleria(ruta) {
+    const plantilla = document.getElementById("plantillaFotoGaleria").content.cloneNode(true);
+    const fila = plantilla.querySelector(".fila-foto-galeria");
+    const input = fila.querySelector(".galeria-ruta");
+    const previa = fila.querySelector(".galeria-previa");
+
+    if (ruta) {
+      input.value = ruta;
+      previa.src = ruta;
+      previa.hidden = false;
+    }
+
+    input.addEventListener("change", () => {
+      if (input.value.trim()) { previa.src = input.value.trim(); previa.hidden = false; }
+      else { previa.hidden = true; }
+    });
+
+    fila.querySelector(".btn-galeria-item").addEventListener("click", () => {
+      abrirGaleria(input, "Foto de la galería", previa);
+    });
+
+    fila.querySelector(".quitar").addEventListener("click", () => fila.remove());
+    document.getElementById("listaGaleriaEditor").appendChild(fila);
+  }
+  document.getElementById("btnAgregarFotoGaleria").addEventListener("click", () => agregarFilaFotoGaleria(null));
 
   function agregarFilaInvitado(contenedor, nombre) {
     const fila = document.createElement("div");
@@ -575,7 +652,10 @@
         secondary: document.getElementById("colorSecondary").value,
         background: document.getElementById("colorBackground").value,
         surface: document.getElementById("colorSurface").value
-      }
+      },
+      tipografia: document.getElementById("tipografia").value,
+      galeriaEstilo: document.getElementById("galeriaEstilo").value,
+      galeria: Array.from(document.querySelectorAll(".galeria-ruta")).map(i => i.value.trim()).filter(Boolean)
     };
 
     const fotoPortada = document.getElementById("fotoPortada").value.trim();
