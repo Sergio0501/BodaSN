@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control de Ingreso — Boda Sergio &amp; Natalia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://script.google.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-primary: #405044; --color-secondary: #c5a66a; --color-background: #f7f2e9;
+    --color-surface: #fffdf8; --color-text: #292b28; --color-text-soft: #686b65;
+    --color-border: rgba(41,43,40,0.16);
+    --color-pendiente: #9a9a94; --color-parcial: #c5a66a; --color-completo: #4c7a5c;
+    --font-heading: "Cormorant Garamond", serif; --font-body: "Montserrat", sans-serif;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: var(--font-body); background: var(--color-background); color: var(--color-text); line-height: 1.5; }
+  h1, h2 { font-family: var(--font-heading); color: var(--color-primary); font-weight: 600; }
+
+  #pantallaLogin { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+  .caja-login { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 1rem; padding: 2.5rem 2rem; max-width: 340px; width: 100%; text-align: center; box-shadow: 0 18px 50px rgba(31,33,30,0.1); }
+  .caja-login h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+  .caja-login input { width: 100%; min-height: 48px; padding: 0.7rem 1rem; border: 1px solid var(--color-border); border-radius: 0.6rem; font-family: var(--font-body); font-size: 1rem; margin-bottom: 1rem; }
+  .caja-login button { width: 100%; min-height: 48px; background: var(--color-primary); color: var(--color-surface); border: none; border-radius: 999px; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; }
+  .error-login { color: #8a3a2c; font-size: 0.85rem; min-height: 1.2rem; margin-top: -0.4rem; margin-bottom: 0.8rem; }
+
+  #pantallaLogin[hidden], #panelIngreso[hidden] { display: none !important; }
+  .contenedor { max-width: 720px; margin: 0 auto; padding: 1.6rem 1.2rem 5rem; }
+  .encabezado { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.4rem; }
+  .encabezado h1 { font-size: 1.6rem; margin: 0; }
+  .encabezado a { color: var(--color-text-soft); font-size: 0.8rem; text-decoration: none; border-bottom: 1px solid var(--color-border); }
+
+  .estadisticas { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.7rem; margin-bottom: 1.4rem; }
+  @media (min-width: 560px) { .estadisticas { grid-template-columns: repeat(4, 1fr); } }
+  .stat { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 0.9rem; padding: 0.9rem 0.6rem; text-align: center; }
+  .stat .numero { font-family: var(--font-heading); font-size: 1.9rem; color: var(--color-primary); display: block; line-height: 1; }
+  .stat .etiqueta { font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-soft); display: block; margin-top: 0.3rem; }
+  .stat.destacado .numero { color: var(--color-secondary); }
+
+  .rejilla-codigos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+  @media (min-width: 480px) { .rejilla-codigos { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 700px) { .rejilla-codigos { grid-template-columns: repeat(4, 1fr); } }
+
+  .boton-codigo {
+    border: none; border-radius: 1rem; padding: 1.1rem 0.7rem; cursor: pointer;
+    min-height: 92px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.25rem;
+    color: #fff; font-family: var(--font-body); text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    transition: transform 0.12s ease;
+  }
+  .boton-codigo:active { transform: scale(0.96); }
+  .boton-codigo.pendiente { background: var(--color-pendiente); }
+  .boton-codigo.parcial { background: var(--color-parcial); color: #3a2f12; }
+  .boton-codigo.completo { background: var(--color-completo); }
+  .boton-codigo .codigo-nombre { font-family: var(--font-heading); font-weight: 600; font-size: 1.15rem; letter-spacing: 0.02em; text-transform: uppercase; }
+  .boton-codigo .codigo-conteo { font-size: 0.72rem; opacity: 0.9; }
+
+  .vacio { text-align: center; color: var(--color-text-soft); padding: 3rem 1rem; }
+
+  #fondoModal { position: fixed; inset: 0; background: rgba(20,22,18,0.55); display: flex; align-items: flex-end; justify-content: center; z-index: 50; }
+  #fondoModal[hidden] { display: none !important; }
+  .tarjeta-modal { background: var(--color-surface); border-radius: 1.4rem 1.4rem 0 0; max-width: 480px; width: 100%; max-height: 88svh; overflow-y: auto; padding: 1.6rem 1.4rem 2rem; }
+  @media (min-width: 560px) { #fondoModal { align-items: center; } .tarjeta-modal { border-radius: 1.4rem; } }
+
+  .modal-cabecera { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 0.3rem; }
+  .modal-cabecera h2 { font-size: 1.6rem; margin: 0; text-transform: uppercase; }
+  .btn-cerrar-modal { background: none; border: none; font-size: 1.6rem; line-height: 1; color: var(--color-text-soft); cursor: pointer; padding: 0.2rem 0.4rem; }
+  .modal-familia { color: var(--color-text-soft); font-size: 0.95rem; margin-bottom: 0.2rem; }
+  .modal-conteo { font-size: 0.85rem; color: var(--color-text-soft); margin-bottom: 1.2rem; }
+  .modal-conteo strong { color: var(--color-primary); }
+
+  .btn-todos {
+    width: 100%; min-height: 56px; background: var(--color-completo); color: #fff; border: none; border-radius: 999px;
+    font-family: var(--font-body); font-weight: 600; font-size: 0.95rem; letter-spacing: 0.05em; text-transform: uppercase;
+    cursor: pointer; margin-bottom: 1.3rem; box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+  }
+  .btn-todos:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .lista-personas { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+  .btn-persona {
+    width: 100%; min-height: 56px; border-radius: 0.9rem; border: 1px solid var(--color-border);
+    background: var(--color-background); color: var(--color-text); font-family: var(--font-body); font-size: 1rem;
+    display: flex; align-items: center; justify-content: space-between; padding: 0 1.1rem; cursor: pointer;
+  }
+  .btn-persona .marca { font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; }
+  .btn-persona.ingreso { background: rgba(76,122,92,0.12); border-color: var(--color-completo); color: var(--color-completo); cursor: default; }
+  .btn-persona.ingreso .marca::before { content: "✓ "; }
+
+  .aviso-toque {
+    text-align: center; font-size: 0.8rem; color: var(--color-text-soft);
+    background: var(--color-background); border-radius: 0.7rem; padding: 0.6rem; margin-top: 1.2rem; display: none;
+  }
+  .aviso-toque.visible { display: block; }
+</style>
+</head>
+<body>
+
+<div id="pantallaLogin">
+  <div class="caja-login">
+    <h1>Control de Ingreso</h1>
+    <input type="password" id="campoPassword" placeholder="Contraseña" autocomplete="current-password">
+    <p class="error-login" id="errorLogin"></p>
+    <button id="btnEntrar">Entrar</button>
+  </div>
+</div>
+
+<div class="contenedor" id="panelIngreso" hidden>
+  <div class="encabezado">
+    <h1>Control de Ingreso</h1>
+    <a href="admin.html">← Volver a admin</a>
+  </div>
+
+  <div class="estadisticas">
+    <div class="stat"><span class="numero" id="statConfirmados">0</span><span class="etiqueta">Confirmados</span></div>
+    <div class="stat destacado"><span class="numero" id="statIngresados">0</span><span class="etiqueta">Ingresados</span></div>
+    <div class="stat"><span class="numero" id="statPendientes">0</span><span class="etiqueta">Pendientes</span></div>
+    <div class="stat"><span class="numero" id="statPorcentaje">0%</span><span class="etiqueta">Asistencia</span></div>
+  </div>
+
+  <div class="rejilla-codigos" id="rejillaCodigos"></div>
+  <div class="vacio" id="mensajeVacio" hidden>Aún no hay ninguna familia confirmada.</div>
+</div>
+
+<div id="fondoModal" hidden>
+  <div class="tarjeta-modal">
+    <div class="modal-cabecera">
+      <h2 id="modalCodigo">—</h2>
+      <button class="btn-cerrar-modal" id="btnCerrarModal" aria-label="Cerrar">×</button>
+    </div>
+    <p class="modal-familia" id="modalFamilia"></p>
+    <p class="modal-conteo"><strong id="modalIngresadosNum">0</strong> de <strong id="modalConfirmadosNum">0</strong> ya ingresaron</p>
+
+    <button type="button" class="btn-todos" id="btnIngresaronTodos">Ingresaron todos</button>
+
+    <ul class="lista-personas" id="listaPersonasModal"></ul>
+
+    <p class="aviso-toque" id="avisoToque"></p>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  const CLAVE_PASSWORD = "invitacion:admin-password";
+  const PASSWORD_POR_DEFECTO = "boda2026";
+  const API_URL = "https://script.google.com/macros/s/AKfycbyQU5FL5LlKmnMW4cTX8sNDG0Lfej5-KTUINuGzc3iSTU85nR1usQ3tYar9l7w4t1KS/exec";
+  const INTERVALO_ACTUALIZACION_MS = 6000;
+
+  const pantallaLogin = document.getElementById("pantallaLogin");
+  const panelIngreso = document.getElementById("panelIngreso");
+  const campoPassword = document.getElementById("campoPassword");
+  const errorLogin = document.getElementById("errorLogin");
+
+  async function apiGet(clave) {
+    try {
+      const respuesta = await fetch(API_URL + "?action=get&key=" + encodeURIComponent(clave));
+      const datos = await respuesta.json();
+      if (datos && datos.value) return { key: datos.key, value: datos.value };
+    } catch (error) { /* sin conexión o clave inexistente */ }
+    return null;
+  }
+
+  async function obtenerPasswordGuardada() {
+    try {
+      const resultado = await apiGet(CLAVE_PASSWORD);
+      if (resultado && resultado.value) return resultado.value;
+    } catch (error) { /* no se ha configurado una contraseña propia todavía */ }
+    return PASSWORD_POR_DEFECTO;
+  }
+
+  async function intentarEntrar() {
+    const passwordActual = await obtenerPasswordGuardada();
+    if (campoPassword.value === passwordActual) {
+      pantallaLogin.hidden = true;
+      panelIngreso.hidden = false;
+      iniciarControlDeIngreso();
+    } else {
+      errorLogin.textContent = "Contraseña incorrecta.";
+    }
+  }
+
+  document.getElementById("btnEntrar").addEventListener("click", intentarEntrar);
+  campoPassword.addEventListener("keydown", (e) => { if (e.key === "Enter") intentarEntrar(); });
+
+  function iniciarControlDeIngreso() {
+    let estadoActual = [];
+    let slugModalAbierto = null;
+
+    const rejillaCodigos = document.getElementById("rejillaCodigos");
+    const mensajeVacio = document.getElementById("mensajeVacio");
+    const fondoModal = document.getElementById("fondoModal");
+    const listaPersonasModal = document.getElementById("listaPersonasModal");
+    const btnIngresaronTodos = document.getElementById("btnIngresaronTodos");
+    const avisoToque = document.getElementById("avisoToque");
+
+    async function cargarEstado() {
+      try {
+        const respuesta = await fetch(API_URL + "?action=getEstadoIngresos");
+        const datos = await respuesta.json();
+        estadoActual = Array.isArray(datos.invitaciones) ? datos.invitaciones : [];
+      } catch (error) {
+        return;
+      }
+      ordenarEstado();
+      pintarEstadisticas();
+      pintarRejilla();
+      if (slugModalAbierto) pintarModal(slugModalAbierto);
+    }
+
+    function ordenarEstado() {
+      const peso = { pendiente: 0, parcial: 1, completo: 2 };
+      estadoActual.sort((a, b) => peso[a.estado] - peso[b.estado]);
+    }
+
+    function pintarEstadisticas() {
+      let confirmados = 0, ingresados = 0;
+      estadoActual.forEach(inv => { confirmados += inv.totalConfirmados; ingresados += inv.totalIngresados; });
+      const pendientes = confirmados - ingresados;
+      const porcentaje = confirmados > 0 ? Math.round((ingresados / confirmados) * 100) : 0;
+
+      document.getElementById("statConfirmados").textContent = confirmados;
+      document.getElementById("statIngresados").textContent = ingresados;
+      document.getElementById("statPendientes").textContent = pendientes;
+      document.getElementById("statPorcentaje").textContent = porcentaje + "%";
+    }
+
+    function pintarRejilla() {
+      if (estadoActual.length === 0) {
+        rejillaCodigos.innerHTML = "";
+        mensajeVacio.hidden = false;
+        return;
+      }
+      mensajeVacio.hidden = true;
+      rejillaCodigos.innerHTML = "";
+
+      estadoActual.forEach(inv => {
+        const boton = document.createElement("button");
+        boton.className = "boton-codigo " + inv.estado;
+        boton.innerHTML =
+          '<span class="codigo-nombre">' + inv.slug + '</span>' +
+          '<span class="codigo-conteo">' + inv.totalIngresados + ' / ' + inv.totalConfirmados + '</span>';
+        boton.addEventListener("click", () => abrirModal(inv.slug));
+        rejillaCodigos.appendChild(boton);
+      });
+    }
+
+    function abrirModal(slug) {
+      slugModalAbierto = slug;
+      avisoToque.classList.remove("visible");
+      pintarModal(slug);
+      fondoModal.hidden = false;
+    }
+
+    function cerrarModal() {
+      slugModalAbierto = null;
+      fondoModal.hidden = true;
+    }
+    document.getElementById("btnCerrarModal").addEventListener("click", cerrarModal);
+    fondoModal.addEventListener("click", (e) => { if (e.target === fondoModal) cerrarModal(); });
+
+    function pintarModal(slug) {
+      const inv = estadoActual.find(x => x.slug === slug);
+      if (!inv) { cerrarModal(); return; }
+
+      document.getElementById("modalCodigo").textContent = inv.slug;
+      document.getElementById("modalFamilia").textContent = inv.familia || "";
+      document.getElementById("modalIngresadosNum").textContent = inv.totalIngresados;
+      document.getElementById("modalConfirmadosNum").textContent = inv.totalConfirmados;
+
+      const pendientesCount = inv.totalConfirmados - inv.totalIngresados;
+      btnIngresaronTodos.disabled = pendientesCount === 0;
+      btnIngresaronTodos.textContent = pendientesCount === 0 ? "Todos ya ingresaron" : "Ingresaron todos";
+
+      listaPersonasModal.innerHTML = "";
+      inv.personas.forEach(persona => {
+        const li = document.createElement("li");
+        const boton = document.createElement("button");
+        boton.type = "button";
+        boton.className = "btn-persona" + (persona.ingreso ? " ingreso" : "");
+        boton.innerHTML = "<span>" + persona.nombre + "</span><span class=\"marca\">" + (persona.ingreso ? "Ya ingresó" : "Registrar") + "</span>";
+        if (!persona.ingreso) {
+          boton.addEventListener("click", () => registrarUno(slug, persona.nombre));
+        } else {
+          boton.addEventListener("click", () => {
+            avisoToque.textContent = persona.nombre + " ya había ingresado.";
+            avisoToque.classList.add("visible");
+          });
+        }
+        li.appendChild(boton);
+        listaPersonasModal.appendChild(li);
+      });
+    }
+
+    async function registrarUno(slug, invitado) {
+      const inv = estadoActual.find(x => x.slug === slug);
+      if (inv) {
+        const persona = inv.personas.find(p => p.nombre === invitado);
+        if (persona && !persona.ingreso) {
+          persona.ingreso = true;
+          inv.totalIngresados++;
+          inv.estado = inv.totalIngresados === inv.totalConfirmados ? "completo" : "parcial";
+        }
+      }
+      pintarEstadisticas();
+      pintarRejilla();
+      if (slugModalAbierto) pintarModal(slugModalAbierto);
+
+      try {
+        await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "registrarIngreso", slug: slug, invitado: invitado })
+        });
+      } catch (error) { /* la próxima actualización automática corrige cualquier desfase */ }
+    }
+
+    async function registrarTodos(slug) {
+      const inv = estadoActual.find(x => x.slug === slug);
+      if (!inv) return;
+      const pendientes = inv.personas.filter(p => !p.ingreso).map(p => p.nombre);
+      if (pendientes.length === 0) return;
+
+      inv.personas.forEach(p => { p.ingreso = true; });
+      inv.totalIngresados = inv.totalConfirmados;
+      inv.estado = "completo";
+      pintarEstadisticas();
+      pintarRejilla();
+      if (slugModalAbierto) pintarModal(slugModalAbierto);
+
+      try {
+        await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "registrarIngresoMasivo", slug: slug, personas: pendientes })
+        });
+      } catch (error) { /* la próxima actualización automática corrige cualquier desfase */ }
+    }
+
+    btnIngresaronTodos.addEventListener("click", () => {
+      if (slugModalAbierto) registrarTodos(slugModalAbierto);
+    });
+
+    cargarEstado();
+    setInterval(cargarEstado, INTERVALO_ACTUALIZACION_MS);
+  }
+})();
+</script>
+</body>
+</html>
