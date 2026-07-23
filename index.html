@@ -155,10 +155,11 @@
   #saludo .familia { font-size: clamp(1.6rem, 5vw, 2.1rem); margin: 1.4rem 0 2.2rem; }
   .lista-invitados { list-style: none; max-width: 340px; margin: 1.6rem auto 0; border-top: 1px solid var(--color-border); }
   .lista-invitados li { padding: 1.05rem 0; border-bottom: 1px solid var(--color-border); font-family: var(--font-heading); font-size: 1.15rem; color: var(--color-text); }
-  .restriccion-invitados { max-width: 380px; margin: 3.6rem auto 0; font-size: 0.85rem; color: var(--color-text-soft); line-height: 1.6; text-align: center; white-space: pre-line; }
-  .codigo-invitacion { margin: 4rem auto 0; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-soft); text-align: center; }
-  .codigo-invitacion #codigoInvitacion { display: inline-block; font-family: var(--font-body); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-primary); background: rgba(64,80,68,0.08); padding: 0.3rem 0.9rem; border-radius: 999px; margin-top: 0.5rem; }
-  .alerta-importante { max-width: 380px; margin: 3.2rem auto 0; padding: 1.2rem 1.3rem; font-size: 0.85rem; font-weight: 600; line-height: 1.55; text-align: center; color: var(--color-primary); background: rgba(197,166,106,0.16); border: 1px solid var(--color-secondary); border-radius: 0.7rem; white-space: pre-line; }
+  .restriccion-invitados { max-width: 380px; margin: 3rem auto 0; font-size: 0.85rem; color: var(--color-text-soft); line-height: 1.6; text-align: center; white-space: pre-line; }
+  .codigo-invitacion { max-width: 280px; margin: 3rem auto 0; padding: 1.4rem 1.2rem; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-soft); text-align: center; background: transparent; border-radius: 0.9rem; }
+  .codigo-invitacion .codigo-etiqueta { display: block; margin-bottom: 0.8rem; }
+  .codigo-invitacion #codigoInvitacion { display: inline-block; font-family: var(--font-body); font-weight: 600; font-size: 1.05rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-primary); background: rgba(64,80,68,0.08); padding: 0.5rem 1.3rem; border-radius: 999px; }
+  .alerta-importante { max-width: 380px; margin: 1.4rem auto 0; padding: 1.2rem 1.3rem; font-size: 0.85rem; font-weight: 600; line-height: 1.55; text-align: center; color: var(--color-primary); background: rgba(197,166,106,0.16); border: 1px solid var(--color-secondary); border-radius: 0.7rem; white-space: pre-line; }
   .alerta-importante:empty { display: none; }
   .alerta-importante::before { content: "⚠️ "; }
 
@@ -277,30 +278,29 @@
     <div class="portada-foto" id="portadaFoto" role="img" aria-label="Fotografía de los novios"></div>
     <div class="container portada-contenido">
       <h2 class="portada-nombres" id="portadaNombres">Sergio<span>&amp;</span>Natalia</h2>
-      <p class="portada-subtitulo">Nuestra Boda</p>
+      <p class="portada-subtitulo" id="portadaSubtitulo">Nuestra Boda</p>
       <p class="portada-fecha"><time id="portadaFecha" datetime="">—</time></p>
       <p class="portada-frase" id="portadaFrase"></p>
-      <p class="scroll-hint">Desliza para ver más</p>
+      <p class="scroll-hint" id="scrollHintTexto">Desliza para ver más</p>
     </div>
   </section>
 
   <section id="saludo">
     <div class="container center">
-      <span class="eyebrow">Con mucha alegría</span>
-      <p>Queremos compartir este día tan especial con</p>
+      <span class="eyebrow" id="eyebrowSaludo">Con mucha alegría</span>
+      <p id="saludoIntro">Queremos compartir este día tan especial con</p>
       <h2 class="familia" id="saludoFamilia">—</h2>
       <hr class="divider">
-      <p>Esta invitación está reservada especialmente para <span id="saludoCupos"></span></p>
+      <p><span id="reservadaTexto">Esta invitación está reservada especialmente para</span> <span id="saludoCupos"></span></p>
       <ul class="lista-invitados" id="listaInvitadosSaludo"></ul>
-      <p class="codigo-invitacion">Código de invitación:<br><span id="codigoInvitacion"></span></p>
+      <p class="codigo-invitacion"><span class="codigo-etiqueta" id="codigoEtiqueta">Código de invitación:</span><span id="codigoInvitacion"></span></p>
       <p class="restriccion-invitados" id="restriccionInvitados"></p>
-      <p class="alerta-importante" id="alertaImportante"></p>
     </div>
   </section>
 
   <section id="fecha">
     <div class="container center">
-      <span class="eyebrow">Guarda la fecha</span>
+      <span class="eyebrow" id="eyebrowFecha">Guarda la fecha</span>
       <p class="fecha-dia-grande" id="fechaDiaGrande">—</p>
       <p class="fecha-detalle" id="fechaDetalle">—</p>
       <div class="cuenta-regresiva" id="cuentaRegresiva" aria-live="polite">
@@ -315,7 +315,7 @@
 
   <section id="lugar">
     <div class="container center">
-      <span class="eyebrow">Lugar</span>
+      <span class="eyebrow" id="eyebrowLugar">Lugar</span>
       <address>
         <strong id="lugarNombre">—</strong>
         <span id="lugarDireccion">—</span>
@@ -329,8 +329,8 @@
 
   <section id="historia">
     <div class="container center">
-      <span class="eyebrow">Nuestra historia</span>
-      <h2>Cómo empezó todo</h2>
+      <span class="eyebrow" id="eyebrowHistoria">Nuestra historia</span>
+      <h2 id="historiaTitulo">Cómo empezó todo</h2>
       <div class="galeria-fotos" id="galeriaHistoria"></div>
       <p id="historiaTexto"></p>
     </div>
@@ -338,23 +338,23 @@
 
   <section id="galeria-seccion" hidden>
     <div class="container center">
-      <span class="eyebrow">Galería</span>
-      <h2>Algunos momentos</h2>
+      <span class="eyebrow" id="eyebrowGaleria">Galería</span>
+      <h2 id="galeriaTitulo">Algunos momentos</h2>
       <div class="galeria-fotos" id="galeriaFotos"></div>
     </div>
   </section>
 
   <section id="itinerario-seccion">
     <div class="container center">
-      <span class="eyebrow">Itinerario</span>
-      <h2>Así viviremos el día</h2>
+      <span class="eyebrow" id="eyebrowItinerario">Itinerario</span>
+      <h2 id="itinerarioTitulo">Así viviremos el día</h2>
       <ol class="itinerario" id="listaItinerario"></ol>
     </div>
   </section>
 
   <section id="vestuario">
     <div class="container">
-      <span class="eyebrow">Código de vestuario</span>
+      <span class="eyebrow" id="eyebrowVestuario">Código de vestuario</span>
       <h2 id="vestuarioTitulo">—</h2>
       <ul class="lista-recomendaciones" id="listaRecomendaciones"></ul>
     </div>
@@ -362,16 +362,16 @@
 
   <section id="regalos">
     <div class="container">
-      <span class="eyebrow">Regalos</span>
-      <h2>Lluvia de sobres</h2>
+      <span class="eyebrow" id="eyebrowRegalos">Regalos</span>
+      <h2 id="regalosTitulo">Lluvia de sobres</h2>
       <p id="regalosTexto"></p>
     </div>
   </section>
 
   <section id="rsvp">
     <div class="container center">
-      <span class="eyebrow">RSVP</span>
-      <h2>Confirma tu asistencia</h2>
+      <span class="eyebrow" id="eyebrowRSVP">RSVP</span>
+      <h2 id="rsvpTitulo">Confirma tu asistencia</h2>
       <p class="rsvp-plazo-texto" id="rsvpPlazoTexto"></p>
 
       <form class="rsvp-form" id="formRSVP" novalidate>
@@ -380,11 +380,12 @@
         </div>
 
         <div class="campo">
-          <span class="eyebrow" style="margin-bottom:0.8rem;">Selecciona las personas que asistirán:</span>
+          <span class="eyebrow" id="rsvpSeleccionaTexto" style="margin-bottom:0.8rem;">Selecciona las personas que asistirán:</span>
           <ul class="lista-checks" id="listaChecksRSVP"></ul>
         </div>
 
         <button type="submit" class="btn-principal" id="btnEnviarRSVP">Confirmar asistencia</button>
+        <p class="alerta-importante" id="alertaImportante"></p>
         <p class="nota-privacidad" id="notaPrivacidad"></p>
         <div class="rsvp-mensaje" id="mensajeRSVP" role="status" aria-live="polite"></div>
       </form>
@@ -401,7 +402,7 @@
         <circle cx="45" cy="30" r="21" fill="none"/>
         <circle cx="75" cy="30" r="21" fill="none"/>
       </svg>
-      <p>Gracias por ser parte de nuestra historia.</p>
+      <p id="footerGracias">Gracias por ser parte de nuestra historia.</p>
       <p class="firma" id="footerFirma">Sergio &amp; Natalia</p>
     </div>
   </footer>
@@ -471,6 +472,29 @@
     lugarDireccion: "Santa Elena, Medellín, Antioquia, Colombia",
     mapaQuery: "Finca Silletera El Pensamiento Santa Elena Antioquia Colombia",
     mapaEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5603.302904532902!2d-75.4827861!3d6.2361756999999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e4427a873c3d9b7%3A0xa4d7ea69e64441e8!2sFinca%20Silletera%20El%20Pensamiento!5e1!3m2!1ses!2sco!4v1784657531501!5m2!1ses!2sco",
+    portadaSubtitulo: "Nuestra Boda",
+    scrollHintTexto: "Desliza para ver más",
+    eyebrowSaludo: "Con mucha alegría",
+    saludoIntro: "Queremos compartir este día tan especial con",
+    reservadaTexto: "Esta invitación está reservada especialmente para",
+    codigoEtiqueta: "Código de invitación:",
+    eyebrowFecha: "Guarda la fecha",
+    btnCalendarioTexto: "Agregar a mi calendario",
+    eyebrowLugar: "Lugar",
+    btnMapaTexto: "Abrir en Google Maps",
+    eyebrowHistoria: "Nuestra historia",
+    historiaTitulo: "Cómo empezó todo",
+    eyebrowGaleria: "Galería",
+    galeriaTitulo: "Algunos momentos",
+    eyebrowItinerario: "Itinerario",
+    itinerarioTitulo: "Así viviremos el día",
+    eyebrowVestuario: "Código de vestuario",
+    eyebrowRegalos: "Regalos",
+    regalosTitulo: "Lluvia de sobres",
+    eyebrowRSVP: "RSVP",
+    rsvpTitulo: "Confirma tu asistencia",
+    rsvpSeleccionaTexto: "Selecciona las personas que asistirán:",
+    footerGracias: "Gracias por ser parte de nuestra historia.",
     historiaTexto: "Nos conocimos hace algunos años y, entre risas y casualidades, supimos que queríamos construir una vida juntos. Hoy, con el corazón lleno de gratitud, queremos celebrar este nuevo capítulo rodeados de las personas que más queremos.",
     itinerario: [
       { hora: "2:30 p. m.", titulo: "Llegada de invitados", descripcion: "" },
@@ -633,7 +657,31 @@
     });
   }
 
+  function aplicarTextosDeSecciones(config) {
+    document.getElementById("portadaSubtitulo").textContent = config.portadaSubtitulo || "Nuestra Boda";
+    document.getElementById("scrollHintTexto").textContent = config.scrollHintTexto || "Desliza para ver más";
+    document.getElementById("eyebrowSaludo").textContent = config.eyebrowSaludo || "Con mucha alegría";
+    document.getElementById("saludoIntro").textContent = config.saludoIntro || "Queremos compartir este día tan especial con";
+    document.getElementById("reservadaTexto").textContent = config.reservadaTexto || "Esta invitación está reservada especialmente para";
+    document.getElementById("codigoEtiqueta").textContent = config.codigoEtiqueta || "Código de invitación:";
+    document.getElementById("eyebrowFecha").textContent = config.eyebrowFecha || "Guarda la fecha";
+    document.getElementById("eyebrowLugar").textContent = config.eyebrowLugar || "Lugar";
+    document.getElementById("eyebrowHistoria").textContent = config.eyebrowHistoria || "Nuestra historia";
+    document.getElementById("eyebrowGaleria").textContent = config.eyebrowGaleria || "Galería";
+    document.getElementById("galeriaTitulo").textContent = config.galeriaTitulo || "Algunos momentos";
+    document.getElementById("eyebrowItinerario").textContent = config.eyebrowItinerario || "Itinerario";
+    document.getElementById("itinerarioTitulo").textContent = config.itinerarioTitulo || "Así viviremos el día";
+    document.getElementById("eyebrowVestuario").textContent = config.eyebrowVestuario || "Código de vestuario";
+    document.getElementById("eyebrowRegalos").textContent = config.eyebrowRegalos || "Regalos";
+    document.getElementById("regalosTitulo").textContent = config.regalosTitulo || "Lluvia de sobres";
+    document.getElementById("eyebrowRSVP").textContent = config.eyebrowRSVP || "RSVP";
+    document.getElementById("rsvpTitulo").textContent = config.rsvpTitulo || "Confirma tu asistencia";
+    document.getElementById("rsvpSeleccionaTexto").textContent = config.rsvpSeleccionaTexto || "Selecciona las personas que asistirán:";
+    document.getElementById("footerGracias").textContent = config.footerGracias || "Gracias por ser parte de nuestra historia.";
+  }
+
   function renderizarContenido(config, familia) {
+    aplicarTextosDeSecciones(config);
     const iniciales = (config.nombreNovio || "").charAt(0) + " & " + (config.nombreNovia || "").charAt(0);
 
     document.getElementById("tituloPagina").textContent = config.nombreNovio + " & " + config.nombreNovia + " — Invitación de boda";
@@ -672,6 +720,7 @@
     const consultaMapa = encodeURIComponent(config.mapaQuery || config.lugarNombre);
     document.getElementById("mapaIframe").src = config.mapaEmbedUrl || ("https://www.google.com/maps?q=" + consultaMapa + "&output=embed");
     document.getElementById("btnMapa").href = "https://www.google.com/maps/search/?api=1&query=" + consultaMapa;
+    document.getElementById("btnMapa").textContent = config.btnMapaTexto || "Abrir en Google Maps";
 
     renderizarFotosHistoria(config);
     document.getElementById("historiaTexto").textContent = config.historiaTexto;
@@ -777,6 +826,7 @@
       + "&location=" + encodeURIComponent(config.lugarNombre + ", " + config.lugarDireccion)
       + "&details=" + encodeURIComponent("Nos encantaría contar con tu presencia en nuestra boda.");
     document.getElementById("btnCalendario").setAttribute("href", url);
+    document.getElementById("btnCalendario").textContent = config.btnCalendarioTexto || "Agregar a mi calendario";
   }
 
   function inicializarFlotanteRSVP() {

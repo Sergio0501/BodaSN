@@ -118,6 +118,7 @@
 
     <div class="bloque">
       <h2>Nuestra historia</h2>
+      <div class="campo"><label>Título de la sección</label><input type="text" id="historiaTitulo" placeholder="Cómo empezó todo"></div>
       <div class="campo"><label>Texto</label><textarea id="historiaTexto"></textarea></div>
     </div>
 
@@ -234,6 +235,62 @@
     </div>
 
     <div class="bloque">
+      <h2>Textos y títulos de cada sección</h2>
+      <p style="font-size:0.85rem; color:var(--color-text-soft); margin-bottom:1rem;">Estos son las etiquetas y encabezados fijos de cada parte de la invitación. Puedes cambiar cualquiera.</p>
+
+      <div class="fila-dos">
+        <div class="campo"><label>Subtítulo bajo los nombres (portada)</label><input type="text" id="portadaSubtitulo"></div>
+        <div class="campo"><label>Texto "desliza para ver más"</label><input type="text" id="scrollHintTexto"></div>
+      </div>
+
+      <div class="fila-dos">
+        <div class="campo"><label>Etiqueta: saludo</label><input type="text" id="eyebrowSaludo"></div>
+        <div class="campo"><label>Frase de introducción del saludo</label><input type="text" id="saludoIntro"></div>
+      </div>
+      <div class="fila-dos">
+        <div class="campo"><label>Frase "reservada especialmente para"</label><input type="text" id="reservadaTexto"></div>
+        <div class="campo"><label>Etiqueta del código de invitación</label><input type="text" id="codigoEtiqueta"></div>
+      </div>
+
+      <div class="fila-dos">
+        <div class="campo"><label>Etiqueta: fecha</label><input type="text" id="eyebrowFecha"></div>
+        <div class="campo"><label>Texto del botón "agregar a calendario"</label><input type="text" id="btnCalendarioTexto"></div>
+      </div>
+
+      <div class="fila-dos">
+        <div class="campo"><label>Etiqueta: lugar</label><input type="text" id="eyebrowLugar"></div>
+        <div class="campo"><label>Texto del botón de mapa</label><input type="text" id="btnMapaTexto"></div>
+      </div>
+
+      <div class="campo"><label>Etiqueta: historia</label><input type="text" id="eyebrowHistoria"></div>
+
+      <div class="fila-dos">
+        <div class="campo"><label>Etiqueta: galería</label><input type="text" id="eyebrowGaleria"></div>
+        <div class="campo"><label>Título de la galería</label><input type="text" id="galeriaTitulo"></div>
+      </div>
+
+      <div class="fila-dos">
+        <div class="campo"><label>Etiqueta: itinerario</label><input type="text" id="eyebrowItinerario"></div>
+        <div class="campo"><label>Título del itinerario</label><input type="text" id="itinerarioTitulo"></div>
+      </div>
+
+      <div class="campo"><label>Etiqueta: vestuario</label><input type="text" id="eyebrowVestuario"></div>
+
+      <div class="fila-dos">
+        <div class="campo"><label>Etiqueta: regalos</label><input type="text" id="eyebrowRegalos"></div>
+        <div class="campo"><label>Título de regalos</label><input type="text" id="regalosTitulo"></div>
+      </div>
+
+      <div class="fila-dos">
+        <div class="campo"><label>Etiqueta: RSVP</label><input type="text" id="eyebrowRSVP"></div>
+        <div class="campo"><label>Título del RSVP</label><input type="text" id="rsvpTitulo"></div>
+      </div>
+      <div class="campo"><label>Texto sobre las casillas de invitados</label><input type="text" id="rsvpSeleccionaTexto"></div>
+
+      <div class="campo"><label>Texto de agradecimiento (pie de página)</label><input type="text" id="footerGracias"></div>
+    </div>
+
+    <div class="bloque">
       <h2>Familias e invitados</h2>
       <div id="listaFamiliasEditor"></div>
       <button type="button" class="btn-agregar" id="btnAgregarFamilia">+ Agregar familia</button>
@@ -290,6 +347,7 @@
     lugarNombre: "Hacienda El Vergel",
     lugarDireccion: "Km 3 vía Guarne, Antioquia, Colombia",
     mapaQuery: "Hacienda El Vergel Guarne Antioquia Colombia",
+    historiaTitulo: "Cómo empezó todo",
     historiaTexto: "Nos conocimos hace algunos años y, entre risas y casualidades, supimos que queríamos construir una vida juntos.",
     itinerario: [
       { hora: "4:00 p. m.", titulo: "Ceremonia", descripcion: "Jardín principal." },
@@ -436,6 +494,30 @@
     document.getElementById("lugarNombre").value = config.lugarNombre;
     document.getElementById("lugarDireccion").value = config.lugarDireccion;
     document.getElementById("mapaQuery").value = config.mapaQuery;
+    document.getElementById("historiaTitulo").value = config.historiaTitulo || "Cómo empezó todo";
+
+    document.getElementById("portadaSubtitulo").value = config.portadaSubtitulo || "Nuestra Boda";
+    document.getElementById("scrollHintTexto").value = config.scrollHintTexto || "Desliza para ver más";
+    document.getElementById("eyebrowSaludo").value = config.eyebrowSaludo || "Con mucha alegría";
+    document.getElementById("saludoIntro").value = config.saludoIntro || "Queremos compartir este día tan especial con";
+    document.getElementById("reservadaTexto").value = config.reservadaTexto || "Esta invitación está reservada especialmente para";
+    document.getElementById("codigoEtiqueta").value = config.codigoEtiqueta || "Código de invitación:";
+    document.getElementById("eyebrowFecha").value = config.eyebrowFecha || "Guarda la fecha";
+    document.getElementById("btnCalendarioTexto").value = config.btnCalendarioTexto || "Agregar a mi calendario";
+    document.getElementById("eyebrowLugar").value = config.eyebrowLugar || "Lugar";
+    document.getElementById("btnMapaTexto").value = config.btnMapaTexto || "Abrir en Google Maps";
+    document.getElementById("eyebrowHistoria").value = config.eyebrowHistoria || "Nuestra historia";
+    document.getElementById("eyebrowGaleria").value = config.eyebrowGaleria || "Galería";
+    document.getElementById("galeriaTitulo").value = config.galeriaTitulo || "Algunos momentos";
+    document.getElementById("eyebrowItinerario").value = config.eyebrowItinerario || "Itinerario";
+    document.getElementById("itinerarioTitulo").value = config.itinerarioTitulo || "Así viviremos el día";
+    document.getElementById("eyebrowVestuario").value = config.eyebrowVestuario || "Código de vestuario";
+    document.getElementById("eyebrowRegalos").value = config.eyebrowRegalos || "Regalos";
+    document.getElementById("regalosTitulo").value = config.regalosTitulo || "Lluvia de sobres";
+    document.getElementById("eyebrowRSVP").value = config.eyebrowRSVP || "RSVP";
+    document.getElementById("rsvpTitulo").value = config.rsvpTitulo || "Confirma tu asistencia";
+    document.getElementById("rsvpSeleccionaTexto").value = config.rsvpSeleccionaTexto || "Selecciona las personas que asistirán:";
+    document.getElementById("footerGracias").value = config.footerGracias || "Gracias por ser parte de nuestra historia.";
     document.getElementById("historiaTexto").value = config.historiaTexto;
     document.getElementById("vestuarioTitulo").value = config.vestuarioTitulo;
     document.getElementById("recomendaciones").value = (config.recomendaciones || []).join("\n");
@@ -695,6 +777,29 @@
       lugarNombre: document.getElementById("lugarNombre").value.trim(),
       lugarDireccion: document.getElementById("lugarDireccion").value.trim(),
       mapaQuery: document.getElementById("mapaQuery").value.trim(),
+      historiaTitulo: document.getElementById("historiaTitulo").value.trim(),
+      portadaSubtitulo: document.getElementById("portadaSubtitulo").value.trim(),
+      scrollHintTexto: document.getElementById("scrollHintTexto").value.trim(),
+      eyebrowSaludo: document.getElementById("eyebrowSaludo").value.trim(),
+      saludoIntro: document.getElementById("saludoIntro").value.trim(),
+      reservadaTexto: document.getElementById("reservadaTexto").value.trim(),
+      codigoEtiqueta: document.getElementById("codigoEtiqueta").value.trim(),
+      eyebrowFecha: document.getElementById("eyebrowFecha").value.trim(),
+      btnCalendarioTexto: document.getElementById("btnCalendarioTexto").value.trim(),
+      eyebrowLugar: document.getElementById("eyebrowLugar").value.trim(),
+      btnMapaTexto: document.getElementById("btnMapaTexto").value.trim(),
+      eyebrowHistoria: document.getElementById("eyebrowHistoria").value.trim(),
+      eyebrowGaleria: document.getElementById("eyebrowGaleria").value.trim(),
+      galeriaTitulo: document.getElementById("galeriaTitulo").value.trim(),
+      eyebrowItinerario: document.getElementById("eyebrowItinerario").value.trim(),
+      itinerarioTitulo: document.getElementById("itinerarioTitulo").value.trim(),
+      eyebrowVestuario: document.getElementById("eyebrowVestuario").value.trim(),
+      eyebrowRegalos: document.getElementById("eyebrowRegalos").value.trim(),
+      regalosTitulo: document.getElementById("regalosTitulo").value.trim(),
+      eyebrowRSVP: document.getElementById("eyebrowRSVP").value.trim(),
+      rsvpTitulo: document.getElementById("rsvpTitulo").value.trim(),
+      rsvpSeleccionaTexto: document.getElementById("rsvpSeleccionaTexto").value.trim(),
+      footerGracias: document.getElementById("footerGracias").value.trim(),
       historiaTexto: document.getElementById("historiaTexto").value.trim(),
       itinerario: Array.from(document.querySelectorAll(".fila-itinerario")).map(fila => ({
         hora: fila.querySelector(".it-hora").value.trim(),
