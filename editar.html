@@ -66,6 +66,16 @@
   .btn-agregar { background: none; border: 1px dashed var(--color-secondary); color: #8a6d1f; border-radius: 0.6rem; padding: 0.7rem 1rem; font-size: 0.85rem; cursor: pointer; width: 100%; min-height: 44px; }
 
   .btn-principal { width: 100%; min-height: 50px; background: var(--color-primary); color: var(--color-surface); border: none; border-radius: 999px; font-size: 0.9rem; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; margin-top: 0.6rem; }
+
+  .botones-scroll { position: fixed; right: 1.1rem; bottom: 1.1rem; display: flex; flex-direction: column; gap: 0.6rem; z-index: 40; }
+  .botones-scroll button {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--color-primary); color: var(--color-surface);
+    border: none; font-size: 1.2rem; cursor: pointer;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .botones-scroll button:active { opacity: 0.85; }
   .btn-secundario { width: 100%; min-height: 44px; background: none; border: 1px solid var(--color-border); color: var(--color-text); border-radius: 999px; font-size: 0.82rem; cursor: pointer; margin-top: 0.6rem; }
 
   .mensaje-guardado { text-align: center; font-size: 0.9rem; color: var(--color-primary); background: rgba(64,80,68,0.1); border-radius: 0.7rem; padding: 0.9rem; margin-top: 1rem; display: none; }
@@ -434,6 +444,7 @@
     if (campoPassword.value === passwordActual) {
       pantallaLogin.hidden = true;
       panelEditar.hidden = false;
+      document.getElementById("botonesScroll").hidden = false;
       cargarFormulario();
     } else {
       errorLogin.textContent = "Contraseña incorrecta.";
@@ -872,7 +883,19 @@
       alert("Hubo un problema guardando los cambios. Intenta de nuevo.");
     }
   });
+
+  document.getElementById("btnSubirArriba").addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  document.getElementById("btnBajarAbajo").addEventListener("click", () => {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  });
 })();
 </script>
+<div class="botones-scroll" id="botonesScroll" hidden>
+  <button type="button" id="btnSubirArriba" title="Ir arriba" aria-label="Ir arriba">↑</button>
+  <button type="button" id="btnBajarAbajo" title="Ir abajo" aria-label="Ir abajo">↓</button>
+</div>
+
 </body>
 </html>
