@@ -34,6 +34,12 @@
   .encabezado h1 { font-size: 1.6rem; margin: 0; }
   .encabezado a { color: var(--color-text-soft); font-size: 0.8rem; text-decoration: none; border-bottom: 1px solid var(--color-border); }
 
+  .fila-actualizacion { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; margin-bottom: 1rem; font-size: 0.75rem; color: var(--color-text-soft); }
+  .fila-actualizacion.alerta { color: #8a3a2c; font-weight: 600; }
+  #btnActualizarAhora {
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 999px;
+    padding: 0.5rem 0.9rem; font-size: 0.75rem; color: var(--color-primary); cursor: pointer; white-space: nowrap;
+  }
   .estadisticas { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.7rem; margin-bottom: 1.4rem; }
   @media (min-width: 560px) { .estadisticas { grid-template-columns: repeat(4, 1fr); } }
   .stat { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 0.9rem; padding: 0.9rem 0.6rem; text-align: center; }
@@ -112,6 +118,11 @@
   <div class="encabezado">
     <h1>Control de Ingreso</h1>
     <a href="admin.html">← Volver a admin</a>
+  </div>
+
+  <div class="fila-actualizacion">
+    <span id="ultimaActualizacion">Actualizado hace 0s</span>
+    <button type="button" id="btnActualizarAhora">🔄 Actualizar ahora</button>
   </div>
 
   <div class="estadisticas">
@@ -198,6 +209,8 @@
     const btnIngresaronTodos = document.getElementById("btnIngresaronTodos");
     const avisoToque = document.getElementById("avisoToque");
 
+    let segundosDesdeActualizacion = 0;
+
     async function cargarEstado() {
       try {
         const respuesta = await fetch(API_URL + "?action=getEstadoIngresos");
@@ -206,11 +219,27 @@
       } catch (error) {
         return;
       }
+      segundosDesdeActualizacion = 0;
+      actualizarIndicadorTiempo();
       ordenarEstado();
       pintarEstadisticas();
       pintarRejilla();
       if (slugModalAbierto) pintarModal(slugModalAbierto);
     }
+
+    function actualizarIndicadorTiempo() {
+      const indicador = document.getElementById("ultimaActualizacion");
+      const fila = indicador.parentElement;
+      indicador.textContent = "Actualizado hace " + segundosDesdeActualizacion + "s";
+      fila.classList.toggle("alerta", segundosDesdeActualizacion >= 20);
+    }
+
+    document.getElementById("btnActualizarAhora").addEventListener("click", cargarEstado);
+
+    setInterval(() => {
+      segundosDesdeActualizacion++;
+      actualizarIndicadorTiempo();
+    }, 1000);
 
     function ordenarEstado() {
       const peso = { pendiente: 0, parcial: 1, completo: 2 };
@@ -296,6 +325,28 @@
       });
     }
 
+    async function enviarConReintento(nombreAccion, cuerpo, intento) {
+      intento = intento || 1;
+      try {
+        const respuesta = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(cuerpo)
+        });
+        const datos = await respuesta.json();
+        if (datos && datos.ok === false && intento < 3) {
+          await new Promise(resolver => setTimeout(resolver, 700));
+          return enviarConReintento(nombreAccion, cuerpo, intento + 1);
+        }
+      } catch (error) {
+        if (intento < 3) {
+          await new Promise(resolver => setTimeout(resolver, 700));
+          return enviarConReintento(nombreAccion, cuerpo, intento + 1);
+        }
+        // Tras 3 intentos, se deja que la próxima actualización automática (cada 6s) reconcilie el estado real.
+      }
+    }
+
     async function registrarUno(slug, invitado) {
       const inv = estadoActual.find(x => x.slug === slug);
       if (inv) {
@@ -310,13 +361,7 @@
       pintarRejilla();
       if (slugModalAbierto) pintarModal(slugModalAbierto);
 
-      try {
-        await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "registrarIngreso", slug: slug, invitado: invitado })
-        });
-      } catch (error) { /* la próxima actualización automática corrige cualquier desfase */ }
+      await enviarConReintento("registrarIngreso", { action: "registrarIngreso", slug: slug, invitado: invitado });
     }
 
     async function registrarTodos(slug) {
@@ -332,13 +377,7 @@
       pintarRejilla();
       if (slugModalAbierto) pintarModal(slugModalAbierto);
 
-      try {
-        await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "registrarIngresoMasivo", slug: slug, personas: pendientes })
-        });
-      } catch (error) { /* la próxima actualización automática corrige cualquier desfase */ }
+      await enviarConReintento("registrarIngresoMasivo", { action: "registrarIngresoMasivo", slug: slug, personas: pendientes });
     }
 
     btnIngresaronTodos.addEventListener("click", () => {
