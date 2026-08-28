@@ -441,7 +441,19 @@
       <form id="formEditar">
       <div class="tab-panel activo" id="tabDatos">
         <div class="bloque">
-          <h2>Novios y fecha</h2>
+          <h2>Sobre (pantalla de bienvenida)</h2>
+          <div class="campo">
+            <label>Texto de instrucción sobre el sobre cerrado</label
+            ><input
+              type="text"
+              id="sobreInstruccion"
+              placeholder="Toca para abrir tu invitación"
+            />
+          </div>
+        </div>
+
+        <div class="bloque">
+          <h2>Portada</h2>
           <div class="fila-dos">
             <div class="campo">
               <label>Nombre 1</label><input type="text" id="nombreNovio" />
@@ -450,219 +462,22 @@
               <label>Nombre 2</label><input type="text" id="nombreNovia" />
             </div>
           </div>
-          <div class="fila-dos">
-            <div class="campo">
-              <label>Fecha y hora de la boda</label
-              ><input type="datetime-local" id="fechaBoda" />
-            </div>
-            <div class="campo">
-              <label>Plazo límite para RSVP</label
-              ><input type="date" id="fechaLimiteRSVP" />
-            </div>
+          <div class="campo">
+            <label>Fecha y hora de la boda</label
+            ><input type="datetime-local" id="fechaBoda" />
           </div>
           <div class="campo">
-            <label
-              >Mensaje del plazo de RSVP (usa <code>{fecha}</code> donde quieras
-              que aparezca la fecha)</label
-            ><input
-              type="text"
-              id="rsvpPlazoMensaje"
-              placeholder="Por favor confírmanos antes del {fecha}."
-            />
+            <label>Subtítulo bajo los nombres</label
+            ><input type="text" id="portadaSubtitulo" />
           </div>
           <div class="campo">
             <label>Frase de la portada</label
             ><textarea id="fraseCarta"></textarea>
           </div>
-        </div>
-
-        <div class="bloque">
-          <h2>Lugar</h2>
           <div class="campo">
-            <label>Nombre del lugar</label
-            ><input type="text" id="lugarNombre" />
+            <label>Texto "desliza para ver más"</label
+            ><input type="text" id="scrollHintTexto" />
           </div>
-          <div class="campo">
-            <label>Dirección</label><input type="text" id="lugarDireccion" />
-          </div>
-          <div class="campo">
-            <label>Texto de búsqueda para el mapa (nombre + ciudad)</label
-            ><input type="text" id="mapaQuery" />
-          </div>
-          <div class="campo">
-            <label>URL de mapa incrustado (opcional, más preciso)</label>
-            <p
-              style="
-                font-size: 0.8rem;
-                color: var(--color-text-soft);
-                margin-bottom: 0.5rem;
-              "
-            >
-              Si la dejas vacía, se usa un mapa genérico basado en el texto de
-              búsqueda de arriba. Para uno más preciso: en Google Maps, busca
-              el lugar → "Compartir" → "Insertar un mapa" → copia solo la URL
-              que está dentro de <code>src="..."</code> del código que te dan.
-            </p>
-            <input
-              type="text"
-              id="mapaEmbedUrl"
-              placeholder="https://www.google.com/maps/embed?pb=..."
-            />
-          </div>
-        </div>
-
-        <div class="bloque">
-          <h2>Nuestra historia</h2>
-          <div class="campo">
-            <label>Título de la sección</label
-            ><input
-              type="text"
-              id="historiaTitulo"
-              placeholder="Cómo empezó todo"
-            />
-          </div>
-          <div class="campo">
-            <label>Texto</label><textarea id="historiaTexto"></textarea>
-          </div>
-        </div>
-
-        <div class="bloque">
-          <h2>Itinerario</h2>
-          <div id="listaItinerarioEditor"></div>
-          <button type="button" class="btn-agregar" id="btnAgregarItinerario">
-            + Agregar actividad
-          </button>
-        </div>
-
-        <div class="bloque">
-          <h2>Vestuario y regalos</h2>
-          <div class="campo">
-            <label>Título del vestuario</label
-            ><input type="text" id="vestuarioTitulo" />
-          </div>
-          <div class="campo">
-            <label>Recomendaciones (una por línea)</label
-            ><textarea
-              id="recomendaciones"
-              placeholder="Escribe una recomendación por línea"
-            ></textarea>
-          </div>
-          <div class="campo">
-            <label>Texto de regalos</label
-            ><textarea id="regalosTexto"></textarea>
-          </div>
-          <div class="campo">
-            <label>Aviso bajo la lista de invitados</label
-            ><textarea id="restriccionInvitados"></textarea>
-          </div>
-          <div class="campo">
-            <label
-              >Alerta importante (destacada en rojo, debajo del aviso
-              anterior)</label
-            ><textarea
-              id="alertaImportante"
-              placeholder="Ej: Si no confirmas tu asistencia no podrás ingresar."
-            ></textarea>
-          </div>
-          <div class="campo">
-            <label>Nota de privacidad (bajo el botón de RSVP)</label
-            ><textarea id="notaPrivacidad"></textarea>
-          </div>
-        </div>
-
-        <div class="bloque">
-          <h2>Mensaje de WhatsApp al enviar invitaciones</h2>
-          <p
-            style="
-              font-size: 0.85rem;
-              color: var(--color-text-soft);
-              margin-bottom: 0.8rem;
-            "
-          >
-            Este es el texto que se genera automáticamente en
-            <strong>admin.html</strong> cuando das clic en "Enviar por
-            WhatsApp" para cada familia. Usa
-            <strong>{nombre}</strong> donde quieras que aparezca el nombre de
-            la familia, y <strong>{enlace}</strong> donde quieras que aparezca
-            el link de su invitación personalizada. Ambos se reemplazan
-            automáticamente.
-          </p>
-          <div class="campo">
-            <label>Texto del mensaje</label
-            ><textarea
-              id="mensajeWhatsApp"
-              placeholder="¡Hola {nombre}! Con mucha alegría queremos invitarlos a nuestra boda. Aquí está su invitación personalizada: {enlace}"
-            ></textarea>
-          </div>
-        </div>
-
-        <div class="bloque">
-          <h2>Colores</h2>
-          <div class="fila-dos">
-            <div class="campo campo-color">
-              <input type="color" id="colorPrimary" /><label
-                >Color principal (verde)</label
-              >
-            </div>
-            <div class="campo campo-color">
-              <input type="color" id="colorSecondary" /><label
-                >Color de acento (dorado)</label
-              >
-            </div>
-          </div>
-          <div class="fila-dos">
-            <div class="campo campo-color">
-              <input type="color" id="colorBackground" /><label>Fondo</label>
-            </div>
-            <div class="campo campo-color">
-              <input type="color" id="colorSurface" /><label
-                >Superficie / tarjetas</label
-              >
-            </div>
-          </div>
-          <div class="fila-dos">
-            <div class="campo campo-color">
-              <input type="color" id="colorAcentoPortada" /><label
-                >Acento en portada (el "&amp;" y "NUESTRA BODA")</label
-              >
-            </div>
-          </div>
-          <div class="campo">
-            <label>Estilo tipográfico</label>
-            <select id="tipografia">
-              <option value="adobe">
-                Firma elegante (Warbler Deck + Greycliff CF)
-              </option>
-              <option value="romantico">
-                Romántico floral (Playfair Display + Lato)
-              </option>
-              <option value="clasico">
-                Clásico elegante (Cormorant + Montserrat)
-              </option>
-            </select>
-            <div class="vista-previa-tipografia" id="vistaPreviaTipografia">
-              <p class="vpt-titulo">Sergio &amp; Natalia</p>
-              <p class="vpt-cuerpo">
-                Así se ve el texto normal de la invitación con este estilo.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="bloque">
-          <h2>Fotos</h2>
-          <p
-            style="
-              font-size: 0.85rem;
-              color: var(--color-text-soft);
-              margin-bottom: 1rem;
-            "
-          >
-            Sube tus fotos a la carpeta <code>fotos</code> de tu repositorio en
-            GitHub, luego dale clic a "Elegir de galería" para seleccionarlas
-            sin escribir nada a mano. También puedes pegar un enlace o subir un
-            archivo comprimido como respaldo.
-          </p>
 
           <div class="campo">
             <label>Foto de portada (escritorio)</label>
@@ -762,19 +577,149 @@
         </div>
 
         <div class="bloque">
-          <h2>Fotos de nuestra historia</h2>
+          <h2>Saludo a la familia</h2>
+          <div class="fila-dos">
+            <div class="campo">
+              <label>Etiqueta</label
+              ><input type="text" id="eyebrowSaludo" />
+            </div>
+            <div class="campo">
+              <label>Frase de introducción</label
+              ><input type="text" id="saludoIntro" />
+            </div>
+          </div>
+          <div class="fila-dos">
+            <div class="campo">
+              <label>Frase "reservada especialmente para"</label
+              ><input type="text" id="reservadaTexto" />
+            </div>
+            <div class="campo">
+              <label>Etiqueta del código de invitación</label
+              ><input type="text" id="codigoEtiqueta" />
+            </div>
+          </div>
+          <div class="campo">
+            <label>Aviso bajo la lista de invitados</label
+            ><textarea id="restriccionInvitados"></textarea>
+          </div>
+        </div>
+
+        <div class="bloque">
+          <h2>Fecha y cuenta regresiva</h2>
+          <div class="fila-dos">
+            <div class="campo">
+              <label>Etiqueta</label
+              ><input type="text" id="eyebrowFecha" />
+            </div>
+            <div class="campo">
+              <label>Texto del botón "agregar a calendario"</label
+              ><input type="text" id="btnCalendarioTexto" />
+            </div>
+          </div>
+          <div class="campo">
+            <label>Plazo límite para RSVP</label
+            ><input type="date" id="fechaLimiteRSVP" />
+          </div>
+          <div class="campo">
+            <label
+              >Mensaje del plazo de RSVP (usa <code>{fecha}</code> donde
+              quieras que aparezca la fecha)</label
+            ><input
+              type="text"
+              id="rsvpPlazoMensaje"
+              placeholder="Por favor confírmanos antes del {fecha}."
+            />
+          </div>
           <p
             style="
-              font-size: 0.85rem;
+              font-size: 0.82rem;
               color: var(--color-text-soft);
-              margin-bottom: 1rem;
+              margin: 1rem 0 0.6rem;
             "
           >
-            Agrega tantas fotos como quieras para la sección "Nuestra historia".
+            Etiquetas de la cuenta regresiva (días, horas, minutos, segundos):
           </p>
+          <div class="fila-dos">
+            <div class="campo">
+              <label>Días</label><input type="text" id="cuentaDiasTexto" />
+            </div>
+            <div class="campo">
+              <label>Horas</label><input type="text" id="cuentaHorasTexto" />
+            </div>
+          </div>
+          <div class="fila-dos">
+            <div class="campo">
+              <label>Minutos</label><input type="text" id="cuentaMinTexto" />
+            </div>
+            <div class="campo">
+              <label>Segundos</label><input type="text" id="cuentaSegTexto" />
+            </div>
+          </div>
+        </div>
+
+        <div class="bloque">
+          <h2>Lugar</h2>
+          <div class="campo">
+            <label>Etiqueta</label
+            ><input type="text" id="eyebrowLugar" />
+          </div>
+          <div class="campo">
+            <label>Nombre del lugar</label
+            ><input type="text" id="lugarNombre" />
+          </div>
+          <div class="campo">
+            <label>Dirección</label><input type="text" id="lugarDireccion" />
+          </div>
+          <div class="campo">
+            <label>Texto de búsqueda para el mapa (nombre + ciudad)</label
+            ><input type="text" id="mapaQuery" />
+          </div>
+          <div class="campo">
+            <label>URL de mapa incrustado (opcional, más preciso)</label>
+            <p
+              style="
+                font-size: 0.8rem;
+                color: var(--color-text-soft);
+                margin-bottom: 0.5rem;
+              "
+            >
+              Si la dejas vacía, se usa un mapa genérico basado en el texto de
+              búsqueda de arriba. Para uno más preciso: en Google Maps, busca
+              el lugar → "Compartir" → "Insertar un mapa" → copia solo la URL
+              que está dentro de <code>src="..."</code> del código que te dan.
+            </p>
+            <input
+              type="text"
+              id="mapaEmbedUrl"
+              placeholder="https://www.google.com/maps/embed?pb=..."
+            />
+          </div>
+          <div class="campo">
+            <label>Texto del botón de mapa</label
+            ><input type="text" id="btnMapaTexto" />
+          </div>
+        </div>
+
+        <div class="bloque">
+          <h2>Nuestra historia</h2>
+          <div class="campo">
+            <label>Etiqueta</label
+            ><input type="text" id="eyebrowHistoria" />
+          </div>
+          <div class="campo">
+            <label>Título de la sección</label
+            ><input
+              type="text"
+              id="historiaTitulo"
+              placeholder="Cómo empezó todo"
+            />
+          </div>
+          <div class="campo">
+            <label>Texto</label><textarea id="historiaTexto"></textarea>
+          </div>
 
           <div class="campo">
-            <label>Cómo se ven en la invitación</label>
+            <label>Cómo se ven las fotos</label>
             <select id="fotosHistoriaEstilo">
               <option value="cuadricula-2">Cuadrícula (2 columnas)</option>
               <option value="cuadricula-3">
@@ -794,6 +739,16 @@
 
         <div class="bloque">
           <h2>Galería de fotos</h2>
+          <div class="fila-dos">
+            <div class="campo">
+              <label>Etiqueta</label
+              ><input type="text" id="eyebrowGaleria" />
+            </div>
+            <div class="campo">
+              <label>Título de la galería</label
+              ><input type="text" id="galeriaTitulo" />
+            </div>
+          </div>
           <p
             style="
               font-size: 0.85rem;
@@ -865,122 +820,69 @@
         </div>
 
         <div class="bloque">
-          <h2>Textos y títulos de cada sección</h2>
-          <p
-            style="
-              font-size: 0.85rem;
-              color: var(--color-text-soft);
-              margin-bottom: 1rem;
-            "
-          >
-            Estos son las etiquetas y encabezados fijos de cada parte de la
-            invitación. Puedes cambiar cualquiera.
-          </p>
-
+          <h2>Itinerario</h2>
           <div class="fila-dos">
             <div class="campo">
-              <label>Subtítulo bajo los nombres (portada)</label
-              ><input type="text" id="portadaSubtitulo" />
-            </div>
-            <div class="campo">
-              <label>Texto "desliza para ver más"</label
-              ><input type="text" id="scrollHintTexto" />
-            </div>
-          </div>
-
-          <div class="fila-dos">
-            <div class="campo">
-              <label>Etiqueta: saludo</label
-              ><input type="text" id="eyebrowSaludo" />
-            </div>
-            <div class="campo">
-              <label>Frase de introducción del saludo</label
-              ><input type="text" id="saludoIntro" />
-            </div>
-          </div>
-          <div class="fila-dos">
-            <div class="campo">
-              <label>Frase "reservada especialmente para"</label
-              ><input type="text" id="reservadaTexto" />
-            </div>
-            <div class="campo">
-              <label>Etiqueta del código de invitación</label
-              ><input type="text" id="codigoEtiqueta" />
-            </div>
-          </div>
-
-          <div class="fila-dos">
-            <div class="campo">
-              <label>Etiqueta: fecha</label
-              ><input type="text" id="eyebrowFecha" />
-            </div>
-            <div class="campo">
-              <label>Texto del botón "agregar a calendario"</label
-              ><input type="text" id="btnCalendarioTexto" />
-            </div>
-          </div>
-
-          <div class="fila-dos">
-            <div class="campo">
-              <label>Etiqueta: lugar</label
-              ><input type="text" id="eyebrowLugar" />
-            </div>
-            <div class="campo">
-              <label>Texto del botón de mapa</label
-              ><input type="text" id="btnMapaTexto" />
-            </div>
-          </div>
-
-          <div class="campo">
-            <label>Etiqueta: historia</label
-            ><input type="text" id="eyebrowHistoria" />
-          </div>
-
-          <div class="fila-dos">
-            <div class="campo">
-              <label>Etiqueta: galería</label
-              ><input type="text" id="eyebrowGaleria" />
-            </div>
-            <div class="campo">
-              <label>Título de la galería</label
-              ><input type="text" id="galeriaTitulo" />
-            </div>
-          </div>
-
-          <div class="fila-dos">
-            <div class="campo">
-              <label>Etiqueta: itinerario</label
+              <label>Etiqueta</label
               ><input type="text" id="eyebrowItinerario" />
             </div>
             <div class="campo">
-              <label>Título del itinerario</label
+              <label>Título</label
               ><input type="text" id="itinerarioTitulo" />
             </div>
           </div>
+          <div id="listaItinerarioEditor"></div>
+          <button type="button" class="btn-agregar" id="btnAgregarItinerario">
+            + Agregar actividad
+          </button>
+        </div>
 
+        <div class="bloque">
+          <h2>Vestuario</h2>
           <div class="campo">
-            <label>Etiqueta: vestuario</label
+            <label>Etiqueta</label
             ><input type="text" id="eyebrowVestuario" />
           </div>
+          <div class="campo">
+            <label>Título del vestuario</label
+            ><input type="text" id="vestuarioTitulo" />
+          </div>
+          <div class="campo">
+            <label>Recomendaciones (una por línea)</label
+            ><textarea
+              id="recomendaciones"
+              placeholder="Escribe una recomendación por línea"
+            ></textarea>
+          </div>
+        </div>
 
+        <div class="bloque">
+          <h2>Regalos</h2>
           <div class="fila-dos">
             <div class="campo">
-              <label>Etiqueta: regalos</label
+              <label>Etiqueta</label
               ><input type="text" id="eyebrowRegalos" />
             </div>
             <div class="campo">
-              <label>Título de regalos</label
+              <label>Título</label
               ><input type="text" id="regalosTitulo" />
             </div>
           </div>
+          <div class="campo">
+            <label>Texto de regalos</label
+            ><textarea id="regalosTexto"></textarea>
+          </div>
+        </div>
 
+        <div class="bloque">
+          <h2>RSVP</h2>
           <div class="fila-dos">
             <div class="campo">
-              <label>Etiqueta: RSVP</label
+              <label>Etiqueta</label
               ><input type="text" id="eyebrowRSVP" />
             </div>
             <div class="campo">
-              <label>Título del RSVP</label
+              <label>Título</label
               ><input type="text" id="rsvpTitulo" />
             </div>
           </div>
@@ -988,10 +890,124 @@
             <label>Texto sobre las casillas de invitados</label
             ><input type="text" id="rsvpSeleccionaTexto" />
           </div>
+          <div class="campo">
+            <label
+              >Alerta importante (destacada en rojo, debajo de la lista)</label
+            ><textarea
+              id="alertaImportante"
+              placeholder="Ej: Si no confirmas tu asistencia no podrás ingresar."
+            ></textarea>
+          </div>
+          <div class="campo">
+            <label>Nota de privacidad (bajo el botón de RSVP)</label
+            ><textarea id="notaPrivacidad"></textarea>
+          </div>
+          <div class="campo">
+            <label>Mensaje cuando ya se cerró el plazo de RSVP</label
+            ><textarea
+              id="rsvpCerradoTexto"
+              placeholder="El plazo para confirmar asistencia ha finalizado. Si tienes algún inconveniente, por favor escríbenos directamente."
+            ></textarea>
+          </div>
+        </div>
 
+        <div class="bloque">
+          <h2>Pie de página y mensajes generales</h2>
           <div class="campo">
             <label>Texto de agradecimiento (pie de página)</label
             ><input type="text" id="footerGracias" />
+          </div>
+          <div class="campo">
+            <label>Texto del botón flotante de RSVP</label
+            ><input type="text" id="flotanteRSVPTexto" placeholder="RSVP" />
+          </div>
+          <div class="campo">
+            <label
+              >Mensaje cuando alguien abre un enlace de invitación
+              inválido</label
+            ><textarea
+              id="errorInvitacionTexto"
+              placeholder="No encontramos esta invitación. Por favor verifica el enlace que recibiste, o contáctanos directamente."
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="bloque">
+          <h2>Apariencia (colores y tipografía)</h2>
+          <div class="fila-dos">
+            <div class="campo campo-color">
+              <input type="color" id="colorPrimary" /><label
+                >Color principal (verde)</label
+              >
+            </div>
+            <div class="campo campo-color">
+              <input type="color" id="colorSecondary" /><label
+                >Color de acento (dorado)</label
+              >
+            </div>
+          </div>
+          <div class="fila-dos">
+            <div class="campo campo-color">
+              <input type="color" id="colorBackground" /><label>Fondo</label>
+            </div>
+            <div class="campo campo-color">
+              <input type="color" id="colorSurface" /><label
+                >Superficie / tarjetas</label
+              >
+            </div>
+          </div>
+          <div class="fila-dos">
+            <div class="campo campo-color">
+              <input type="color" id="colorAcentoPortada" /><label
+                >Acento en portada (el "&amp;" y "NUESTRA BODA")</label
+              >
+            </div>
+          </div>
+          <div class="campo">
+            <label>Estilo tipográfico</label>
+            <select id="tipografia">
+              <option value="adobe">
+                Firma elegante (Warbler Deck + Greycliff CF)
+              </option>
+              <option value="romantico">
+                Romántico floral (Playfair Display + Lato)
+              </option>
+              <option value="clasico">
+                Clásico elegante (Cormorant + Montserrat)
+              </option>
+            </select>
+            <div class="vista-previa-tipografia" id="vistaPreviaTipografia">
+              <p class="vpt-titulo">Sergio &amp; Natalia</p>
+              <p class="vpt-cuerpo">
+                Así se ve el texto normal de la invitación con este estilo.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bloque">
+          <h2>Mensaje de WhatsApp al enviar invitaciones</h2>
+          <p
+            style="
+              font-size: 0.85rem;
+              color: var(--color-text-soft);
+              margin-bottom: 0.8rem;
+            "
+          >
+            Este es el texto que se genera automáticamente en
+            <strong>admin.html</strong> cuando das clic en "Enviar por
+            WhatsApp" para cada familia. Usa
+            <strong>{nombre}</strong> donde quieras que aparezca el nombre de
+            la familia, y <strong>{enlace}</strong> donde quieras que aparezca
+            el link de su invitación personalizada. Ambos se reemplazan
+            automáticamente.
+          </p>
+          <div class="campo">
+            <label>Texto del mensaje</label
+            ><textarea
+              id="mensajeWhatsApp"
+              placeholder="¡Hola {nombre}! Con mucha alegría queremos invitarlos a nuestra boda. Aquí está su invitación personalizada: {enlace}"
+            ></textarea>
           </div>
         </div>
 
@@ -1134,6 +1150,16 @@
           fechaBodaISO: "2026-11-07T14:30:00-05:00",
           fechaLimiteRSVPISO: "2026-10-15T23:59:59-05:00",
           fraseCarta: "El amor se multiplica cuando se comparte.",
+          sobreInstruccion: "Toca para abrir tu invitación",
+          cuentaDiasTexto: "Días",
+          cuentaHorasTexto: "Horas",
+          cuentaMinTexto: "Min",
+          cuentaSegTexto: "Seg",
+          rsvpCerradoTexto:
+            "El plazo para confirmar asistencia ha finalizado. Si tienes algún inconveniente, por favor escríbenos directamente.",
+          flotanteRSVPTexto: "RSVP",
+          errorInvitacionTexto:
+            "No encontramos esta invitación. Por favor verifica el enlace que recibiste, o contáctanos directamente.",
           lugarNombre: "Finca Silletera El Pensamiento",
           lugarDireccion: "Santa Elena, Medellín, Antioquia, Colombia",
           mapaQuery: "Finca Silletera El Pensamiento Santa Elena Antioquia Colombia",
@@ -1389,6 +1415,22 @@
             config.fechaLimiteRSVPISO,
           );
           document.getElementById("fraseCarta").value = config.fraseCarta;
+          document.getElementById("sobreInstruccion").value =
+            config.sobreInstruccion || "";
+          document.getElementById("cuentaDiasTexto").value =
+            config.cuentaDiasTexto || "";
+          document.getElementById("cuentaHorasTexto").value =
+            config.cuentaHorasTexto || "";
+          document.getElementById("cuentaMinTexto").value =
+            config.cuentaMinTexto || "";
+          document.getElementById("cuentaSegTexto").value =
+            config.cuentaSegTexto || "";
+          document.getElementById("rsvpCerradoTexto").value =
+            config.rsvpCerradoTexto || "";
+          document.getElementById("flotanteRSVPTexto").value =
+            config.flotanteRSVPTexto || "";
+          document.getElementById("errorInvitacionTexto").value =
+            config.errorInvitacionTexto || "";
           document.getElementById("lugarNombre").value = config.lugarNombre;
           document.getElementById("lugarDireccion").value =
             config.lugarDireccion;
@@ -1934,6 +1976,30 @@
                 document.getElementById("fechaLimiteRSVP").value + "T23:59:59",
               ).toISOString(),
               fraseCarta: document.getElementById("fraseCarta").value.trim(),
+              sobreInstruccion: document
+                .getElementById("sobreInstruccion")
+                .value.trim(),
+              cuentaDiasTexto: document
+                .getElementById("cuentaDiasTexto")
+                .value.trim(),
+              cuentaHorasTexto: document
+                .getElementById("cuentaHorasTexto")
+                .value.trim(),
+              cuentaMinTexto: document
+                .getElementById("cuentaMinTexto")
+                .value.trim(),
+              cuentaSegTexto: document
+                .getElementById("cuentaSegTexto")
+                .value.trim(),
+              rsvpCerradoTexto: document
+                .getElementById("rsvpCerradoTexto")
+                .value.trim(),
+              flotanteRSVPTexto: document
+                .getElementById("flotanteRSVPTexto")
+                .value.trim(),
+              errorInvitacionTexto: document
+                .getElementById("errorInvitacionTexto")
+                .value.trim(),
               lugarNombre: document.getElementById("lugarNombre").value.trim(),
               lugarDireccion: document
                 .getElementById("lugarDireccion")

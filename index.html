@@ -315,7 +315,7 @@
     <div class="sobre-solapa-borde"></div>
     <div class="sobre-solapa"></div>
     <img class="sobre-sello" id="sobreSello" src="fotos/file_00000000e9e4820e97a0727676125748.webp" alt="Sello S &amp; N">
-    <p class="sobre-instruccion">Toca para abrir tu invitación</p>
+    <p class="sobre-instruccion" id="sobreInstruccion">Toca para abrir tu invitación</p>
   </div>
 </header>
 
@@ -352,10 +352,10 @@
       <p class="fecha-dia-grande" id="fechaDiaGrande">—</p>
       <p class="fecha-detalle" id="fechaDetalle">—</p>
       <div class="cuenta-regresiva" id="cuentaRegresiva" aria-live="polite">
-        <div><span class="cuenta-numero" id="cr-dias">00</span><span class="cuenta-etiqueta">Días</span></div>
-        <div><span class="cuenta-numero" id="cr-horas">00</span><span class="cuenta-etiqueta">Horas</span></div>
-        <div><span class="cuenta-numero" id="cr-min">00</span><span class="cuenta-etiqueta">Min</span></div>
-        <div><span class="cuenta-numero" id="cr-seg">00</span><span class="cuenta-etiqueta">Seg</span></div>
+        <div><span class="cuenta-numero" id="cr-dias">00</span><span class="cuenta-etiqueta" id="cuentaDiasTexto">Días</span></div>
+        <div><span class="cuenta-numero" id="cr-horas">00</span><span class="cuenta-etiqueta" id="cuentaHorasTexto">Horas</span></div>
+        <div><span class="cuenta-numero" id="cr-min">00</span><span class="cuenta-etiqueta" id="cuentaMinTexto">Min</span></div>
+        <div><span class="cuenta-numero" id="cr-seg">00</span><span class="cuenta-etiqueta" id="cuentaSegTexto">Seg</span></div>
       </div>
       <a class="btn-calendario" id="btnCalendario" href="#" target="_blank" rel="noopener">Agregar a mi calendario</a>
     </div>
@@ -462,7 +462,7 @@
       </form>
 
       <div class="rsvp-cerrado" id="rsvpCerrado" hidden>
-        El plazo para confirmar asistencia ha finalizado. Si tienes algún inconveniente, por favor escríbenos directamente.
+        <span id="rsvpCerradoTexto">El plazo para confirmar asistencia ha finalizado. Si tienes algún inconveniente, por favor escríbenos directamente.</span>
       </div>
     </div>
   </section>
@@ -480,7 +480,7 @@
 </main>
 
 <div class="pantalla-error" id="pantallaError" hidden>
-  <p>No encontramos esta invitación. Por favor verifica el enlace que recibiste, o contáctanos directamente.</p>
+  <p id="errorInvitacionTexto">No encontramos esta invitación. Por favor verifica el enlace que recibiste, o contáctanos directamente.</p>
 </div>
 
 <button class="flotante-rsvp" id="flotanteRSVP" aria-label="Ir a confirmar asistencia">RSVP</button>
@@ -541,6 +541,14 @@
     fechaBodaISO: "2026-11-07T14:30:00-05:00",
     fechaLimiteRSVPISO: "2026-10-15T23:59:59-05:00",
     fraseCarta: "El amor se multiplica cuando se comparte.",
+    sobreInstruccion: "Toca para abrir tu invitación",
+    cuentaDiasTexto: "Días",
+    cuentaHorasTexto: "Horas",
+    cuentaMinTexto: "Min",
+    cuentaSegTexto: "Seg",
+    rsvpCerradoTexto: "El plazo para confirmar asistencia ha finalizado. Si tienes algún inconveniente, por favor escríbenos directamente.",
+    flotanteRSVPTexto: "RSVP",
+    errorInvitacionTexto: "No encontramos esta invitación. Por favor verifica el enlace que recibiste, o contáctanos directamente.",
     lugarNombre: "Finca Silletera El Pensamiento",
     lugarDireccion: "Santa Elena, Medellín, Antioquia, Colombia",
     mapaQuery: "Finca Silletera El Pensamiento Santa Elena Antioquia Colombia",
@@ -649,6 +657,7 @@
       : familias[0];
 
     if (!familia) {
+      document.getElementById("errorInvitacionTexto").textContent = config.errorInvitacionTexto || "No encontramos esta invitación. Por favor verifica el enlace que recibiste, o contáctanos directamente.";
       document.getElementById("pantallaError").hidden = false;
       document.getElementById("sobre").hidden = true;
       return;
@@ -740,6 +749,13 @@
   function aplicarTextosDeSecciones(config) {
     document.getElementById("portadaSubtitulo").textContent = config.portadaSubtitulo || "Nuestra Boda";
     document.getElementById("scrollHintTexto").textContent = config.scrollHintTexto || "Desliza para ver más";
+    document.getElementById("sobreInstruccion").textContent = config.sobreInstruccion || "Toca para abrir tu invitación";
+    document.getElementById("cuentaDiasTexto").textContent = config.cuentaDiasTexto || "Días";
+    document.getElementById("cuentaHorasTexto").textContent = config.cuentaHorasTexto || "Horas";
+    document.getElementById("cuentaMinTexto").textContent = config.cuentaMinTexto || "Min";
+    document.getElementById("cuentaSegTexto").textContent = config.cuentaSegTexto || "Seg";
+    document.getElementById("rsvpCerradoTexto").textContent = config.rsvpCerradoTexto || "El plazo para confirmar asistencia ha finalizado. Si tienes algún inconveniente, por favor escríbenos directamente.";
+    document.getElementById("flotanteRSVP").textContent = config.flotanteRSVPTexto || "RSVP";
     document.getElementById("eyebrowSaludo").textContent = config.eyebrowSaludo || "Con mucha alegría";
     document.getElementById("saludoIntro").textContent = config.saludoIntro || "Queremos compartir este día tan especial con";
     document.getElementById("reservadaTexto").textContent = config.reservadaTexto || "Esta invitación está reservada especialmente para";
@@ -747,6 +763,7 @@
     document.getElementById("eyebrowFecha").textContent = config.eyebrowFecha || "Guarda la fecha";
     document.getElementById("eyebrowLugar").textContent = config.eyebrowLugar || "Lugar";
     document.getElementById("eyebrowHistoria").textContent = config.eyebrowHistoria || "Nuestra historia";
+    document.getElementById("historiaTitulo").textContent = config.historiaTitulo || "Cómo empezó todo";
     document.getElementById("eyebrowGaleria").textContent = config.eyebrowGaleria || "Galería";
     document.getElementById("galeriaTitulo").textContent = config.galeriaTitulo || "Algunos momentos";
     document.getElementById("eyebrowItinerario").textContent = config.eyebrowItinerario || "Itinerario";
