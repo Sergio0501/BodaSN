@@ -18,6 +18,7 @@
   :root {
     --color-primary:    #405044;
     --color-secondary:  #c5a66a;
+    --color-portada-acento: #c5a66a;
     --color-background: #f7f2e9;
     --color-surface:    #fffdf8;
     --color-text:       #292b28;
@@ -141,9 +142,9 @@
   .portada-foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(20,22,18,0.65) 0%, rgba(20,22,18,0.32) 45%, rgba(20,22,18,0.4) 100%); z-index: -1; }
   .portada-contenido { text-align: center; width: 100%; }
   .portada-nombres { font-size: clamp(2.6rem, 11vw, 4.2rem); color: var(--color-surface); text-shadow: 0 2px 14px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.55); }
-  .portada-nombres span { display: block; font-family: var(--font-heading); font-style: italic; font-size: 0.42em; color: var(--color-secondary); margin: 0.3em 0; text-shadow: 0 2px 10px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.6); }
+  .portada-nombres span { display: block; font-family: var(--font-heading); font-style: italic; font-size: 0.42em; color: var(--color-portada-acento); margin: 0.3em 0; text-shadow: 0 2px 10px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.6); }
   .portada-fecha { font-size: 0.85rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.85); margin-top: 0.6rem; }
-  .portada-subtitulo { font-family: var(--font-heading); font-size: 1rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-secondary); text-align: center; margin-top: 0.7rem; text-shadow: 0 2px 10px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.6); }
+  .portada-subtitulo { font-family: var(--font-heading); font-size: 1rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-portada-acento); text-align: center; margin-top: 0.7rem; text-shadow: 0 2px 10px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.6); }
   .portada-frase { max-width: 420px; margin: 1.8rem auto 0; font-family: var(--font-heading); font-style: italic; font-size: 1.15rem; color: rgba(255,255,255,0.92); white-space: pre-line; }
   .scroll-hint { margin-top: 2.4rem; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.75; }
   .scroll-hint::after { content: ""; display: block; width: 1px; height: 28px; background: rgba(255,255,255,0.6); margin: 0.6rem auto 0; animation: baja 1.8s ease-in-out infinite; }
@@ -518,6 +519,7 @@
     regalosTexto: "Tu presencia es nuestro mejor regalo. Si deseas obsequiarnos algo adicional, tendremos lluvia de sobres.",
     notaPrivacidad: "Los datos serán utilizados únicamente para organizar nuestra boda. Puedes volver a este enlace y actualizar tu respuesta cuando quieras, antes de la fecha límite.",
     colores: { primary: "#405044", secondary: "#c5a66a", background: "#f7f2e9", surface: "#fffdf8" },
+    colorAcentoPortada: "#c5a66a",
     tipografia: "adobe",
     galeria: [],
     galeriaEstilo: "cuadricula-3",
@@ -605,6 +607,7 @@
       raiz.setProperty("--color-background", config.colores.background);
       raiz.setProperty("--color-surface", config.colores.surface);
     }
+    raiz.setProperty("--color-portada-acento", config.colorAcentoPortada || (config.colores && config.colores.secondary) || "#c5a66a");
 
     const tipografia = ESTILOS_TIPOGRAFICOS[config.tipografia] || ESTILOS_TIPOGRAFICOS.adobe;
     raiz.setProperty("--font-heading", tipografia.heading);

@@ -533,6 +533,13 @@
               >
             </div>
           </div>
+          <div class="fila-dos">
+            <div class="campo campo-color">
+              <input type="color" id="colorAcentoPortada" /><label
+                >Acento en portada (el "&amp;" y "NUESTRA BODA")</label
+              >
+            </div>
+          </div>
           <div class="campo">
             <label>Estilo tipográfico</label>
             <select id="tipografia">
@@ -1307,6 +1314,8 @@
             config.colores.background;
           document.getElementById("colorSurface").value =
             config.colores.surface;
+          document.getElementById("colorAcentoPortada").value =
+            config.colorAcentoPortada || config.colores.secondary;
           document.getElementById("tipografia").value =
             config.tipografia || "adobe";
           actualizarVistaPreviaTipografia();
@@ -1802,6 +1811,9 @@
                 background: document.getElementById("colorBackground").value,
                 surface: document.getElementById("colorSurface").value,
               },
+              colorAcentoPortada: document.getElementById(
+                "colorAcentoPortada",
+              ).value,
               tipografia: document.getElementById("tipografia").value,
               galeriaEstilo: document.getElementById("galeriaEstilo").value,
               galeria: Array.from(
