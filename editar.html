@@ -448,6 +448,26 @@
             <label>Texto de búsqueda para el mapa (nombre + ciudad)</label
             ><input type="text" id="mapaQuery" />
           </div>
+          <div class="campo">
+            <label>URL de mapa incrustado (opcional, más preciso)</label>
+            <p
+              style="
+                font-size: 0.8rem;
+                color: var(--color-text-soft);
+                margin-bottom: 0.5rem;
+              "
+            >
+              Si la dejas vacía, se usa un mapa genérico basado en el texto de
+              búsqueda de arriba. Para uno más preciso: en Google Maps, busca
+              el lugar → "Compartir" → "Insertar un mapa" → copia solo la URL
+              que está dentro de <code>src="..."</code> del código que te dan.
+            </p>
+            <input
+              type="text"
+              id="mapaEmbedUrl"
+              placeholder="https://www.google.com/maps/embed?pb=..."
+            />
+          </div>
         </div>
 
         <div class="bloque">
@@ -1044,13 +1064,14 @@
         const CONFIG_DEFECTO = {
           nombreNovio: "Sergio",
           nombreNovia: "Natalia",
-          fechaBodaISO: "2026-11-14T16:00:00-05:00",
-          fechaLimiteRSVPISO: "2026-10-01T23:59:59-05:00",
-          fraseCarta:
-            "Dos caminos que se encontraron para no separarse nunca más.",
-          lugarNombre: "Hacienda El Vergel",
-          lugarDireccion: "Km 3 vía Guarne, Antioquia, Colombia",
-          mapaQuery: "Hacienda El Vergel Guarne Antioquia Colombia",
+          fechaBodaISO: "2026-11-07T14:30:00-05:00",
+          fechaLimiteRSVPISO: "2026-10-15T23:59:59-05:00",
+          fraseCarta: "El amor se multiplica cuando se comparte.",
+          lugarNombre: "Finca Silletera El Pensamiento",
+          lugarDireccion: "Santa Elena, Medellín, Antioquia, Colombia",
+          mapaQuery: "Finca Silletera El Pensamiento Santa Elena Antioquia Colombia",
+          mapaEmbedUrl:
+            "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5603.302904532902!2d-75.4827861!3d6.2361756999999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e4427a873c3d9b7%3A0xa4d7ea69e64441e8!2sFinca%20Silletera%20El%20Pensamiento!5e1!3m2!1ses!2sco!4v1784657531501!5m2!1ses!2sco",
           historiaTitulo: "Cómo empezó todo",
           historiaTexto:
             "Nos conocimos hace algunos años y, entre risas y casualidades, supimos que queríamos construir una vida juntos.",
@@ -1107,9 +1128,9 @@
 
         const FAMILIAS_DEFECTO = [
           {
-            slug: "ocampo-jurado",
-            nombre: "Familia Ocampo Jurado",
-            invitados: ["Carlos Ocampo", "María Jurado", "Juan Ocampo"],
+            slug: "lorem-ipsum",
+            nombre: "Familia Lorem Ipsum",
+            invitados: ["Lorem", "Ipsum", "Dolor"],
           },
         ];
 
@@ -1267,6 +1288,8 @@
           document.getElementById("lugarDireccion").value =
             config.lugarDireccion;
           document.getElementById("mapaQuery").value = config.mapaQuery;
+          document.getElementById("mapaEmbedUrl").value =
+            config.mapaEmbedUrl || "";
           document.getElementById("historiaTitulo").value =
             config.historiaTitulo || "Cómo empezó todo";
 
@@ -1740,6 +1763,9 @@
                 .getElementById("lugarDireccion")
                 .value.trim(),
               mapaQuery: document.getElementById("mapaQuery").value.trim(),
+              mapaEmbedUrl: document
+                .getElementById("mapaEmbedUrl")
+                .value.trim(),
               historiaTitulo: document
                 .getElementById("historiaTitulo")
                 .value.trim(),
