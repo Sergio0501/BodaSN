@@ -532,6 +532,7 @@
         function iniciarControlDeIngreso() {
           let estadoActual = [];
           let slugModalAbierto = null;
+          const cambiosPendientes = new Map(); // clave "slug|nombre" -> timestamp del toque local
 
           const rejillaCodigos = document.getElementById("rejillaCodigos");
           const mensajeVacio = document.getElementById("mensajeVacio");
@@ -556,12 +557,53 @@
             } catch (error) {
               return;
             }
+            reconciliarConPendientes();
             segundosDesdeActualizacion = 0;
             actualizarIndicadorTiempo();
             ordenarEstado();
             pintarEstadisticas();
             pintarRejilla();
             if (slugModalAbierto) pintarModal(slugModalAbierto);
+          }
+
+          // Evita que la actualización automática (cada 6s) sobreescriba un
+          // toque reciente si el servidor todavía no alcanzó a confirmarlo.
+          function marcarPendiente(slug, nombre) {
+            cambiosPendientes.set(slug + "|" + nombre, Date.now());
+          }
+
+          function reconciliarConPendientes() {
+            const ahora = Date.now();
+            estadoActual.forEach((inv) => {
+              inv.personas.forEach((persona) => {
+                const clave = inv.slug + "|" + persona.nombre;
+                const marcadoEn = cambiosPendientes.get(clave);
+                if (marcadoEn === undefined) return;
+
+                if (persona.ingreso) {
+                  // El servidor ya refleja el cambio: dejamos de vigilarlo.
+                  cambiosPendientes.delete(clave);
+                } else if (ahora - marcadoEn < 15000) {
+                  // Aún no se ha confirmado en el servidor: mantenemos
+                  // nuestro estado local en vez de revertirlo.
+                  persona.ingreso = true;
+                } else {
+                  // Pasaron más de 15s sin confirmarse (probable falla de
+                  // guardado): dejamos de forzarlo y se muestra el real.
+                  cambiosPendientes.delete(clave);
+                }
+              });
+
+              inv.totalIngresados = inv.personas.filter(
+                (p) => p.ingreso,
+              ).length;
+              inv.estado =
+                inv.totalIngresados === 0
+                  ? "pendiente"
+                  : inv.totalIngresados === inv.totalConfirmados
+                    ? "completo"
+                    : "parcial";
+            });
           }
 
           function actualizarIndicadorTiempo() {
@@ -735,6 +777,7 @@
                   inv.totalIngresados === inv.totalConfirmados
                     ? "completo"
                     : "parcial";
+                marcarPendiente(slug, invitado);
               }
             }
             pintarEstadisticas();
@@ -761,6 +804,7 @@
             });
             inv.totalIngresados = inv.totalConfirmados;
             inv.estado = "completo";
+            pendientes.forEach((nombre) => marcarPendiente(slug, nombre));
             pintarEstadisticas();
             pintarRejilla();
             if (slugModalAbierto) pintarModal(slugModalAbierto);

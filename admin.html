@@ -522,12 +522,12 @@
             window.location.href.replace(/admin\.html.*$/, "index.html") +
               "?f=" +
               encodeURIComponent(familia.slug);
-          const mensaje =
-            "¡Hola " +
-            familia.nombre +
-            "! Con mucha alegría queremos invitarlos a nuestra boda. " +
-            "Aquí está su invitación personalizada: " +
-            enlace;
+          const plantilla =
+            (config && config.mensajeWhatsApp) ||
+            "¡Hola {nombre}! Con mucha alegría queremos invitarlos a nuestra boda. Aquí está su invitación personalizada: {enlace}";
+          const mensaje = plantilla
+            .replace(/\{nombre\}/g, familia.nombre)
+            .replace(/\{enlace\}/g, enlace);
           const telefono = (familia.telefono || "").replace(/\D/g, "");
           // Si hay teléfono, se abre el chat directo con esa familia; si no, un mensaje genérico sin destinatario.
           return (

@@ -510,6 +510,32 @@
         </div>
 
         <div class="bloque">
+          <h2>Mensaje de WhatsApp al enviar invitaciones</h2>
+          <p
+            style="
+              font-size: 0.85rem;
+              color: var(--color-text-soft);
+              margin-bottom: 0.8rem;
+            "
+          >
+            Este es el texto que se genera automáticamente en
+            <strong>admin.html</strong> cuando das clic en "Enviar por
+            WhatsApp" para cada familia. Usa
+            <strong>{nombre}</strong> donde quieras que aparezca el nombre de
+            la familia, y <strong>{enlace}</strong> donde quieras que aparezca
+            el link de su invitación personalizada. Ambos se reemplazan
+            automáticamente.
+          </p>
+          <div class="campo">
+            <label>Texto del mensaje</label
+            ><textarea
+              id="mensajeWhatsApp"
+              placeholder="¡Hola {nombre}! Con mucha alegría queremos invitarlos a nuestra boda. Aquí está su invitación personalizada: {enlace}"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="bloque">
           <h2>Colores</h2>
           <div class="fila-dos">
             <div class="campo campo-color">
@@ -1063,6 +1089,8 @@
           rsvpPlazoMensaje: "Por favor confírmanos antes del {fecha}.",
           notaPrivacidad:
             "Los datos serán utilizados únicamente para organizar nuestra boda. Puedes volver a este enlace y actualizar tu respuesta cuando quieras, antes de la fecha límite.",
+          mensajeWhatsApp:
+            "¡Hola {nombre}! Con mucha alegría queremos invitarlos a nuestra boda. Aquí está su invitación personalizada: {enlace}",
           colores: {
             primary: "#405044",
             secondary: "#c5a66a",
@@ -1306,6 +1334,9 @@
             "Por favor confírmanos antes del {fecha}.";
           document.getElementById("notaPrivacidad").value =
             config.notaPrivacidad || "";
+          document.getElementById("mensajeWhatsApp").value =
+            config.mensajeWhatsApp ||
+            "¡Hola {nombre}! Con mucha alegría queremos invitarlos a nuestra boda. Aquí está su invitación personalizada: {enlace}";
           document.getElementById("colorPrimary").value =
             config.colores.primary;
           document.getElementById("colorSecondary").value =
@@ -1804,6 +1835,9 @@
                 .value.trim(),
               notaPrivacidad: document
                 .getElementById("notaPrivacidad")
+                .value.trim(),
+              mensajeWhatsApp: document
+                .getElementById("mensajeWhatsApp")
                 .value.trim(),
               colores: {
                 primary: document.getElementById("colorPrimary").value,
