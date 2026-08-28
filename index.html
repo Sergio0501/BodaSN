@@ -236,8 +236,8 @@
   #regalos { position: relative; overflow: hidden; perspective: 1000px; padding-block: 0; }
   #regalos p { max-width: 440px; margin: 0 auto; color: var(--color-text-soft); white-space: pre-line; }
 
-  .regalos-reveal { position: relative; text-align: center; background: var(--color-surface); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); padding-block: var(--section-spacing); opacity: 0; transform: perspective(1000px) rotateX(80deg) translateZ(-160px); transition: opacity 0.7s cubic-bezier(.25,.46,.45,.94), transform 0.7s cubic-bezier(.25,.46,.45,.94); }
-  .regalos-reveal.visible { opacity: 1; transform: perspective(1000px) rotateX(0deg) translateZ(0); }
+  .regalos-reveal { position: relative; text-align: center; background: var(--color-surface); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); padding-block: var(--section-spacing); opacity: 0; transform: perspective(1000px) translateZ(-700px); transition: opacity 0.65s cubic-bezier(.25,.46,.45,.94), transform 0.65s cubic-bezier(.25,.46,.45,.94); }
+  .regalos-reveal.visible { opacity: 1; transform: perspective(1000px) translateZ(0); }
 
   .regalos-sobres { position: absolute; inset: 0; pointer-events: none; }
   .regalos-sobre { position: absolute; top: -30px; width: 22px; height: auto; fill: none; stroke: var(--color-secondary); stroke-width: 1.4; opacity: 0; animation: sobreCae 15s linear infinite; }
@@ -272,9 +272,12 @@
   .check-invitado input:checked + label { border-color: var(--color-secondary); background: rgba(197,166,106,0.08); }
   .check-invitado input:checked + label .marca::after { transform: scale(1); }
   .check-invitado input:focus-visible + label { outline: 2px solid var(--color-secondary); outline-offset: 2px; }
-  .btn-principal { width: 100%; min-height: 48px; background: var(--color-primary); color: var(--color-surface); border: none; border-radius: 999px; font-family: var(--font-body); font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; margin-top: 0.6rem; transition: opacity 0.25s ease; }
+  .btn-principal { width: 100%; min-height: 48px; background: var(--color-primary); color: var(--color-surface); border: none; border-radius: 999px; font-family: var(--font-body); font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; margin-top: 0.6rem; transition: opacity 0.25s ease, background 0.4s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
   .btn-principal:hover { opacity: 0.9; }
   .btn-principal:disabled { opacity: 0.55; cursor: not-allowed; }
+  .btn-principal.confirmado { background: #2f3d33; }
+  .check-rsvp { flex-shrink: 0; }
+  @media (prefers-reduced-motion: reduce) { #checkRSVPPath { transition: none !important; } }
   .rsvp-mensaje { margin-top: 1.4rem; padding: 1rem 1.2rem; border-radius: 0.8rem; background: rgba(64,80,68,0.08); color: var(--color-primary); font-size: 0.9rem; display: none; }
   .rsvp-mensaje.visible { display: block; }
   .rsvp-mensaje.error { background: rgba(178,74,58,0.1); color: #8a3a2c; }
@@ -433,7 +436,13 @@
           <ul class="lista-checks" id="listaChecksRSVP"></ul>
         </div>
 
-        <button type="submit" class="btn-principal" id="btnEnviarRSVP">Confirmar asistencia</button>
+        <button type="submit" class="btn-principal" id="btnEnviarRSVP">
+          <svg class="check-rsvp" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true">
+            <circle cx="10" cy="10" r="9" fill="none" stroke="currentColor" stroke-width="1.6" opacity="0.55"/>
+            <path id="checkRSVPPath" d="M5.5 10.2l3 3 6-6.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="16" stroke-dashoffset="16"/>
+          </svg>
+          <span id="btnEnviarRSVPTexto">Confirmar asistencia</span>
+        </button>
         <p class="alerta-importante" id="alertaImportante"></p>
         <p class="nota-privacidad" id="notaPrivacidad"></p>
         <div class="rsvp-mensaje" id="mensajeRSVP" role="status" aria-live="polite"></div>
@@ -938,8 +947,16 @@
     const formRSVP = document.getElementById("formRSVP");
     const mensajeRSVP = document.getElementById("mensajeRSVP");
     const btnEnviarRSVP = document.getElementById("btnEnviarRSVP");
+    const btnEnviarRSVPTexto = document.getElementById("btnEnviarRSVPTexto");
+    const checkRSVPPath = document.getElementById("checkRSVPPath");
     const rsvpCerrado = document.getElementById("rsvpCerrado");
     const campoEstadoCarga = document.getElementById("campoEstadoCarga");
+
+    function marcarCheckRSVP(mostrar, animado) {
+      checkRSVPPath.style.transition = animado ? "stroke-dashoffset 0.5s ease 0.15s" : "none";
+      checkRSVPPath.style.strokeDashoffset = mostrar ? "0" : "16";
+      btnEnviarRSVP.classList.toggle("confirmado", mostrar);
+    }
 
     const plazoVencido = Date.now() > new Date(config.fechaLimiteRSVPISO).getTime();
 
@@ -958,7 +975,8 @@
             const casilla = formRSVP.querySelector('input[name="invitados"][value="' + CSS.escape(valor) + '"]');
             if (casilla) casilla.checked = true;
           });
-          btnEnviarRSVP.textContent = "Actualizar confirmación";
+          btnEnviarRSVPTexto.textContent = "Actualizar confirmación";
+          marcarCheckRSVP(true, false);
           mensajeRSVP.textContent = "Ya habías confirmado. Puedes actualizar tu respuesta si algo cambió.";
           mensajeRSVP.classList.add("visible");
         }
@@ -978,7 +996,8 @@
       }
 
       btnEnviarRSVP.disabled = true;
-      btnEnviarRSVP.textContent = "Guardando...";
+      btnEnviarRSVPTexto.textContent = "Guardando...";
+      marcarCheckRSVP(false, false);
 
       try {
         await fetch(API_URL, {
@@ -995,13 +1014,15 @@
           })
         });
 
-        btnEnviarRSVP.textContent = "Actualizar confirmación";
+        btnEnviarRSVPTexto.textContent = "Actualizar confirmación";
+        marcarCheckRSVP(true, true);
         mensajeRSVP.textContent = "¡Gracias! Tu confirmación quedó guardada.";
         mensajeRSVP.classList.add("visible");
       } catch (error) {
         mensajeRSVP.textContent = "No pudimos guardar tu confirmación. Por favor intenta de nuevo.";
         mensajeRSVP.classList.add("visible", "error");
-        btnEnviarRSVP.textContent = "Confirmar asistencia";
+        btnEnviarRSVPTexto.textContent = "Confirmar asistencia";
+        marcarCheckRSVP(false, false);
       } finally {
         btnEnviarRSVP.disabled = false;
       }
