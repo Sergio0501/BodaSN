@@ -553,7 +553,7 @@
         async function obtenerPasswordGuardada() {
           try {
             const resultado = await apiGet(CLAVE_PASSWORD);
-            if (resultado && resultado.value) return resultado.value;
+            if (resultado && resultado.value) return resultado.value.trim();
           } catch (error) {
             /* no se ha configurado una contraseña propia todavía */
           }
@@ -562,7 +562,7 @@
 
         async function intentarEntrar() {
           const passwordActual = await obtenerPasswordGuardada();
-          if (campoPassword.value === passwordActual) {
+          if (campoPassword.value.trim() === passwordActual) {
             pantallaLogin.hidden = true;
             panelAdmin.hidden = false;
             document.getElementById("botonesScroll").hidden = false;
