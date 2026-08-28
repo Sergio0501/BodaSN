@@ -138,12 +138,12 @@
   /* PORTADA */
   #portada { position: relative; min-height: 100svh; display: flex; align-items: flex-end; padding-bottom: 3.5rem; color: var(--color-surface); }
   .portada-foto { position: absolute; inset: 0; background: linear-gradient(160deg, #3a4a3e 0%, #556b52 55%, #8a7650 130%); background-size: cover; background-position: center; z-index: -2; }
-  .portada-foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(20,22,18,0.62) 0%, rgba(20,22,18,0.12) 45%, rgba(20,22,18,0.35) 100%); z-index: -1; }
+  .portada-foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(20,22,18,0.65) 0%, rgba(20,22,18,0.32) 45%, rgba(20,22,18,0.4) 100%); z-index: -1; }
   .portada-contenido { text-align: center; width: 100%; }
-  .portada-nombres { font-size: clamp(2.6rem, 11vw, 4.2rem); color: var(--color-surface); }
-  .portada-nombres span { display: block; font-family: var(--font-heading); font-style: italic; font-size: 0.42em; color: var(--color-secondary); margin: 0.3em 0; }
+  .portada-nombres { font-size: clamp(2.6rem, 11vw, 4.2rem); color: var(--color-surface); text-shadow: 0 2px 14px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.55); }
+  .portada-nombres span { display: block; font-family: var(--font-heading); font-style: italic; font-size: 0.42em; color: var(--color-secondary); margin: 0.3em 0; text-shadow: 0 2px 10px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.6); }
   .portada-fecha { font-size: 0.85rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.85); margin-top: 0.6rem; }
-  .portada-subtitulo { font-family: var(--font-heading); font-size: 1rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-secondary); text-align: center; margin-top: 0.7rem; }
+  .portada-subtitulo { font-family: var(--font-heading); font-size: 1rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-secondary); text-align: center; margin-top: 0.7rem; text-shadow: 0 2px 10px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.6); }
   .portada-frase { max-width: 420px; margin: 1.8rem auto 0; font-family: var(--font-heading); font-style: italic; font-size: 1.15rem; color: rgba(255,255,255,0.92); white-space: pre-line; }
   .scroll-hint { margin-top: 2.4rem; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.75; }
   .scroll-hint::after { content: ""; display: block; width: 1px; height: 28px; background: rgba(255,255,255,0.6); margin: 0.6rem auto 0; animation: baja 1.8s ease-in-out infinite; }
