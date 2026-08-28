@@ -117,6 +117,37 @@
         border-bottom: 1px solid var(--color-border);
       }
 
+      .tabs-editor {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.4rem;
+      }
+      .tabs-editor button {
+        font-family: var(--font-body);
+        font-weight: 600;
+        font-size: 0.85rem;
+        letter-spacing: 0.02em;
+        border: 1px solid var(--color-border);
+        color: var(--color-text-soft);
+        background: var(--color-surface);
+        padding: 0.7rem 1.3rem;
+        border-radius: 999px;
+        cursor: pointer;
+        min-height: 44px;
+      }
+      .tabs-editor button.activo {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        background: rgba(64, 80, 68, 0.08);
+      }
+      .tab-panel {
+        display: none;
+      }
+      .tab-panel.activo {
+        display: block;
+      }
+
       .bloque {
         background: var(--color-surface);
         border: 1px solid var(--color-border);
@@ -398,7 +429,17 @@
         <a href="admin.html">← Ver confirmaciones</a>
       </div>
 
+      <div class="tabs-editor" id="tabsEditor">
+        <button type="button" class="activo" data-tab="tabDatos">
+          Datos de la boda
+        </button>
+        <button type="button" data-tab="tabFamilias">
+          Familias e invitados
+        </button>
+      </div>
+
       <form id="formEditar">
+      <div class="tab-panel activo" id="tabDatos">
         <div class="bloque">
           <h2>Novios y fecha</h2>
           <div class="fila-dos">
@@ -955,14 +996,6 @@
         </div>
 
         <div class="bloque">
-          <h2>Familias e invitados</h2>
-          <div id="listaFamiliasEditor"></div>
-          <button type="button" class="btn-agregar" id="btnAgregarFamilia">
-            + Agregar familia
-          </button>
-        </div>
-
-        <div class="bloque">
           <h2>Contraseña de acceso</h2>
           <div class="campo">
             <label>Nueva contraseña para admin.html y editar.html</label
@@ -978,6 +1011,40 @@
         <div class="mensaje-guardado" id="mensajeGuardado">
           Cambios guardados correctamente.
         </div>
+      </div>
+
+      <div class="tab-panel" id="tabFamilias">
+        <div class="bloque">
+          <h2>Familias e invitados</h2>
+          <p
+            style="
+              font-size: 0.82rem;
+              color: var(--color-text-soft);
+              margin-bottom: 0.8rem;
+            "
+          >
+            Esta sección se guarda por separado del resto del formulario, con
+            su propio botón — así no se reescribe la lista de familias cada
+            vez que guardas otro cambio (como el mensaje, los colores o las
+            fotos).
+          </p>
+          <div id="listaFamiliasEditor"></div>
+          <button type="button" class="btn-agregar" id="btnAgregarFamilia">
+            + Agregar familia
+          </button>
+          <button
+            type="button"
+            class="btn-principal"
+            id="btnGuardarFamilias"
+            style="margin-top: 1.2rem"
+          >
+            Guardar familias
+          </button>
+          <div class="mensaje-guardado" id="mensajeGuardadoFamilias">
+            Familias guardadas correctamente.
+          </div>
+        </div>
+      </div>
       </form>
     </div>
 
@@ -1212,6 +1279,22 @@
           .addEventListener("click", intentarEntrar);
         campoPassword.addEventListener("keydown", (e) => {
           if (e.key === "Enter") intentarEntrar();
+        });
+
+        document.querySelectorAll("#tabsEditor button").forEach((boton) => {
+          boton.addEventListener("click", () => {
+            document
+              .querySelectorAll("#tabsEditor button")
+              .forEach((b) => b.classList.remove("activo"));
+            document
+              .querySelectorAll(".tab-panel")
+              .forEach((panel) => panel.classList.remove("activo"));
+            boton.classList.add("activo");
+            document
+              .getElementById(boton.dataset.tab)
+              .classList.add("activo");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          });
         });
 
         async function cargarJSON(clave, porDefecto) {
@@ -1743,6 +1826,63 @@
             .replace(/(^-|-$)/g, "");
         }
 
+        function leerFamiliasDelFormulario() {
+          const leidas = Array.from(
+            document.querySelectorAll(".fila-familia-editor"),
+          )
+            .map((fila) => {
+              const nombre = fila.querySelector(".fam-nombre").value.trim();
+              let slug = fila.querySelector(".fam-slug").value.trim();
+              if (!slug) slug = generarSlug(nombre);
+              else slug = generarSlug(slug);
+              const telefono = fila
+                .querySelector(".fam-telefono")
+                .value.replace(/\D/g, "");
+              const invitados = Array.from(
+                fila.querySelectorAll(".inv-nombre"),
+              )
+                .map((i) => i.value.trim())
+                .filter(Boolean);
+              return { nombre, slug, telefono, invitados };
+            })
+            .filter((f) => f.nombre);
+
+          // Se eliminan duplicados por slug (por si la hoja ya traía repetidos),
+          // quedándose con la fila más reciente de cada familia.
+          const sinDuplicar = [];
+          const slugsVistos = new Set();
+          for (let i = leidas.length - 1; i >= 0; i--) {
+            if (!slugsVistos.has(leidas[i].slug)) {
+              slugsVistos.add(leidas[i].slug);
+              sinDuplicar.unshift(leidas[i]);
+            }
+          }
+          return sinDuplicar;
+        }
+
+        document
+          .getElementById("btnGuardarFamilias")
+          .addEventListener("click", async () => {
+            const boton = document.getElementById("btnGuardarFamilias");
+            const mensaje = document.getElementById("mensajeGuardadoFamilias");
+            boton.disabled = true;
+            const textoOriginal = boton.textContent;
+            boton.textContent = "Guardando...";
+            mensaje.classList.remove("visible");
+            try {
+              await apiSetFamilias(leerFamiliasDelFormulario());
+              mensaje.classList.add("visible");
+              setTimeout(() => mensaje.classList.remove("visible"), 2500);
+            } catch (error) {
+              alert(
+                "No se pudieron guardar las familias. Verifica tu conexión e intenta de nuevo.",
+              );
+            } finally {
+              boton.disabled = false;
+              boton.textContent = textoOriginal;
+            }
+          });
+
         document
           .getElementById("formEditar")
           .addEventListener("submit", async function (e) {
@@ -1903,37 +2043,6 @@
               .getElementById("fotoPortadaMovil")
               .value.trim();
 
-            const nuevasFamilias = Array.from(
-              document.querySelectorAll(".fila-familia-editor"),
-            )
-              .map((fila) => {
-                const nombre = fila.querySelector(".fam-nombre").value.trim();
-                let slug = fila.querySelector(".fam-slug").value.trim();
-                if (!slug) slug = generarSlug(nombre);
-                else slug = generarSlug(slug);
-                const telefono = fila
-                  .querySelector(".fam-telefono")
-                  .value.replace(/\D/g, "");
-                const invitados = Array.from(
-                  fila.querySelectorAll(".inv-nombre"),
-                )
-                  .map((i) => i.value.trim())
-                  .filter(Boolean);
-                return { nombre, slug, telefono, invitados };
-              })
-              .filter((f) => f.nombre);
-
-            // Se eliminan duplicados por slug (por si la hoja ya traía repetidos),
-            // quedándose con la fila más reciente de cada familia.
-            const familiasSinDuplicar = [];
-            const slugsVistos = new Set();
-            for (let i = nuevasFamilias.length - 1; i >= 0; i--) {
-              if (!slugsVistos.has(nuevasFamilias[i].slug)) {
-                slugsVistos.add(nuevasFamilias[i].slug);
-                familiasSinDuplicar.unshift(nuevasFamilias[i]);
-              }
-            }
-
             try {
               // Cada foto se guarda en su propia celda de la hoja para no toparse
               // con el límite de tamaño de una sola celda de Google Sheets.
@@ -1946,7 +2055,6 @@
                 apiSet(CLAVE_FOTO_PORTADA, fotoPortada),
                 apiSet(CLAVE_FOTO_PORTADA_TABLET, fotoPortadaTablet),
                 apiSet(CLAVE_FOTO_PORTADA_MOVIL, fotoPortadaMovil),
-                apiSetFamilias(familiasSinDuplicar),
                 nuevaPassword
                   ? apiSet(CLAVE_PASSWORD, nuevaPassword)
                   : Promise.resolve(),
