@@ -1006,8 +1006,6 @@
             if (casilla) casilla.checked = true;
           });
           marcarConfirmado(true, false);
-          mensajeRSVP.textContent = "Ya habías confirmado. Puedes actualizar tu respuesta si algo cambió.";
-          mensajeRSVP.classList.add("visible");
         }
       } catch (error) { /* aún no hay confirmación guardada */ }
       finally { campoEstadoCarga.hidden = true; }
