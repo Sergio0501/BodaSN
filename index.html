@@ -800,7 +800,7 @@
     const elFechaPortada = document.getElementById("portadaFecha");
     elFechaPortada.setAttribute("datetime", config.fechaBodaISO);
     elFechaPortada.textContent = formatearFechaLarga(config.fechaBodaISO);
-    document.getElementById("portadaFrase").textContent = "\u201C" + config.fraseCarta + "\u201D";
+    document.getElementById("portadaFrase").textContent = config.fraseCarta;
 
     document.getElementById("saludoFamilia").textContent = familia.nombre;
     document.getElementById("saludoCupos").textContent = familia.invitados.length;
