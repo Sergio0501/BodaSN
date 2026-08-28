@@ -149,6 +149,33 @@
         color: var(--color-text-soft);
       }
 
+      .filtro-familias {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.4rem;
+      }
+      .filtro-familias button {
+        font-size: 0.78rem;
+        letter-spacing: 0.04em;
+        border: 1px solid var(--color-border);
+        color: var(--color-text-soft);
+        background: var(--color-surface);
+        padding: 0.55rem 1.1rem;
+        border-radius: 999px;
+        cursor: pointer;
+        min-height: 40px;
+      }
+      .filtro-familias button.activo {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        background: rgba(64, 80, 68, 0.08);
+        font-weight: 600;
+      }
+      .fila-familia[hidden] {
+        display: none !important;
+      }
+
       .fila-familia {
         background: var(--color-surface);
         border: 1px solid var(--color-border);
@@ -396,6 +423,14 @@
         </p>
       </div>
 
+      <div class="filtro-familias" id="filtroFamilias">
+        <button type="button" class="activo" data-filtro="todas">
+          Todas
+        </button>
+        <button type="button" data-filtro="confirmadas">Confirmadas</button>
+        <button type="button" data-filtro="pendientes">Pendientes</button>
+      </div>
+
       <div id="listaFamilias"></div>
       <div class="vacio" id="mensajeVacio" hidden>
         Aún no hay familias registradas. Agrégalas arriba o desde la hoja de
@@ -516,7 +551,7 @@
           return porDefecto;
         }
 
-        function generarEnlaceWhatsApp(config, familia) {
+        function generarEnlacesWhatsApp(config, familia) {
           const enlace =
             familia.enlace ||
             window.location.href.replace(/admin\.html.*$/, "index.html") +
@@ -528,11 +563,30 @@
           const mensaje = plantilla
             .replace(/\{nombre\}/g, familia.nombre)
             .replace(/\{enlace\}/g, enlace);
-          const telefono = (familia.telefono || "").replace(/\D/g, "");
-          // Si hay teléfono, se abre el chat directo con esa familia; si no, un mensaje genérico sin destinatario.
-          return (
-            "https://wa.me/" + telefono + "?text=" + encodeURIComponent(mensaje)
-          );
+
+          // Admite varios números separados por coma (ej: "3001234567, 3009876543")
+          const numeros = (familia.telefono || "")
+            .split(",")
+            .map((n) => n.replace(/\D/g, ""))
+            .filter(Boolean);
+
+          if (numeros.length === 0) {
+            return [
+              {
+                telefono: "",
+                url: "https://wa.me/?text=" + encodeURIComponent(mensaje),
+              },
+            ];
+          }
+
+          return numeros.map((telefono) => ({
+            telefono: telefono,
+            url:
+              "https://wa.me/" +
+              telefono +
+              "?text=" +
+              encodeURIComponent(mensaje),
+          }));
         }
 
         async function apiGetConfirmaciones() {
@@ -548,6 +602,34 @@
           }
           return [];
         }
+
+        let filtroActual = "todas";
+
+        function aplicarFiltro(filtro) {
+          filtroActual = filtro;
+          document
+            .querySelectorAll("#filtroFamilias button")
+            .forEach((boton) => {
+              boton.classList.toggle(
+                "activo",
+                boton.dataset.filtro === filtro,
+              );
+            });
+          document.querySelectorAll(".fila-familia").forEach((fila) => {
+            const esConfirmada = fila.dataset.confirmo === "si";
+            const mostrar =
+              filtro === "todas" ||
+              (filtro === "confirmadas" && esConfirmada) ||
+              (filtro === "pendientes" && !esConfirmada);
+            fila.hidden = !mostrar;
+          });
+        }
+
+        document.querySelectorAll("#filtroFamilias button").forEach((boton) => {
+          boton.addEventListener("click", () =>
+            aplicarFiltro(boton.dataset.filtro),
+          );
+        });
 
         async function cargarPanel() {
           const [config, familiasCrudas, confirmaciones] = await Promise.all([
@@ -595,6 +677,7 @@
 
             const fila = document.createElement("div");
             fila.className = "fila-familia";
+            fila.dataset.confirmo = confirmo ? "si" : "no";
 
             const listaHTML = familia.invitados
               .map((nombre) => {
@@ -612,12 +695,30 @@
               })
               .join("");
 
-            const enlaceWa = generarEnlaceWhatsApp(config, familia);
+            const enlacesWa = generarEnlacesWhatsApp(config, familia);
             const enlaceDirecto =
               familia.enlace ||
               window.location.href.replace(/admin\.html.*$/, "index.html") +
                 "?f=" +
                 encodeURIComponent(familia.slug);
+
+            const botonesWa = enlacesWa
+              .map((e, indice) => {
+                const etiqueta =
+                  enlacesWa.length > 1
+                    ? "WhatsApp " +
+                      (indice + 1) +
+                      (e.telefono ? " (..." + e.telefono.slice(-4) + ")" : "")
+                    : "Enviar por WhatsApp";
+                return (
+                  '<a class="whatsapp" href="' +
+                  e.url +
+                  '" target="_blank" rel="noopener">' +
+                  etiqueta +
+                  "</a>"
+                );
+              })
+              .join("");
 
             fila.innerHTML =
               '<div class="fila-familia-cabecera">' +
@@ -642,9 +743,7 @@
               listaHTML +
               "</ul>" +
               '<div class="acciones-familia">' +
-              '<a class="whatsapp" href="' +
-              enlaceWa +
-              '" target="_blank" rel="noopener">Enviar por WhatsApp</a>' +
+              botonesWa +
               '<button class="copiar" data-enlace="' +
               enlaceDirecto +
               '">Copiar enlace</button>' +
@@ -656,6 +755,8 @@
           document.getElementById("numFamilias").textContent = familias.length;
           document.getElementById("numConfirmadas").textContent = confirmadas;
           document.getElementById("numPersonasSi").textContent = personasSi;
+
+          aplicarFiltro(filtroActual);
 
           contenedor.querySelectorAll("button.copiar").forEach((boton) => {
             boton.addEventListener("click", async () => {
@@ -696,7 +797,10 @@
               .filter(Boolean);
             const telefono = document
               .getElementById("nuevaFamiliaTelefono")
-              .value.replace(/\D/g, "");
+              .value.split(",")
+              .map((parte) => parte.replace(/\D/g, ""))
+              .filter(Boolean)
+              .join(",");
 
             if (!nombre || invitados.length === 0) {
               alert("Escribe el nombre de la familia y al menos un invitado.");
