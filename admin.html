@@ -137,8 +137,9 @@
         text-align: center;
       }
       .tarjeta-resumen .numero {
-        font-family: var(--font-heading);
-        font-size: 2.2rem;
+        font-family: var(--font-body);
+        font-weight: 700;
+        font-size: 1.9rem;
         color: var(--color-primary);
         display: block;
       }
@@ -551,7 +552,7 @@
           return porDefecto;
         }
 
-        function generarEnlacesWhatsApp(config, familia) {
+        function construirMensajeWhatsApp(config, familia) {
           const enlace =
             familia.enlace ||
             window.location.href.replace(/admin\.html.*$/, "index.html") +
@@ -560,9 +561,13 @@
           const plantilla =
             (config && config.mensajeWhatsApp) ||
             "¡Hola {nombre}! Con mucha alegría queremos invitarlos a nuestra boda. Aquí está su invitación personalizada: {enlace}";
-          const mensaje = plantilla
+          return plantilla
             .replace(/\{nombre\}/g, familia.nombre)
             .replace(/\{enlace\}/g, enlace);
+        }
+
+        function generarEnlacesWhatsApp(config, familia) {
+          const mensaje = construirMensajeWhatsApp(config, familia);
 
           // Admite varios números separados por coma (ej: "3001234567, 3009876543")
           const numeros = (familia.telefono || "")
@@ -665,6 +670,7 @@
 
           let confirmadas = 0;
           let personasSi = 0;
+          const mensajesPorSlug = {};
 
           for (const familia of familias) {
             const datosRSVP =
@@ -696,11 +702,6 @@
               .join("");
 
             const enlacesWa = generarEnlacesWhatsApp(config, familia);
-            const enlaceDirecto =
-              familia.enlace ||
-              window.location.href.replace(/admin\.html.*$/, "index.html") +
-                "?f=" +
-                encodeURIComponent(familia.slug);
 
             const botonesWa = enlacesWa
               .map((e, indice) => {
@@ -719,6 +720,11 @@
                 );
               })
               .join("");
+
+            mensajesPorSlug[familia.slug] = construirMensajeWhatsApp(
+              config,
+              familia,
+            );
 
             fila.innerHTML =
               '<div class="fila-familia-cabecera">' +
@@ -744,9 +750,9 @@
               "</ul>" +
               '<div class="acciones-familia">' +
               botonesWa +
-              '<button class="copiar" data-enlace="' +
-              enlaceDirecto +
-              '">Copiar enlace</button>' +
+              '<button class="copiar" data-slug="' +
+              familia.slug +
+              '">Copiar mensaje</button>' +
               "</div>";
 
             contenedor.appendChild(fila);
@@ -760,15 +766,16 @@
 
           contenedor.querySelectorAll("button.copiar").forEach((boton) => {
             boton.addEventListener("click", async () => {
+              const mensaje = mensajesPorSlug[boton.dataset.slug] || "";
               try {
-                await navigator.clipboard.writeText(boton.dataset.enlace);
+                await navigator.clipboard.writeText(mensaje);
                 const textoOriginal = boton.textContent;
                 boton.textContent = "¡Copiado!";
                 setTimeout(() => {
                   boton.textContent = textoOriginal;
                 }, 1500);
               } catch (error) {
-                alert(boton.dataset.enlace);
+                alert(mensaje);
               }
             });
           });
