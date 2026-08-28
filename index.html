@@ -261,6 +261,11 @@
   /* RSVP */
   #rsvp { text-align: center; }
   .rsvp-plazo-texto { display: inline-block; margin-top: 1rem; padding: 0.6rem 1.2rem; font-size: 1rem; font-weight: 600; color: var(--color-primary); background: rgba(197,166,106,0.18); border: 1px solid var(--color-secondary); border-radius: 999px; }
+  .rsvp-urgencia { display: block; margin-top: 0.8rem; font-size: 0.85rem; font-weight: 600; color: #8a3a2c; }
+  .rsvp-urgencia[hidden] { display: none !important; }
+  .rsvp-estado-confirmado { display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--color-secondary); font-size: 0.85rem; font-weight: 600; margin: 0 0 0.8rem; }
+  .rsvp-estado-confirmado[hidden] { display: none !important; }
+  .lapiz-rsvp[hidden] { display: none !important; }
   .rsvp-form { max-width: 420px; margin: 2rem auto 0; text-align: left; }
   .campo { margin-bottom: 1.4rem; }
   .lista-checks { list-style: none; }
@@ -425,6 +430,7 @@
       <span class="eyebrow" id="eyebrowRSVP">RSVP</span>
       <h2 id="rsvpTitulo">Confirma tu asistencia</h2>
       <p class="rsvp-plazo-texto" id="rsvpPlazoTexto"></p>
+      <p class="rsvp-urgencia" id="rsvpUrgencia" hidden></p>
 
       <form class="rsvp-form" id="formRSVP" novalidate>
         <div class="campo" id="campoEstadoCarga">
@@ -436,10 +442,17 @@
           <ul class="lista-checks" id="listaChecksRSVP"></ul>
         </div>
 
-        <button type="submit" class="btn-principal" id="btnEnviarRSVP">
-          <svg class="check-rsvp" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true">
-            <circle cx="10" cy="10" r="9" fill="none" stroke="currentColor" stroke-width="1.6" opacity="0.55"/>
+        <p class="rsvp-estado-confirmado" id="rsvpEstadoConfirmado" hidden>
+          <svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true">
+            <circle cx="10" cy="10" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/>
             <path id="checkRSVPPath" d="M5.5 10.2l3 3 6-6.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="16" stroke-dashoffset="16"/>
+          </svg>
+          Ya confirmaste tu asistencia
+        </p>
+
+        <button type="submit" class="btn-principal" id="btnEnviarRSVP">
+          <svg class="lapiz-rsvp" id="lapizRSVP" width="17" height="17" viewBox="0 0 20 20" aria-hidden="true" hidden>
+            <path d="M13.5 3.5l3 3-9 9-3.6 0.6 0.6-3.6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           <span id="btnEnviarRSVPTexto">Confirmar asistencia</span>
         </button>
@@ -948,14 +961,18 @@
     const mensajeRSVP = document.getElementById("mensajeRSVP");
     const btnEnviarRSVP = document.getElementById("btnEnviarRSVP");
     const btnEnviarRSVPTexto = document.getElementById("btnEnviarRSVPTexto");
+    const lapizRSVP = document.getElementById("lapizRSVP");
+    const rsvpEstadoConfirmado = document.getElementById("rsvpEstadoConfirmado");
     const checkRSVPPath = document.getElementById("checkRSVPPath");
     const rsvpCerrado = document.getElementById("rsvpCerrado");
     const campoEstadoCarga = document.getElementById("campoEstadoCarga");
 
-    function marcarCheckRSVP(mostrar, animado) {
-      checkRSVPPath.style.transition = animado ? "stroke-dashoffset 0.5s ease 0.15s" : "none";
+    function marcarConfirmado(mostrar, animado) {
+      rsvpEstadoConfirmado.hidden = !mostrar;
+      lapizRSVP.hidden = !mostrar;
+      btnEnviarRSVPTexto.textContent = mostrar ? "Actualizar confirmación" : "Confirmar asistencia";
+      checkRSVPPath.style.transition = mostrar && animado ? "stroke-dashoffset 0.5s ease 0.15s" : "none";
       checkRSVPPath.style.strokeDashoffset = mostrar ? "0" : "16";
-      btnEnviarRSVP.classList.toggle("confirmado", mostrar);
     }
 
     const plazoVencido = Date.now() > new Date(config.fechaLimiteRSVPISO).getTime();
@@ -964,6 +981,19 @@
       formRSVP.hidden = true;
       rsvpCerrado.hidden = false;
       return;
+    }
+
+    // Recordatorio de urgencia: solo aparece cuando faltan 5 días o menos para el plazo.
+    const msRestantes = new Date(config.fechaLimiteRSVPISO).getTime() - Date.now();
+    const diasRestantes = Math.ceil(msRestantes / (1000 * 60 * 60 * 24));
+    if (diasRestantes <= 5 && diasRestantes >= 0) {
+      const elUrgencia = document.getElementById("rsvpUrgencia");
+      elUrgencia.textContent = diasRestantes === 0
+        ? "¡Hoy es el último día para confirmar!"
+        : diasRestantes === 1
+          ? "Queda 1 día para confirmar."
+          : "Quedan " + diasRestantes + " días para confirmar.";
+      elUrgencia.hidden = false;
     }
 
     (async function cargarConfirmacionGuardada() {
@@ -975,8 +1005,7 @@
             const casilla = formRSVP.querySelector('input[name="invitados"][value="' + CSS.escape(valor) + '"]');
             if (casilla) casilla.checked = true;
           });
-          btnEnviarRSVPTexto.textContent = "Actualizar confirmación";
-          marcarCheckRSVP(true, false);
+          marcarConfirmado(true, false);
           mensajeRSVP.textContent = "Ya habías confirmado. Puedes actualizar tu respuesta si algo cambió.";
           mensajeRSVP.classList.add("visible");
         }
@@ -997,7 +1026,7 @@
 
       btnEnviarRSVP.disabled = true;
       btnEnviarRSVPTexto.textContent = "Guardando...";
-      marcarCheckRSVP(false, false);
+      lapizRSVP.hidden = true;
 
       try {
         await fetch(API_URL, {
@@ -1014,15 +1043,13 @@
           })
         });
 
-        btnEnviarRSVPTexto.textContent = "Actualizar confirmación";
-        marcarCheckRSVP(true, true);
+        marcarConfirmado(true, true);
         mensajeRSVP.textContent = "¡Gracias! Tu confirmación quedó guardada.";
         mensajeRSVP.classList.add("visible");
       } catch (error) {
         mensajeRSVP.textContent = "No pudimos guardar tu confirmación. Por favor intenta de nuevo.";
         mensajeRSVP.classList.add("visible", "error");
-        btnEnviarRSVPTexto.textContent = "Confirmar asistencia";
-        marcarCheckRSVP(false, false);
+        marcarConfirmado(false, false);
       } finally {
         btnEnviarRSVP.disabled = false;
       }

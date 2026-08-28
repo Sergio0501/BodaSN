@@ -150,6 +150,32 @@
         color: var(--color-text-soft);
       }
 
+      .input-buscar {
+        width: 100%;
+        min-height: 44px;
+        font-size: 0.92rem;
+        font-family: var(--font-body);
+        color: var(--color-text);
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 999px;
+        padding: 0.7rem 1.2rem;
+        margin-bottom: 1rem;
+      }
+      .input-buscar:focus {
+        outline: none;
+        border-color: var(--color-secondary);
+      }
+      .sin-resultados {
+        color: var(--color-text-soft);
+        font-size: 0.9rem;
+        padding: 1.2rem 0;
+        text-align: center;
+      }
+      .sin-resultados[hidden] {
+        display: none !important;
+      }
+
       .filtro-familias {
         display: flex;
         gap: 0.5rem;
@@ -423,6 +449,13 @@
         </p>
       </div>
 
+      <input
+        type="search"
+        id="buscarFamilia"
+        class="input-buscar"
+        placeholder="Buscar familia por nombre, código o teléfono..."
+      />
+
       <div class="filtro-familias" id="filtroFamilias">
         <button type="button" class="activo" data-filtro="todas">
           Todas
@@ -430,6 +463,10 @@
         <button type="button" data-filtro="confirmadas">Confirmadas</button>
         <button type="button" data-filtro="pendientes">Pendientes</button>
       </div>
+
+      <p class="sin-resultados" id="sinResultadosBusqueda" hidden>
+        No encontramos ninguna familia con ese criterio.
+      </p>
 
       <div id="listaFamilias"></div>
       <div class="vacio" id="mensajeVacio" hidden>
@@ -609,25 +646,52 @@
 
         let filtroActual = "todas";
 
+        function normalizarTexto(texto) {
+          return (texto || "")
+            .toString()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
+        }
+
         function aplicarFiltro(filtro) {
-          filtroActual = filtro;
+          if (filtro !== undefined) filtroActual = filtro;
           document
             .querySelectorAll("#filtroFamilias button")
             .forEach((boton) => {
               boton.classList.toggle(
                 "activo",
-                boton.dataset.filtro === filtro,
+                boton.dataset.filtro === filtroActual,
               );
             });
+
+          const busqueda = normalizarTexto(
+            document.getElementById("buscarFamilia").value.trim(),
+          );
+
+          let visibles = 0;
           document.querySelectorAll(".fila-familia").forEach((fila) => {
             const esConfirmada = fila.dataset.confirmo === "si";
-            const mostrar =
-              filtro === "todas" ||
-              (filtro === "confirmadas" && esConfirmada) ||
-              (filtro === "pendientes" && !esConfirmada);
+            const cumpleEstado =
+              filtroActual === "todas" ||
+              (filtroActual === "confirmadas" && esConfirmada) ||
+              (filtroActual === "pendientes" && !esConfirmada);
+            const cumpleBusqueda =
+              !busqueda || (fila.dataset.busqueda || "").includes(busqueda);
+            const mostrar = cumpleEstado && cumpleBusqueda;
             fila.hidden = !mostrar;
+            if (mostrar) visibles++;
           });
+
+          document.getElementById("sinResultadosBusqueda").hidden =
+            visibles > 0 ||
+            document.querySelectorAll(".fila-familia").length === 0;
         }
+
+        document.getElementById("buscarFamilia").addEventListener(
+          "input",
+          () => aplicarFiltro(),
+        );
 
         document.querySelectorAll("#filtroFamilias button").forEach((boton) => {
           boton.addEventListener("click", () =>
@@ -683,6 +747,14 @@
             const fila = document.createElement("div");
             fila.className = "fila-familia";
             fila.dataset.confirmo = confirmo ? "si" : "no";
+            fila.dataset.busqueda = normalizarTexto(
+              [
+                familia.nombre,
+                familia.slug,
+                familia.telefono,
+                ...(familia.invitados || []),
+              ].join(" "),
+            );
 
             const listaHTML = familia.invitados
               .map((nombre) => {

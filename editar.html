@@ -1297,6 +1297,28 @@
           });
         });
 
+        // Aviso de cambios sin guardar: se activa con cualquier edición real
+        // dentro del formulario (escribir, seleccionar, subir archivos,
+        // agregar o quitar filas), y se apaga después de cada guardado exitoso.
+        let hayCambiosSinGuardar = false;
+        const formEditarEl = document.getElementById("formEditar");
+        formEditarEl.addEventListener("input", () => {
+          hayCambiosSinGuardar = true;
+        });
+        formEditarEl.addEventListener("change", () => {
+          hayCambiosSinGuardar = true;
+        });
+        formEditarEl.addEventListener("click", (e) => {
+          if (e.target.closest(".quitar, .btn-agregar")) {
+            hayCambiosSinGuardar = true;
+          }
+        });
+        window.addEventListener("beforeunload", (e) => {
+          if (!hayCambiosSinGuardar) return;
+          e.preventDefault();
+          e.returnValue = "";
+        });
+
         async function cargarJSON(clave, porDefecto) {
           try {
             const resultado = await apiGet(clave);
@@ -1810,7 +1832,20 @@
             );
           fila
             .querySelector(".quitar")
-            .addEventListener("click", () => fila.remove());
+            .addEventListener("click", () => {
+              const nombreFamilia =
+                fila.querySelector(".fam-nombre").value.trim() ||
+                "esta familia";
+              if (
+                confirm(
+                  '¿Seguro que quieres quitar a "' +
+                    nombreFamilia +
+                    '" de la lista? Esto no se guarda hasta que le des clic a "Guardar familias", pero si continúas y guardas, se elimina de tu hoja de Google Sheets.',
+                )
+              ) {
+                fila.remove();
+              }
+            });
           document.getElementById("listaFamiliasEditor").appendChild(fila);
         }
         document
@@ -1873,6 +1908,7 @@
               await apiSetFamilias(leerFamiliasDelFormulario());
               mensaje.classList.add("visible");
               setTimeout(() => mensaje.classList.remove("visible"), 2500);
+              hayCambiosSinGuardar = false;
             } catch (error) {
               alert(
                 "No se pudieron guardar las familias. Verifica tu conexión e intenta de nuevo.",
@@ -2067,6 +2103,7 @@
               const mensaje = document.getElementById("mensajeGuardado");
               mensaje.classList.add("visible");
               setTimeout(() => mensaje.classList.remove("visible"), 3000);
+              hayCambiosSinGuardar = false;
             } catch (error) {
               alert(
                 "Hubo un problema guardando los cambios. Intenta de nuevo.",
