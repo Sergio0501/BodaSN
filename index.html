@@ -423,6 +423,8 @@
      ============================================================ */
   const CLAVE_CONFIG = "invitacion:config";
   const CLAVE_FOTO_PORTADA = "invitacion:foto-portada";
+  const CLAVE_FOTO_PORTADA_TABLET = "invitacion:foto-portada-tablet";
+  const CLAVE_FOTO_PORTADA_MOVIL = "invitacion:foto-portada-movil";
   const CLAVE_FOTO_HISTORIA1 = "invitacion:foto-historia1";
   const CLAVE_FOTO_HISTORIA2 = "invitacion:foto-historia2";
 
@@ -547,16 +549,20 @@
     // sin esperar a que terminen las peticiones a la base de datos.
     inicializarSobre();
 
-    const [config, familias, resPortada, resHistoria1, resHistoria2] = await Promise.all([
+    const [config, familias, resPortada, resPortadaTablet, resPortadaMovil, resHistoria1, resHistoria2] = await Promise.all([
       cargarJSON(CLAVE_CONFIG, true, CONFIG_DEFECTO),
       apiGetFamilias(FAMILIAS_DEFECTO),
       apiGet(CLAVE_FOTO_PORTADA),
+      apiGet(CLAVE_FOTO_PORTADA_TABLET),
+      apiGet(CLAVE_FOTO_PORTADA_MOVIL),
       apiGet(CLAVE_FOTO_HISTORIA1),
       apiGet(CLAVE_FOTO_HISTORIA2)
     ]);
 
     config.fotos = {
-      portada: (resPortada && resPortada.value) || (config.fotos && config.fotos.portada) || ""
+      portada: (resPortada && resPortada.value) || (config.fotos && config.fotos.portada) || "",
+      portadaTablet: (resPortadaTablet && resPortadaTablet.value) || "",
+      portadaMovil: (resPortadaMovil && resPortadaMovil.value) || ""
     };
 
     if (!config.fotosHistoria || config.fotosHistoria.length === 0) {
@@ -687,8 +693,17 @@
     document.getElementById("tituloPagina").textContent = config.nombreNovio + " & " + config.nombreNovia + " — Invitación de boda";
     document.getElementById("sobreSello").alt = "Sello " + iniciales;
 
-    if (config.fotos && config.fotos.portada) {
-      document.getElementById("portadaFoto").style.backgroundImage = "url('" + config.fotos.portada + "')";
+    if (config.fotos) {
+      const anchoPantalla = window.innerWidth;
+      let fotoPortadaElegida = config.fotos.portada;
+      if (anchoPantalla <= 600 && config.fotos.portadaMovil) {
+        fotoPortadaElegida = config.fotos.portadaMovil;
+      } else if (anchoPantalla > 600 && anchoPantalla <= 1024 && config.fotos.portadaTablet) {
+        fotoPortadaElegida = config.fotos.portadaTablet;
+      }
+      if (fotoPortadaElegida) {
+        document.getElementById("portadaFoto").style.backgroundImage = "url('" + fotoPortadaElegida + "')";
+      }
     }
     document.getElementById("portadaNombres").innerHTML = config.nombreNovio + "<span>&amp;</span>" + config.nombreNovia;
     const elFechaPortada = document.getElementById("portadaFecha");

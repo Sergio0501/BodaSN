@@ -571,7 +571,7 @@
           </p>
 
           <div class="campo">
-            <label>Foto de portada</label>
+            <label>Foto de portada (escritorio)</label>
             <input
               type="text"
               id="fotoPortada"
@@ -594,6 +594,76 @@
               <span class="estado-subida" id="estadoPortada"></span>
             </div>
             <img class="vista-previa-foto" id="previaPortada" hidden />
+          </div>
+
+          <div class="campo">
+            <label>Foto de portada (tablet)</label>
+            <p
+              style="
+                font-size: 0.8rem;
+                color: var(--color-text-soft);
+                margin-bottom: 0.5rem;
+              "
+            >
+              Opcional. Si la dejas vacía, se usará la foto de escritorio.
+            </p>
+            <input
+              type="text"
+              id="fotoPortadaTablet"
+              placeholder="fotos/portada-tablet.jpg"
+            />
+            <div class="fila-subida">
+              <button
+                type="button"
+                class="btn-galeria"
+                data-campo="fotoPortadaTablet"
+              >
+                Elegir de galería
+              </button>
+              <input
+                type="file"
+                id="archivoPortadaTablet"
+                accept="image/*"
+                class="input-archivo"
+              />
+              <span class="estado-subida" id="estadoPortadaTablet"></span>
+            </div>
+            <img class="vista-previa-foto" id="previaPortadaTablet" hidden />
+          </div>
+
+          <div class="campo">
+            <label>Foto de portada (móvil)</label>
+            <p
+              style="
+                font-size: 0.8rem;
+                color: var(--color-text-soft);
+                margin-bottom: 0.5rem;
+              "
+            >
+              Opcional. Si la dejas vacía, se usará la foto de escritorio.
+            </p>
+            <input
+              type="text"
+              id="fotoPortadaMovil"
+              placeholder="fotos/portada-movil.jpg"
+            />
+            <div class="fila-subida">
+              <button
+                type="button"
+                class="btn-galeria"
+                data-campo="fotoPortadaMovil"
+              >
+                Elegir de galería
+              </button>
+              <input
+                type="file"
+                id="archivoPortadaMovil"
+                accept="image/*"
+                class="input-archivo"
+              />
+              <span class="estado-subida" id="estadoPortadaMovil"></span>
+            </div>
+            <img class="vista-previa-foto" id="previaPortadaMovil" hidden />
           </div>
         </div>
 
@@ -931,6 +1001,8 @@
         "use strict";
         const CLAVE_CONFIG = "invitacion:config";
         const CLAVE_FOTO_PORTADA = "invitacion:foto-portada";
+        const CLAVE_FOTO_PORTADA_TABLET = "invitacion:foto-portada-tablet";
+        const CLAVE_FOTO_PORTADA_MOVIL = "invitacion:foto-portada-movil";
         const CLAVE_FOTO_HISTORIA1 = "invitacion:foto-historia1";
         const CLAVE_FOTO_HISTORIA2 = "invitacion:foto-historia2";
         const CLAVE_PASSWORD = "invitacion:admin-password";
@@ -1114,12 +1186,16 @@
             configCargado,
             familiasCargadas,
             resPortada,
+            resPortadaTablet,
+            resPortadaMovil,
             resHistoria1,
             resHistoria2,
           ] = await Promise.all([
             cargarJSON(CLAVE_CONFIG, CONFIG_DEFECTO),
             apiGetFamilias(),
             apiGet(CLAVE_FOTO_PORTADA),
+            apiGet(CLAVE_FOTO_PORTADA_TABLET),
+            apiGet(CLAVE_FOTO_PORTADA_MOVIL),
             apiGet(CLAVE_FOTO_HISTORIA1),
             apiGet(CLAVE_FOTO_HISTORIA2),
           ]);
@@ -1245,6 +1321,14 @@
             (resPortada || {}).value || "";
           actualizarVistaPrevia("fotoPortada", "previaPortada");
 
+          document.getElementById("fotoPortadaTablet").value =
+            (resPortadaTablet || {}).value || "";
+          actualizarVistaPrevia("fotoPortadaTablet", "previaPortadaTablet");
+
+          document.getElementById("fotoPortadaMovil").value =
+            (resPortadaMovil || {}).value || "";
+          actualizarVistaPrevia("fotoPortadaMovil", "previaPortadaMovil");
+
           document.getElementById("fotosHistoriaEstilo").value =
             config.fotosHistoriaEstilo || "cuadricula-2";
           document.getElementById("listaFotosHistoriaEditor").innerHTML = "";
@@ -1339,6 +1423,18 @@
           "fotoPortada",
           "estadoPortada",
           "previaPortada",
+        );
+        configurarSubidaFoto(
+          "archivoPortadaTablet",
+          "fotoPortadaTablet",
+          "estadoPortadaTablet",
+          "previaPortadaTablet",
+        );
+        configurarSubidaFoto(
+          "archivoPortadaMovil",
+          "fotoPortadaMovil",
+          "estadoPortadaMovil",
+          "previaPortadaMovil",
         );
 
         /* ---------- Galería de fotos desde la carpeta "fotos" en GitHub ---------- */
@@ -1728,6 +1824,12 @@
             const fotoPortada = document
               .getElementById("fotoPortada")
               .value.trim();
+            const fotoPortadaTablet = document
+              .getElementById("fotoPortadaTablet")
+              .value.trim();
+            const fotoPortadaMovil = document
+              .getElementById("fotoPortadaMovil")
+              .value.trim();
 
             const nuevasFamilias = Array.from(
               document.querySelectorAll(".fila-familia-editor"),
@@ -1770,6 +1872,8 @@
               await Promise.all([
                 apiSet(CLAVE_CONFIG, JSON.stringify(nuevoConfig)),
                 apiSet(CLAVE_FOTO_PORTADA, fotoPortada),
+                apiSet(CLAVE_FOTO_PORTADA_TABLET, fotoPortadaTablet),
+                apiSet(CLAVE_FOTO_PORTADA_MOVIL, fotoPortadaMovil),
                 apiSetFamilias(familiasSinDuplicar),
                 nuevaPassword
                   ? apiSet(CLAVE_PASSWORD, nuevaPassword)
