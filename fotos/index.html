@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%0A%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2232%22%20fill%3D%22%23405044%22/%3E%0A%3Ctext%20x%3D%2232%22%20y%3D%2241%22%20font-family%3D%22Georgia%2C%20%27Times%20New%20Roman%27%2C%20serif%22%20font-size%3D%2222%22%20font-weight%3D%22600%22%20fill%3D%22%23c5a66a%22%20text-anchor%3D%22middle%22%3ES%26%2338%3BN%3C/text%3E%0A%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="tituloPagina">Sergio &amp; Natalia — Invitación de boda</title>
+<meta name="description" content="Invitación de boda">
+
+<!-- Open Graph: controla la miniatura que se ve al compartir este link en WhatsApp, Facebook, etc. -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bodasyn.hagioscol.com/">
+<meta property="og:title" content="Sergio &amp; Natalia — Nuestra Boda">
+<meta property="og:description" content="Nos casamos el 7 de noviembre de 2026 en Finca Silletera El Pensamiento, Santa Elena. ¡Acompáñanos a celebrar!">
+<meta property="og:image" content="https://bodasyn.hagioscol.com/fotos/sobre_boda_1200x630.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="es_CO">
+
+<!-- Twitter/X usa estas mismas etiquetas si alguien comparte ahí -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sergio &amp; Natalia — Nuestra Boda">
+<meta name="twitter:description" content="Nos casamos el 7 de noviembre de 2026 en Finca Silletera El Pensamiento, Santa Elena. ¡Acompáñanos a celebrar!">
+<meta name="twitter:image" content="https://bodasyn.hagioscol.com/fotos/sobre_boda_1200x630.jpg">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://use.typekit.net">
+<link rel="stylesheet" href="https://use.typekit.net/csb1nuz.css">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&family=Poppins:wght@400;500;600&family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Lato:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --color-primary:    #405044;
+    --color-secondary:  #c5a66a;
+    --color-portada-acento: #c5a66a;
+    --color-background: #f7f2e9;
+    --color-surface:    #fffdf8;
+    --color-text:       #292b28;
+    --color-text-soft:  #686b65;
+    --color-border:     rgba(41, 43, 40, 0.16);
+
+    --font-heading: "Cormorant Garamond", serif;
+    --font-body: "Montserrat", sans-serif;
+
+    --container-width: 720px;
+    --section-spacing: clamp(4rem, 10vw, 8rem);
+    --border-radius: 1.25rem;
+    --shadow-soft: 0 18px 50px rgba(31, 33, 30, 0.1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font-body); background: var(--color-background); color: var(--color-text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  img { max-width: 100%; display: block; }
+  h1, h2, h3 { font-family: var(--font-heading); color: var(--color-primary); font-weight: 500; line-height: 1.15; }
+  a { color: inherit; }
+  .container { max-width: var(--container-width); margin: 0 auto; padding: 0 1.5rem; }
+  section { padding-block: var(--section-spacing); }
+  .eyebrow { font-family: var(--font-body); font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-secondary); display: block; margin-bottom: 0.9rem; }
+  .divider { width: 46px; height: 1px; background: var(--color-secondary); margin: 1.6rem auto; border: none; }
+  .center { text-align: center; }
+
+  /* SOBRE */
+  #sobre {
+    min-height: 100svh;
+    position: relative;
+    overflow: hidden;
+    background: var(--color-primary);
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+  }
+  #sobre::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(197,166,106,0.16) 1px, transparent 0);
+    background-size: 22px 22px;
+    pointer-events: none;
+  }
+
+  .sobre-caja {
+    position: relative;
+    width: 100%;
+    min-height: 100svh;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .sobre-solapa-borde {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 46svh;
+    background: var(--color-secondary);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transition: transform 0.6s cubic-bezier(.6,.05,.28,1), opacity 0.5s ease;
+    transform-origin: top center;
+  }
+
+  .sobre-solapa {
+    position: absolute;
+    top: 0; left: 3px; right: 3px;
+    height: calc(46svh - 3px);
+    background: linear-gradient(160deg, #4d6752 0%, #263626 100%);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    filter: drop-shadow(0 12px 24px rgba(0,0,0,0.5));
+    transition: transform 0.6s cubic-bezier(.6,.05,.28,1), opacity 0.5s ease;
+    transform-origin: top center;
+  }
+
+  .sobre-sello {
+    position: absolute;
+    top: 46svh; left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(38vw, 162px);
+    height: auto;
+    filter: drop-shadow(0 14px 22px rgba(0,0,0,0.45));
+    transition: transform 0.5s cubic-bezier(.6,.05,.28,1), opacity 0.4s ease;
+  }
+
+  .sobre-instruccion {
+    position: absolute;
+    top: calc(46svh + min(38vw, 162px) / 2 + 2.1rem);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+    color: rgba(247,242,233,0.85);
+    animation: pulso 2.4s ease-in-out infinite;
+  }
+  @keyframes pulso { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
+
+  #sobre.cerrando .sobre-solapa,
+  #sobre.cerrando .sobre-solapa-borde { transform: translateY(-14%) scale(1.02); opacity: 0; }
+  #sobre.cerrando .sobre-sello { transform: translate(-50%, -50%) scale(0.55) rotate(-8deg); opacity: 0; }
+  #sobre.cerrando .sobre-instruccion { opacity: 0; }
+
+  .pantalla-transicion {
+    position: fixed; inset: 0;
+    background: var(--color-primary);
+    z-index: 30;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+  }
+  .pantalla-transicion.visible { opacity: 1; }
+
+
+
+  /* PORTADA */
+  #portada { position: relative; min-height: 100svh; display: flex; align-items: flex-end; padding-bottom: 3.5rem; color: var(--color-surface); }
+  .portada-foto { position: absolute; inset: 0; background: linear-gradient(160deg, #3a4a3e 0%, #556b52 55%, #8a7650 130%); background-size: cover; background-position: center; z-index: -2; }
+  .portada-foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(20,22,18,0.65) 0%, rgba(20,22,18,0.32) 45%, rgba(20,22,18,0.4) 100%); z-index: -1; }
+  .portada-contenido { text-align: center; width: 100%; }
+  .portada-nombres { font-size: clamp(2.6rem, 11vw, 4.2rem); color: var(--color-surface); text-shadow: 0 2px 14px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.55); }
+  .portada-nombres span { display: block; font-family: var(--font-heading); font-style: italic; font-size: 0.42em; color: var(--color-portada-acento); margin: 0.3em 0; text-shadow: 0 2px 10px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.6); }
+  .portada-fecha { font-size: 0.85rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.85); margin-top: 0.6rem; }
+  .portada-subtitulo { font-family: var(--font-heading); font-size: 1rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-portada-acento); text-align: center; margin-top: 0.7rem; text-shadow: 0 2px 10px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.6); }
+  .portada-frase { max-width: 420px; margin: 1.8rem auto 0; font-family: var(--font-heading); font-style: italic; font-size: 1.15rem; color: rgba(255,255,255,0.92); white-space: pre-line; }
+  .scroll-hint { margin-top: 2.4rem; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.75; }
+  .scroll-hint::after { content: ""; display: block; width: 1px; height: 28px; background: rgba(255,255,255,0.6); margin: 0.6rem auto 0; animation: baja 1.8s ease-in-out infinite; }
+  @keyframes baja { 0% { transform: scaleY(0); opacity: 0; } 40% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
+
+  /* SALUDO */
+  #saludo { text-align: center; }
+  #saludo p { color: var(--color-text-soft); max-width: 460px; margin: 0 auto; }
+  #saludo .familia { font-size: clamp(1.6rem, 5vw, 2.1rem); margin: 1.4rem 0 2.2rem; }
+  .lista-invitados { list-style: none; max-width: 340px; margin: 1.6rem auto 0; border-top: 1px solid var(--color-border); }
+  .lista-invitados li { padding: 1.05rem 0; border-bottom: 1px solid var(--color-border); font-family: var(--font-heading); font-size: 1.15rem; color: var(--color-text); }
+  .restriccion-invitados { max-width: 380px; margin: 3rem auto 0; font-size: 0.85rem; color: var(--color-text-soft); line-height: 1.6; text-align: center; white-space: pre-line; }
+  .codigo-invitacion { max-width: 280px; margin: 3rem auto 0; padding: 1.4rem 1.2rem; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-soft); text-align: center; background: transparent; border-radius: 0.9rem; }
+  .codigo-invitacion .codigo-etiqueta { display: block; margin-bottom: 0.8rem; }
+  .codigo-invitacion #codigoInvitacion { display: inline-block; font-family: var(--font-body); font-weight: 600; font-size: 1.05rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-primary); background: rgba(64,80,68,0.08); padding: 0.5rem 1.3rem; border-radius: 999px; }
+  .alerta-importante { max-width: 380px; margin: 1.4rem auto 0; padding: 1.2rem 1.3rem; font-size: 0.85rem; font-weight: 600; line-height: 1.55; text-align: center; color: var(--color-primary); background: rgba(197,166,106,0.16); border: 1px solid var(--color-secondary); border-radius: 0.7rem; white-space: pre-line; }
+  .alerta-importante:empty { display: none; }
+  .alerta-importante::before { content: "⚠️ "; }
+
+  /* FECHA */
+  #fecha { background: var(--color-primary); color: var(--color-surface); text-align: center; }
+  #fecha .eyebrow { color: var(--color-secondary); }
+  .fecha-dia-grande { font-size: clamp(4.5rem, 22vw, 7rem); line-height: 0.9; color: var(--color-surface); }
+  .fecha-detalle { font-family: var(--font-body); letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.85rem; color: rgba(255,255,255,0.82); margin-top: 0.6rem; }
+  .cuenta-regresiva { display: flex; justify-content: center; gap: clamp(0.8rem,4vw,2.2rem); margin: 2.6rem 0 2.2rem; }
+  .cuenta-regresiva div { text-align: center; }
+  .cuenta-numero { font-family: var(--font-heading); font-size: clamp(1.8rem,6vw,2.6rem); color: var(--color-secondary); display: block; }
+  .cuenta-etiqueta { font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.7); }
+  .btn-calendario { display: inline-flex; align-items: center; margin-top: 0.5rem; background: var(--color-secondary); color: var(--color-primary); font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; padding: 0.85rem 1.9rem; border-radius: 999px; min-height: 48px; transition: opacity 0.25s ease; }
+  .btn-calendario:hover { opacity: 0.85; }
+
+  /* LUGAR */
+  #lugar { text-align: center; }
+  address { font-style: normal; color: var(--color-text-soft); margin-bottom: 1.8rem; }
+  address strong { display: block; font-family: var(--font-heading); font-size: 1.3rem; color: var(--color-text); margin-bottom: 0.3rem; }
+  .mapa-contenedor { border-radius: var(--border-radius); overflow: hidden; box-shadow: var(--shadow-soft); border: 1px solid var(--color-border); aspect-ratio: 4/3; }
+  .mapa-contenedor iframe { width: 100%; height: 100%; border: 0; }
+  .btn-secundario { display: inline-flex; align-items: center; margin-top: 1.6rem; border: 1px solid var(--color-primary); color: var(--color-primary); background: none; font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; padding: 0.85rem 1.9rem; border-radius: 999px; min-height: 48px; transition: background 0.25s ease, color 0.25s ease; }
+  .btn-secundario:hover { background: var(--color-primary); color: var(--color-surface); }
+
+  /* HISTORIA */
+  #historia .historia-grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+  .historia-foto { aspect-ratio: 4/5; border-radius: var(--border-radius); background: linear-gradient(150deg, #d9cfb8, #b7c3ae); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: var(--color-primary); font-family: var(--font-heading); font-style: italic; font-size: 0.9rem; text-align: center; padding: 1rem; }
+
+  .galeria-fotos { display: grid; gap: 0.7rem; margin-top: 2rem; }
+  .galeria-fotos img { width: 100%; display: block; border-radius: var(--border-radius); box-shadow: var(--shadow-soft); }
+  .galeria-fotos.cuadricula-3 { grid-template-columns: repeat(3, 1fr); }
+  .galeria-fotos.cuadricula-3 img { aspect-ratio: 1; object-fit: cover; }
+  .galeria-fotos.cuadricula-2 { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .galeria-fotos.cuadricula-2 img { aspect-ratio: 4/5; object-fit: cover; }
+  .galeria-fotos.lista { grid-template-columns: 1fr; gap: 1.4rem; }
+  .galeria-fotos.lista img { aspect-ratio: 3/2; object-fit: cover; }
+  #historia p { color: var(--color-text-soft); margin-top: 1.6rem; white-space: pre-line; }
+
+  /* ITINERARIO */
+  .itinerario { list-style: none; max-width: 460px; margin: 2.4rem auto 0; position: relative; padding-left: 2rem; }
+  .itinerario::before { content: ""; position: absolute; left: 5px; top: 6px; bottom: 6px; width: 1px; background: var(--color-border); }
+  .itinerario li { position: relative; padding-bottom: 2.6rem; }
+  .itinerario li:last-child { padding-bottom: 0; }
+  .itinerario li::before { content: ""; position: absolute; left: -2rem; top: 6px; width: 11px; height: 11px; border-radius: 50%; background: var(--color-surface); border: 2px solid var(--color-secondary); }
+  .itinerario time { font-family: var(--font-heading); font-size: 1.05rem; color: var(--color-secondary); display: block; margin-bottom: 0.35rem; }
+  .itinerario h3 { font-size: 1.15rem; line-height: 1.3; }
+  .itinerario p { color: var(--color-text-soft); font-size: 0.92rem; margin-top: 0.4rem; line-height: 1.5; }
+
+  /* VESTUARIO */
+  #vestuario { text-align: center; }
+  .lista-recomendaciones { list-style: none; max-width: 440px; margin: 1.4rem auto 0; text-align: center; }
+  .lista-recomendaciones li { margin-bottom: 0.8rem; font-size: 0.9rem; color: var(--color-text-soft); line-height: 1.5; }
+  .lista-recomendaciones li::before { content: "• "; color: var(--color-secondary); }
+
+  /* REGALOS */
+  #regalos { text-align: center; background: var(--color-surface); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); }
+  #regalos p { max-width: 440px; margin: 0 auto; color: var(--color-text-soft); white-space: pre-line; }
+
+  /* RSVP */
+  #rsvp { text-align: center; }
+  .rsvp-plazo-texto { display: inline-block; margin-top: 1rem; padding: 0.6rem 1.2rem; font-size: 1rem; font-weight: 600; color: var(--color-primary); background: rgba(197,166,106,0.18); border: 1px solid var(--color-secondary); border-radius: 999px; }
+  .rsvp-form { max-width: 420px; margin: 2rem auto 0; text-align: left; }
+  .campo { margin-bottom: 1.4rem; }
+  .lista-checks { list-style: none; }
+  .check-invitado { display: block; position: relative; }
+  .check-invitado input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .check-invitado label { display: flex; align-items: center; gap: 0.8rem; padding: 1rem 1.1rem; border: 1px solid var(--color-border); border-radius: 0.7rem; margin-bottom: 0.9rem; cursor: pointer; font-size: 0.98rem; color: var(--color-text); transition: border-color 0.2s ease, background 0.2s ease; }
+  .check-invitado .marca { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--color-secondary); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: background 0.2s ease; }
+  .check-invitado .marca::after { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--color-primary); transform: scale(0); transition: transform 0.2s ease; }
+  .check-invitado input:checked + label { border-color: var(--color-secondary); background: rgba(197,166,106,0.08); }
+  .check-invitado input:checked + label .marca::after { transform: scale(1); }
+  .check-invitado input:focus-visible + label { outline: 2px solid var(--color-secondary); outline-offset: 2px; }
+  .btn-principal { width: 100%; min-height: 48px; background: var(--color-primary); color: var(--color-surface); border: none; border-radius: 999px; font-family: var(--font-body); font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; margin-top: 0.6rem; transition: opacity 0.25s ease; }
+  .btn-principal:hover { opacity: 0.9; }
+  .btn-principal:disabled { opacity: 0.55; cursor: not-allowed; }
+  .rsvp-mensaje { margin-top: 1.4rem; padding: 1rem 1.2rem; border-radius: 0.8rem; background: rgba(64,80,68,0.08); color: var(--color-primary); font-size: 0.9rem; display: none; }
+  .rsvp-mensaje.visible { display: block; }
+  .rsvp-mensaje.error { background: rgba(178,74,58,0.1); color: #8a3a2c; }
+  .nota-privacidad { max-width: 380px; margin: 0.9rem auto 0; font-size: 0.78rem; color: var(--color-text-soft); line-height: 1.5; text-align: center; white-space: pre-line; }
+  .rsvp-cerrado { margin-top: 2rem; padding: 1.4rem; border-radius: var(--border-radius); background: var(--color-surface); border: 1px solid var(--color-border); color: var(--color-text-soft); font-size: 0.92rem; }
+
+  footer { text-align: center; padding-block: var(--section-spacing); background: var(--color-primary); color: var(--color-surface); }
+  .anillos-footer { width: 74px; height: auto; margin: 0 auto 1.6rem; display: block; }
+  .anillos-footer circle { stroke: var(--color-secondary); stroke-width: 3.5; }
+  footer p { color: rgba(255,255,255,0.72); font-size: 0.85rem; }
+  footer .firma { font-size: clamp(1.6rem,5vw,2.2rem); color: var(--color-surface); margin-top: 0.9rem; }
+
+  .flotante-rsvp { position: fixed; right: 1.1rem; bottom: 1.1rem; background: var(--color-secondary); color: var(--color-primary); border: none; border-radius: 999px; min-height: 48px; padding: 0 1.3rem; font-family: var(--font-body); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; box-shadow: var(--shadow-soft); cursor: pointer; z-index: 20; opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease; }
+  .flotante-rsvp.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+  .pantalla-error { min-height: 100svh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 2rem; }
+  .pantalla-error[hidden] { display: none !important; }
+  .pantalla-error p { max-width: 320px; color: var(--color-text-soft); }
+
+  @media (min-width: 600px) { .historia-grid { grid-template-columns: 1fr 1fr; } }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<header id="sobre">
+  <div class="sobre-caja" id="cajaSobre" role="button" tabindex="0" aria-label="Abrir invitación">
+    <div class="sobre-solapa-borde"></div>
+    <div class="sobre-solapa"></div>
+    <img class="sobre-sello" id="sobreSello" src="fotos/file_00000000e9e4820e97a0727676125748.png" alt="Sello S &amp; N">
+    <p class="sobre-instruccion">Toca para abrir tu invitación</p>
+  </div>
+</header>
+
+<div class="pantalla-transicion" id="pantallaTransicion" aria-hidden="true"></div>
+
+<main id="contenido" hidden>
+  <section id="portada">
+    <div class="portada-foto" id="portadaFoto" role="img" aria-label="Fotografía de los novios"></div>
+    <div class="container portada-contenido">
+      <h2 class="portada-nombres" id="portadaNombres">Sergio<span>&amp;</span>Natalia</h2>
+      <p class="portada-subtitulo" id="portadaSubtitulo">Nuestra Boda</p>
+      <p class="portada-fecha"><time id="portadaFecha" datetime="">—</time></p>
+      <p class="portada-frase" id="portadaFrase"></p>
+      <p class="scroll-hint" id="scrollHintTexto">Desliza para ver más</p>
+    </div>
+  </section>
+
+  <section id="saludo">
+    <div class="container center">
+      <span class="eyebrow" id="eyebrowSaludo">Con mucha alegría</span>
+      <p id="saludoIntro">Queremos compartir este día tan especial con</p>
+      <h2 class="familia" id="saludoFamilia">—</h2>
+      <hr class="divider">
+      <p><span id="reservadaTexto">Esta invitación está reservada especialmente para</span> <span id="saludoCupos"></span></p>
+      <ul class="lista-invitados" id="listaInvitadosSaludo"></ul>
+      <p class="codigo-invitacion"><span class="codigo-etiqueta" id="codigoEtiqueta">Código de invitación:</span><span id="codigoInvitacion"></span></p>
+      <p class="restriccion-invitados" id="restriccionInvitados"></p>
+    </div>
+  </section>
+
+  <section id="fecha">
+    <div class="container center">
+      <span class="eyebrow" id="eyebrowFecha">Guarda la fecha</span>
+      <p class="fecha-dia-grande" id="fechaDiaGrande">—</p>
+      <p class="fecha-detalle" id="fechaDetalle">—</p>
+      <div class="cuenta-regresiva" id="cuentaRegresiva" aria-live="polite">
+        <div><span class="cuenta-numero" id="cr-dias">00</span><span class="cuenta-etiqueta">Días</span></div>
+        <div><span class="cuenta-numero" id="cr-horas">00</span><span class="cuenta-etiqueta">Horas</span></div>
+        <div><span class="cuenta-numero" id="cr-min">00</span><span class="cuenta-etiqueta">Min</span></div>
+        <div><span class="cuenta-numero" id="cr-seg">00</span><span class="cuenta-etiqueta">Seg</span></div>
+      </div>
+      <a class="btn-calendario" id="btnCalendario" href="#" target="_blank" rel="noopener">Agregar a mi calendario</a>
+    </div>
+  </section>
+
+  <section id="lugar">
+    <div class="container center">
+      <span class="eyebrow" id="eyebrowLugar">Lugar</span>
+      <address>
+        <strong id="lugarNombre">—</strong>
+        <span id="lugarDireccion">—</span>
+      </address>
+      <div class="mapa-contenedor">
+        <iframe id="mapaIframe" src="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa de la ubicación de la boda"></iframe>
+      </div>
+      <a class="btn-secundario" id="btnMapa" href="#" target="_blank" rel="noopener">Abrir en Google Maps</a>
+    </div>
+  </section>
+
+  <section id="historia">
+    <div class="container center">
+      <span class="eyebrow" id="eyebrowHistoria">Nuestra historia</span>
+      <h2 id="historiaTitulo">Cómo empezó todo</h2>
+      <div class="galeria-fotos" id="galeriaHistoria"></div>
+      <p id="historiaTexto"></p>
+    </div>
+  </section>
+
+  <section id="galeria-seccion" hidden>
+    <div class="container center">
+      <span class="eyebrow" id="eyebrowGaleria">Galería</span>
+      <h2 id="galeriaTitulo">Algunos momentos</h2>
+      <div class="galeria-fotos" id="galeriaFotos"></div>
+    </div>
+  </section>
+
+  <section id="itinerario-seccion">
+    <div class="container center">
+      <span class="eyebrow" id="eyebrowItinerario">Itinerario</span>
+      <h2 id="itinerarioTitulo">Así viviremos el día</h2>
+      <ol class="itinerario" id="listaItinerario"></ol>
+    </div>
+  </section>
+
+  <section id="vestuario">
+    <div class="container">
+      <span class="eyebrow" id="eyebrowVestuario">Código de vestuario</span>
+      <h2 id="vestuarioTitulo">—</h2>
+      <ul class="lista-recomendaciones" id="listaRecomendaciones"></ul>
+    </div>
+  </section>
+
+  <section id="regalos">
+    <div class="container">
+      <span class="eyebrow" id="eyebrowRegalos">Regalos</span>
+      <h2 id="regalosTitulo">Lluvia de sobres</h2>
+      <p id="regalosTexto"></p>
+    </div>
+  </section>
+
+  <section id="rsvp">
+    <div class="container center">
+      <span class="eyebrow" id="eyebrowRSVP">RSVP</span>
+      <h2 id="rsvpTitulo">Confirma tu asistencia</h2>
+      <p class="rsvp-plazo-texto" id="rsvpPlazoTexto"></p>
+
+      <form class="rsvp-form" id="formRSVP" novalidate>
+        <div class="campo" id="campoEstadoCarga">
+          <p style="color:var(--color-text-soft); font-size:0.88rem;">Cargando tu confirmación...</p>
+        </div>
+
+        <div class="campo">
+          <span class="eyebrow" id="rsvpSeleccionaTexto" style="margin-bottom:0.8rem;">Selecciona las personas que asistirán:</span>
+          <ul class="lista-checks" id="listaChecksRSVP"></ul>
+        </div>
+
+        <button type="submit" class="btn-principal" id="btnEnviarRSVP">Confirmar asistencia</button>
+        <p class="alerta-importante" id="alertaImportante"></p>
+        <p class="nota-privacidad" id="notaPrivacidad"></p>
+        <div class="rsvp-mensaje" id="mensajeRSVP" role="status" aria-live="polite"></div>
+      </form>
+
+      <div class="rsvp-cerrado" id="rsvpCerrado" hidden>
+        El plazo para confirmar asistencia ha finalizado. Si tienes algún inconveniente, por favor escríbenos directamente.
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <svg class="anillos-footer" viewBox="0 0 120 60" aria-hidden="true">
+        <circle cx="45" cy="30" r="21" fill="none"/>
+        <circle cx="75" cy="30" r="21" fill="none"/>
+      </svg>
+      <p id="footerGracias">Gracias por ser parte de nuestra historia.</p>
+      <p class="firma" id="footerFirma">Sergio &amp; Natalia</p>
+    </div>
+  </footer>
+</main>
+
+<div class="pantalla-error" id="pantallaError" hidden>
+  <p>No encontramos esta invitación. Por favor verifica el enlace que recibiste, o contáctanos directamente.</p>
+</div>
+
+<button class="flotante-rsvp" id="flotanteRSVP" aria-label="Ir a confirmar asistencia">RSVP</button>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ============================================================
+     CLAVES DE ALMACENAMIENTO (base de datos compartida)
+     ============================================================ */
+  const CLAVE_CONFIG = "invitacion:config";
+  const CLAVE_FOTO_PORTADA = "invitacion:foto-portada";
+  const CLAVE_FOTO_PORTADA_TABLET = "invitacion:foto-portada-tablet";
+  const CLAVE_FOTO_PORTADA_MOVIL = "invitacion:foto-portada-movil";
+  const CLAVE_FOTO_HISTORIA1 = "invitacion:foto-historia1";
+  const CLAVE_FOTO_HISTORIA2 = "invitacion:foto-historia2";
+
+  // Pega aquí la URL de tu aplicación web de Google Apps Script
+  // (termina en /exec). La consigues en: Extensiones > Apps Script >
+  // Implementar > Nueva implementación > Aplicación web.
+  const API_URL = "https://script.google.com/macros/s/AKfycbxKKTuQHdfk03g6xxuIcqhIHhopCWDZ5mYdpzvYBstPPjOG9feMQ6c8kqozg7aFDJY6/exec";
+
+  async function apiGet(clave) {
+    try {
+      const respuesta = await fetch(API_URL + "?action=get&key=" + encodeURIComponent(clave));
+      const datos = await respuesta.json();
+      if (datos && datos.value) return { key: datos.key, value: datos.value };
+    } catch (error) { /* sin conexión o clave inexistente */ }
+    return null;
+  }
+
+  async function apiSet(clave, valor) {
+    await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "set", key: clave, value: valor })
+    });
+    return { key: clave, value: valor };
+  }
+
+  async function apiGetFamilias(porDefecto) {
+    try {
+      const respuesta = await fetch(API_URL + "?action=getFamilias");
+      const datos = await respuesta.json();
+      if (datos && Array.isArray(datos.familias) && datos.familias.length > 0) return datos.familias;
+    } catch (error) { /* sin conexión: se usa el valor por defecto */ }
+    return porDefecto;
+  }
+
+  /* ============================================================
+     VALORES POR DEFECTO — se usan si aún no se ha guardado nada
+     desde la página de edición (editar.html)
+     ============================================================ */
+  const CONFIG_DEFECTO = {
+    nombreNovio: "Sergio",
+    nombreNovia: "Natalia",
+    fechaBodaISO: "2026-11-07T14:30:00-05:00",
+    fechaLimiteRSVPISO: "2026-10-15T23:59:59-05:00",
+    fraseCarta: "El amor se multiplica cuando se comparte.",
+    lugarNombre: "Finca Silletera El Pensamiento",
+    lugarDireccion: "Santa Elena, Medellín, Antioquia, Colombia",
+    mapaQuery: "Finca Silletera El Pensamiento Santa Elena Antioquia Colombia",
+    mapaEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5603.302904532902!2d-75.4827861!3d6.2361756999999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e4427a873c3d9b7%3A0xa4d7ea69e64441e8!2sFinca%20Silletera%20El%20Pensamiento!5e1!3m2!1ses!2sco!4v1784657531501!5m2!1ses!2sco",
+    portadaSubtitulo: "Nuestra Boda",
+    scrollHintTexto: "Desliza para ver más",
+    eyebrowSaludo: "Con mucha alegría",
+    saludoIntro: "Queremos compartir este día tan especial con",
+    reservadaTexto: "Esta invitación está reservada especialmente para",
+    codigoEtiqueta: "Código de invitación:",
+    eyebrowFecha: "Guarda la fecha",
+    btnCalendarioTexto: "Agregar a mi calendario",
+    eyebrowLugar: "Lugar",
+    btnMapaTexto: "Abrir en Google Maps",
+    eyebrowHistoria: "Nuestra historia",
+    historiaTitulo: "Cómo empezó todo",
+    eyebrowGaleria: "Galería",
+    galeriaTitulo: "Algunos momentos",
+    eyebrowItinerario: "Itinerario",
+    itinerarioTitulo: "Así viviremos el día",
+    eyebrowVestuario: "Código de vestuario",
+    eyebrowRegalos: "Regalos",
+    regalosTitulo: "Lluvia de sobres",
+    eyebrowRSVP: "RSVP",
+    rsvpTitulo: "Confirma tu asistencia",
+    rsvpSeleccionaTexto: "Selecciona las personas que asistirán:",
+    footerGracias: "Gracias por ser parte de nuestra historia.",
+    historiaTexto: "Nos conocimos hace algunos años y, entre risas y casualidades, supimos que queríamos construir una vida juntos. Hoy, con el corazón lleno de gratitud, queremos celebrar este nuevo capítulo rodeados de las personas que más queremos.",
+    itinerario: [
+      { hora: "2:30 p. m.", titulo: "Llegada de invitados", descripcion: "" },
+      { hora: "3:00 p. m.", titulo: "Ceremonia civil", descripcion: "" },
+      { hora: "3:30 p. m.", titulo: "Ceremonia iglesia", descripcion: "" },
+      { hora: "4:30 p. m.", titulo: "Felicitaciones y saludo a los novios", descripcion: "" },
+      { hora: "4:50 p. m.", titulo: "Fotografías", descripcion: "" },
+      { hora: "6:00 p. m.", titulo: "Palabras de padres, familia y canción de Rodrigo", descripcion: "" },
+      { hora: "6:30 p. m.", titulo: "Cena y despedida", descripcion: "" }
+    ],
+    vestuarioTitulo: "Formal / Elegante",
+    recomendaciones: [
+      "El clima en Santa Elena suele ser fresco, te recomendamos llevar un saco o chaqueta ligera.",
+      "El evento es al aire libre y con zonas verdes, usa zapatos cómodos. Te pedimos llegar con anticipación para no perderte la ceremonia."
+    ],
+    restriccionInvitados: "Por organización y capacidad del lugar, únicamente podrán asistir los adultos y niños que aparezcan incluidos en esta invitación. Gracias por comprender y respetar nuestra lista de invitados.",
+    alertaImportante: "Si no confirmas tu asistencia no podrás ingresar.",
+    rsvpPlazoMensaje: "Por favor confírmanos antes del {fecha}.",
+    regalosTexto: "Tu presencia es nuestro mejor regalo. Si deseas obsequiarnos algo adicional, tendremos lluvia de sobres.",
+    notaPrivacidad: "Los datos serán utilizados únicamente para organizar nuestra boda. Puedes volver a este enlace y actualizar tu respuesta cuando quieras, antes de la fecha límite.",
+    colores: { primary: "#405044", secondary: "#c5a66a", background: "#f7f2e9", surface: "#fffdf8" },
+    colorAcentoPortada: "#c5a66a",
+    tipografia: "adobe",
+    galeria: [],
+    galeriaEstilo: "cuadricula-3",
+    fotosHistoria: [],
+    fotosHistoriaEstilo: "cuadricula-2",
+    fotos: { portada: "", historia1: "", historia2: "" }
+  };
+
+  const FAMILIAS_DEFECTO = [
+    { slug: "familia", nombre: "Familia", invitados: ["Bertha", "Eliecer", "Esteban"] }
+  ];
+
+  /* ============================================================
+     CARGA DE DATOS DESDE LA BASE DE DATOS
+     ============================================================ */
+  async function cargarJSON(clave, compartido, porDefecto) {
+    try {
+      const resultado = await apiGet(clave);
+      if (resultado && resultado.value) return JSON.parse(resultado.value);
+    } catch (error) { /* no existe todavía: se usa el valor por defecto */ }
+    return porDefecto;
+  }
+
+  const parametros = new URLSearchParams(window.location.search);
+  const slugSolicitado = parametros.get("f");
+
+  async function iniciar() {
+    // El sobre queda listo para responder al toque de inmediato,
+    // sin esperar a que terminen las peticiones a la base de datos.
+    inicializarSobre();
+
+    const [config, familias, resPortada, resPortadaTablet, resPortadaMovil, resHistoria1, resHistoria2] = await Promise.all([
+      cargarJSON(CLAVE_CONFIG, true, CONFIG_DEFECTO),
+      apiGetFamilias(FAMILIAS_DEFECTO),
+      apiGet(CLAVE_FOTO_PORTADA),
+      apiGet(CLAVE_FOTO_PORTADA_TABLET),
+      apiGet(CLAVE_FOTO_PORTADA_MOVIL),
+      apiGet(CLAVE_FOTO_HISTORIA1),
+      apiGet(CLAVE_FOTO_HISTORIA2)
+    ]);
+
+    config.fotos = {
+      portada: (resPortada && resPortada.value) || (config.fotos && config.fotos.portada) || "",
+      portadaTablet: (resPortadaTablet && resPortadaTablet.value) || "",
+      portadaMovil: (resPortadaMovil && resPortadaMovil.value) || ""
+    };
+
+    if (!config.fotosHistoria || config.fotosHistoria.length === 0) {
+      config.fotosHistoria = [
+        (resHistoria1 && resHistoria1.value) || "",
+        (resHistoria2 && resHistoria2.value) || ""
+      ].filter(Boolean);
+    }
+
+    const familia = slugSolicitado
+      ? familias.find(f => f.slug === slugSolicitado)
+      : familias[0];
+
+    if (!familia) {
+      document.getElementById("pantallaError").hidden = false;
+      document.getElementById("sobre").hidden = true;
+      return;
+    }
+
+    aplicarEstilos(config);
+    renderizarContenido(config, familia);
+    renderizarGaleria(config);
+    inicializarCuentaRegresiva(config);
+    inicializarCalendario(config);
+    inicializarFlotanteRSVP();
+    inicializarRSVP(config, familia);
+  }
+
+  const ESTILOS_TIPOGRAFICOS = {
+    adobe: { heading: 'warbler-deck, sans-serif', body: 'greycliff-cf, sans-serif' },
+    clasico: { heading: '"Cormorant Garamond", serif', body: '"Montserrat", sans-serif' },
+    romantico: { heading: '"Playfair Display", serif', body: '"Lato", sans-serif' }
+  };
+
+  function aplicarEstilos(config) {
+    const raiz = document.documentElement.style;
+    if (config.colores) {
+      raiz.setProperty("--color-primary", config.colores.primary);
+      raiz.setProperty("--color-secondary", config.colores.secondary);
+      raiz.setProperty("--color-background", config.colores.background);
+      raiz.setProperty("--color-surface", config.colores.surface);
+    }
+    raiz.setProperty("--color-portada-acento", config.colorAcentoPortada || (config.colores && config.colores.secondary) || "#c5a66a");
+
+    const tipografia = ESTILOS_TIPOGRAFICOS[config.tipografia] || ESTILOS_TIPOGRAFICOS.adobe;
+    raiz.setProperty("--font-heading", tipografia.heading);
+    raiz.setProperty("--font-body", tipografia.body);
+  }
+
+  function formatearFechaLarga(iso) {
+    const fecha = new Date(iso);
+    const opciones = { weekday: "long", day: "numeric", month: "long", year: "numeric" };
+    const texto = fecha.toLocaleDateString("es-CO", opciones);
+    return texto.charAt(0).toUpperCase() + texto.slice(1);
+  }
+
+  function renderizarGaleria(config) {
+    const seccion = document.getElementById("galeria-seccion");
+    const contenedor = document.getElementById("galeriaFotos");
+    const fotos = config.galeria || [];
+
+    if (fotos.length === 0) {
+      seccion.hidden = true;
+      return;
+    }
+
+    seccion.hidden = false;
+    contenedor.className = "galeria-fotos " + (config.galeriaEstilo || "cuadricula-3");
+    contenedor.innerHTML = "";
+    fotos.forEach(ruta => {
+      const img = document.createElement("img");
+      img.src = ruta;
+      img.loading = "lazy";
+      img.alt = "Foto de la boda";
+      contenedor.appendChild(img);
+    });
+  }
+
+  function renderizarFotosHistoria(config) {
+    const contenedor = document.getElementById("galeriaHistoria");
+    const fotos = config.fotosHistoria || [];
+    contenedor.className = "galeria-fotos " + (config.fotosHistoriaEstilo || "cuadricula-2");
+    contenedor.innerHTML = "";
+
+    if (fotos.length === 0) {
+      const marcador = document.createElement("div");
+      marcador.className = "historia-foto";
+      marcador.textContent = "Agrega fotos desde editar.html";
+      contenedor.appendChild(marcador);
+      return;
+    }
+
+    fotos.forEach(ruta => {
+      const img = document.createElement("img");
+      img.src = ruta;
+      img.loading = "lazy";
+      img.alt = "Foto de nuestra historia";
+      contenedor.appendChild(img);
+    });
+  }
+
+  function aplicarTextosDeSecciones(config) {
+    document.getElementById("portadaSubtitulo").textContent = config.portadaSubtitulo || "Nuestra Boda";
+    document.getElementById("scrollHintTexto").textContent = config.scrollHintTexto || "Desliza para ver más";
+    document.getElementById("eyebrowSaludo").textContent = config.eyebrowSaludo || "Con mucha alegría";
+    document.getElementById("saludoIntro").textContent = config.saludoIntro || "Queremos compartir este día tan especial con";
+    document.getElementById("reservadaTexto").textContent = config.reservadaTexto || "Esta invitación está reservada especialmente para";
+    document.getElementById("codigoEtiqueta").textContent = config.codigoEtiqueta || "Código de invitación:";
+    document.getElementById("eyebrowFecha").textContent = config.eyebrowFecha || "Guarda la fecha";
+    document.getElementById("eyebrowLugar").textContent = config.eyebrowLugar || "Lugar";
+    document.getElementById("eyebrowHistoria").textContent = config.eyebrowHistoria || "Nuestra historia";
+    document.getElementById("eyebrowGaleria").textContent = config.eyebrowGaleria || "Galería";
+    document.getElementById("galeriaTitulo").textContent = config.galeriaTitulo || "Algunos momentos";
+    document.getElementById("eyebrowItinerario").textContent = config.eyebrowItinerario || "Itinerario";
+    document.getElementById("itinerarioTitulo").textContent = config.itinerarioTitulo || "Así viviremos el día";
+    document.getElementById("eyebrowVestuario").textContent = config.eyebrowVestuario || "Código de vestuario";
+    document.getElementById("eyebrowRegalos").textContent = config.eyebrowRegalos || "Regalos";
+    document.getElementById("regalosTitulo").textContent = config.regalosTitulo || "Lluvia de sobres";
+    document.getElementById("eyebrowRSVP").textContent = config.eyebrowRSVP || "RSVP";
+    document.getElementById("rsvpTitulo").textContent = config.rsvpTitulo || "Confirma tu asistencia";
+    document.getElementById("rsvpSeleccionaTexto").textContent = config.rsvpSeleccionaTexto || "Selecciona las personas que asistirán:";
+    document.getElementById("footerGracias").textContent = config.footerGracias || "Gracias por ser parte de nuestra historia.";
+  }
+
+  function renderizarContenido(config, familia) {
+    aplicarTextosDeSecciones(config);
+    const iniciales = (config.nombreNovio || "").charAt(0) + " & " + (config.nombreNovia || "").charAt(0);
+
+    document.getElementById("tituloPagina").textContent = config.nombreNovio + " & " + config.nombreNovia + " — Invitación de boda";
+    document.getElementById("sobreSello").alt = "Sello " + iniciales;
+
+    if (config.fotos) {
+      const anchoPantalla = window.innerWidth;
+      let fotoPortadaElegida = config.fotos.portada;
+      if (anchoPantalla <= 600 && config.fotos.portadaMovil) {
+        fotoPortadaElegida = config.fotos.portadaMovil;
+      } else if (anchoPantalla > 600 && anchoPantalla <= 1024 && config.fotos.portadaTablet) {
+        fotoPortadaElegida = config.fotos.portadaTablet;
+      }
+      if (fotoPortadaElegida) {
+        document.getElementById("portadaFoto").style.backgroundImage = "url('" + fotoPortadaElegida + "')";
+      }
+    }
+    document.getElementById("portadaNombres").innerHTML = config.nombreNovio + "<span>&amp;</span>" + config.nombreNovia;
+    const elFechaPortada = document.getElementById("portadaFecha");
+    elFechaPortada.setAttribute("datetime", config.fechaBodaISO);
+    elFechaPortada.textContent = formatearFechaLarga(config.fechaBodaISO);
+    document.getElementById("portadaFrase").textContent = "\u201C" + config.fraseCarta + "\u201D";
+
+    document.getElementById("saludoFamilia").textContent = familia.nombre;
+    document.getElementById("saludoCupos").textContent = familia.invitados.length;
+    document.getElementById("codigoInvitacion").textContent = familia.slug;
+    const listaSaludo = document.getElementById("listaInvitadosSaludo");
+    listaSaludo.innerHTML = "";
+    familia.invitados.forEach(nombre => {
+      const li = document.createElement("li");
+      li.textContent = nombre;
+      listaSaludo.appendChild(li);
+    });
+    document.getElementById("restriccionInvitados").textContent = config.restriccionInvitados;
+    document.getElementById("alertaImportante").textContent = config.alertaImportante || "";
+
+    const fechaBoda = new Date(config.fechaBodaISO);
+    document.getElementById("fechaDiaGrande").textContent = fechaBoda.getDate();
+    const mesesTexto = fechaBoda.toLocaleDateString("es-CO", { month: "long" });
+    const horaTexto = fechaBoda.toLocaleTimeString("es-CO", { hour: "numeric", minute: "2-digit" });
+    document.getElementById("fechaDetalle").textContent = mesesTexto.charAt(0).toUpperCase() + mesesTexto.slice(1) + " · " + fechaBoda.getFullYear() + " · " + horaTexto;
+
+    document.getElementById("lugarNombre").textContent = config.lugarNombre;
+    document.getElementById("lugarDireccion").textContent = config.lugarDireccion;
+    const consultaMapa = encodeURIComponent(config.mapaQuery || config.lugarNombre);
+    document.getElementById("mapaIframe").src = config.mapaEmbedUrl || ("https://www.google.com/maps?q=" + consultaMapa + "&output=embed");
+    document.getElementById("btnMapa").href = "https://www.google.com/maps/search/?api=1&query=" + consultaMapa;
+    document.getElementById("btnMapa").textContent = config.btnMapaTexto || "Abrir en Google Maps";
+
+    renderizarFotosHistoria(config);
+    document.getElementById("historiaTexto").textContent = config.historiaTexto;
+
+    const listaItinerario = document.getElementById("listaItinerario");
+    listaItinerario.innerHTML = "";
+    (config.itinerario || []).forEach(item => {
+      const li = document.createElement("li");
+      li.innerHTML = "<time>" + item.hora + "</time><h3>" + item.titulo + "</h3><p>" + (item.descripcion || "") + "</p>";
+      listaItinerario.appendChild(li);
+    });
+
+    document.getElementById("vestuarioTitulo").textContent = config.vestuarioTitulo;
+    const listaRecomendaciones = document.getElementById("listaRecomendaciones");
+    listaRecomendaciones.innerHTML = "";
+    (config.recomendaciones || []).forEach(texto => {
+      const li = document.createElement("li");
+      li.textContent = texto;
+      listaRecomendaciones.appendChild(li);
+    });
+
+    document.getElementById("regalosTexto").textContent = config.regalosTexto;
+    document.getElementById("footerFirma").textContent = config.nombreNovio + " & " + config.nombreNovia;
+
+    const plazo = new Date(config.fechaLimiteRSVPISO);
+    const plazoFormateada = plazo.toLocaleDateString("es-CO", { day: "numeric", month: "long", year: "numeric" });
+    const plantillaPlazo = config.rsvpPlazoMensaje || "Por favor confírmanos antes del {fecha}.";
+    document.getElementById("rsvpPlazoTexto").textContent = plantillaPlazo.replace("{fecha}", plazoFormateada);
+    document.getElementById("notaPrivacidad").textContent = config.notaPrivacidad;
+
+    const listaChecks = document.getElementById("listaChecksRSVP");
+    listaChecks.innerHTML = "";
+    familia.invitados.forEach((nombre, indice) => {
+      const id = "inv-" + indice;
+      const li = document.createElement("li");
+      li.className = "check-invitado";
+      li.innerHTML = '<input type="checkbox" id="' + id + '" name="invitados" value="' + nombre.replace(/"/g, "&quot;") + '">' +
+        '<label for="' + id + '"><span class="marca"></span> ' + nombre + "</label>";
+      listaChecks.appendChild(li);
+    });
+  }
+
+  function inicializarSobre() {
+    const sobre = document.getElementById("sobre");
+    const cajaSobre = document.getElementById("cajaSobre");
+    const contenido = document.getElementById("contenido");
+    const transicion = document.getElementById("pantallaTransicion");
+    let yaAbierto = false;
+
+    function abrirInvitacion() {
+      if (yaAbierto) return;
+      yaAbierto = true;
+
+      // 1. El sobre se desvanece (solapa y sello se encogen y funden)
+      sobre.classList.add("cerrando");
+
+      // 2. Una pantalla del mismo color sólido cubre toda la ventana,
+      //    evitando cualquier salto brusco o texto montado.
+      transicion.classList.add("visible");
+
+      setTimeout(() => {
+        sobre.hidden = true;
+        contenido.hidden = false;
+        window.scrollTo(0, 0);
+
+        // 3. Con el contenido ya listo debajo, la pantalla de color se desvanece.
+        requestAnimationFrame(() => {
+          transicion.classList.remove("visible");
+        });
+      }, 620);
+    }
+
+    cajaSobre.addEventListener("click", abrirInvitacion);
+    cajaSobre.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); abrirInvitacion(); } });
+  }
+
+  function inicializarCuentaRegresiva(config) {
+    const fechaObjetivo = new Date(config.fechaBodaISO).getTime();
+    const elDias = document.getElementById("cr-dias");
+    const elHoras = document.getElementById("cr-horas");
+    const elMin = document.getElementById("cr-min");
+    const elSeg = document.getElementById("cr-seg");
+
+    function actualizar() {
+      const restante = fechaObjetivo - Date.now();
+      if (restante <= 0) { elDias.textContent = elHoras.textContent = elMin.textContent = elSeg.textContent = "00"; return; }
+      const seg = Math.floor(restante / 1000);
+      elDias.textContent = String(Math.floor(seg / 86400)).padStart(2, "0");
+      elHoras.textContent = String(Math.floor((seg % 86400) / 3600)).padStart(2, "0");
+      elMin.textContent = String(Math.floor((seg % 3600) / 60)).padStart(2, "0");
+      elSeg.textContent = String(seg % 60).padStart(2, "0");
+    }
+    actualizar();
+    setInterval(actualizar, 1000);
+  }
+
+  function inicializarCalendario(config) {
+    function formatoGCal(fechaISO) { return new Date(fechaISO).toISOString().replace(/[-:]/g, "").split(".")[0] + "Z"; }
+    const finEvento = new Date(new Date(config.fechaBodaISO).getTime() + 8 * 60 * 60 * 1000).toISOString();
+    const url = "https://calendar.google.com/calendar/render?action=TEMPLATE"
+      + "&text=" + encodeURIComponent("Boda de " + config.nombreNovio + " y " + config.nombreNovia)
+      + "&dates=" + formatoGCal(config.fechaBodaISO) + "/" + formatoGCal(finEvento)
+      + "&location=" + encodeURIComponent(config.lugarNombre + ", " + config.lugarDireccion)
+      + "&details=" + encodeURIComponent("Nos encantaría contar con tu presencia en nuestra boda.");
+    document.getElementById("btnCalendario").setAttribute("href", url);
+    document.getElementById("btnCalendario").textContent = config.btnCalendarioTexto || "Agregar a mi calendario";
+  }
+
+  function inicializarFlotanteRSVP() {
+    const flotante = document.getElementById("flotanteRSVP");
+    const seccionRSVP = document.getElementById("rsvp");
+    const seccionSaludo = document.getElementById("saludo");
+    const contenido = document.getElementById("contenido");
+
+    const observador = new IntersectionObserver((entradas) => {
+      entradas.forEach((entrada) => {
+        if (entrada.target === seccionRSVP) {
+          flotante.classList.toggle("visible", !entrada.isIntersecting && contenido.getBoundingClientRect().top < 0);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    observador.observe(seccionSaludo);
+    observador.observe(seccionRSVP);
+    flotante.addEventListener("click", () => seccionRSVP.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }
+
+  function inicializarRSVP(config, familia) {
+    const formRSVP = document.getElementById("formRSVP");
+    const mensajeRSVP = document.getElementById("mensajeRSVP");
+    const btnEnviarRSVP = document.getElementById("btnEnviarRSVP");
+    const rsvpCerrado = document.getElementById("rsvpCerrado");
+    const campoEstadoCarga = document.getElementById("campoEstadoCarga");
+
+    const plazoVencido = Date.now() > new Date(config.fechaLimiteRSVPISO).getTime();
+
+    if (plazoVencido) {
+      formRSVP.hidden = true;
+      rsvpCerrado.hidden = false;
+      return;
+    }
+
+    (async function cargarConfirmacionGuardada() {
+      try {
+        const respuesta = await fetch(API_URL + "?action=getRSVP&slug=" + encodeURIComponent(familia.slug));
+        const datos = await respuesta.json();
+        if (datos && datos.confirmacion) {
+          (datos.confirmacion.invitadosConfirmados || []).forEach((valor) => {
+            const casilla = formRSVP.querySelector('input[name="invitados"][value="' + CSS.escape(valor) + '"]');
+            if (casilla) casilla.checked = true;
+          });
+          btnEnviarRSVP.textContent = "Actualizar confirmación";
+          mensajeRSVP.textContent = "Ya habías confirmado. Puedes actualizar tu respuesta si algo cambió.";
+          mensajeRSVP.classList.add("visible");
+        }
+      } catch (error) { /* aún no hay confirmación guardada */ }
+      finally { campoEstadoCarga.hidden = true; }
+    })();
+
+    formRSVP.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const seleccionados = Array.from(formRSVP.querySelectorAll('input[name="invitados"]:checked')).map(c => c.value);
+      mensajeRSVP.classList.remove("visible", "error");
+
+      if (seleccionados.length === 0) {
+        mensajeRSVP.textContent = "Selecciona al menos una persona que asistirá.";
+        mensajeRSVP.classList.add("visible", "error");
+        return;
+      }
+
+      btnEnviarRSVP.disabled = true;
+      btnEnviarRSVP.textContent = "Guardando...";
+
+      try {
+        await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "guardarRSVP",
+            datos: {
+              slug: familia.slug,
+              familiaNombre: familia.nombre,
+              invitadosConfirmados: seleccionados,
+              confirmadoEl: new Date().toISOString()
+            }
+          })
+        });
+
+        btnEnviarRSVP.textContent = "Actualizar confirmación";
+        mensajeRSVP.textContent = "¡Gracias! Tu confirmación quedó guardada.";
+        mensajeRSVP.classList.add("visible");
+      } catch (error) {
+        mensajeRSVP.textContent = "No pudimos guardar tu confirmación. Por favor intenta de nuevo.";
+        mensajeRSVP.classList.add("visible", "error");
+        btnEnviarRSVP.textContent = "Confirmar asistencia";
+      } finally {
+        btnEnviarRSVP.disabled = false;
+      }
+    });
+  }
+
+  iniciar();
+})();
+</script>
+</body>
+</html>
