@@ -233,8 +233,30 @@
   .lista-recomendaciones li::before { content: "• "; color: var(--color-secondary); }
 
   /* REGALOS */
-  #regalos { text-align: center; background: var(--color-surface); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); }
+  #regalos { position: relative; overflow: hidden; perspective: 1000px; padding-block: 0; }
   #regalos p { max-width: 440px; margin: 0 auto; color: var(--color-text-soft); white-space: pre-line; }
+
+  .regalos-reveal { position: relative; text-align: center; background: var(--color-surface); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); padding-block: var(--section-spacing); opacity: 0; transform: perspective(1000px) rotateX(80deg) translateZ(-160px); transition: opacity 0.7s cubic-bezier(.25,.46,.45,.94), transform 0.7s cubic-bezier(.25,.46,.45,.94); }
+  .regalos-reveal.visible { opacity: 1; transform: perspective(1000px) rotateX(0deg) translateZ(0); }
+
+  .regalos-sobres { position: absolute; inset: 0; pointer-events: none; }
+  .regalos-sobre { position: absolute; top: -30px; width: 22px; height: auto; fill: none; stroke: var(--color-secondary); stroke-width: 1.4; opacity: 0; animation: sobreCae 15s linear infinite; }
+  .regalos-sobre.s1 { left: 10%; width: 24px; animation-duration: 14s; animation-delay: -1s; }
+  .regalos-sobre.s2 { left: 30%; width: 18px; animation-duration: 17s; animation-delay: -6s; }
+  .regalos-sobre.s3 { left: 55%; width: 22px; animation-duration: 15.5s; animation-delay: -10s; }
+  .regalos-sobre.s4 { left: 75%; width: 17px; animation-duration: 13s; animation-delay: -4s; }
+  .regalos-sobre.s5 { left: 90%; width: 20px; animation-duration: 16s; animation-delay: -8s; }
+  @keyframes sobreCae {
+    0% { transform: translateY(0) rotate(-6deg); opacity: 0; }
+    10% { opacity: 0.22; }
+    85% { opacity: 0.22; }
+    100% { transform: translateY(340px) rotate(6deg); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .regalos-sobre { animation: none; opacity: 0.15; }
+    .regalos-reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  }
 
   /* RSVP */
   #rsvp { text-align: center; }
@@ -379,10 +401,19 @@
   </section>
 
   <section id="regalos">
-    <div class="container">
-      <span class="eyebrow" id="eyebrowRegalos">Regalos</span>
-      <h2 id="regalosTitulo">Lluvia de sobres</h2>
-      <p id="regalosTexto"></p>
+    <div class="regalos-reveal" id="regalosContenido">
+      <div class="regalos-sobres" aria-hidden="true">
+        <svg class="regalos-sobre s1" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="1.5"/><path d="M2 7l10 7 10-7"/></svg>
+        <svg class="regalos-sobre s2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="1.5"/><path d="M2 7l10 7 10-7"/></svg>
+        <svg class="regalos-sobre s3" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="1.5"/><path d="M2 7l10 7 10-7"/></svg>
+        <svg class="regalos-sobre s4" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="1.5"/><path d="M2 7l10 7 10-7"/></svg>
+        <svg class="regalos-sobre s5" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="1.5"/><path d="M2 7l10 7 10-7"/></svg>
+      </div>
+      <div class="container">
+        <span class="eyebrow" id="eyebrowRegalos">Regalos</span>
+        <h2 id="regalosTitulo">Lluvia de sobres</h2>
+        <p id="regalosTexto"></p>
+      </div>
     </div>
   </section>
 
@@ -607,6 +638,7 @@
     inicializarCuentaRegresiva(config);
     inicializarCalendario(config);
     inicializarFlotanteRSVP();
+    inicializarRevelarAlScroll();
     inicializarRSVP(config, familia);
   }
 
@@ -881,6 +913,25 @@
     observador.observe(seccionSaludo);
     observador.observe(seccionRSVP);
     flotante.addEventListener("click", () => seccionRSVP.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }
+
+  function inicializarRevelarAlScroll() {
+    const elemento = document.getElementById("regalosContenido");
+    if (!elemento) return;
+
+    // Respaldo por si el navegador no soporta IntersectionObserver: se deja visible.
+    if (!("IntersectionObserver" in window)) {
+      elemento.classList.add("visible");
+      return;
+    }
+
+    const observador = new IntersectionObserver((entradas) => {
+      entradas.forEach((entrada) => {
+        elemento.classList.toggle("visible", entrada.isIntersecting);
+      });
+    }, { threshold: 0.25 });
+
+    observador.observe(elemento);
   }
 
   function inicializarRSVP(config, familia) {
